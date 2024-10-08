@@ -9,11 +9,11 @@
 - Patricia Herningtyas (2306152241)
 
 ## ❓ Apa itu Furnico ❓
-*Latar Belakang Pembuatan Furnico*
+#### Latar Belakang Pembuatan Furnico
 *Semarang*, sebagai salah satu kota besar di Indonesia, dikenal sebagai *pusat pengrajin perabotan kayu berkualitas tinggi*. Meskipun produk lokal ini memiliki keunggulan, kurangnya eksposur dan _platform_ yang tepat membuat pengrajin lokal kesulitan bersaing dengan produk impor yang lebih murah. Hal ini menyebabkan banyak pelanggan kehilangan kesempatan untuk menemukan furnitur yang dihasilkan dengan keahlian tangan para pengrajin Semarang, yang sebenarnya memiliki nilai seni dan kualitas yang luar biasa.
 Dengan hadirnya aplikasi *Furnico*, kami berkomitmen untuk mengisi kekosongan dalam pasar furnitur di Kota Semarang. *Furnico* tidak hanya menyediakan informasi lengkap mengenai produk furnitur, tetapi juga memberikan wadah bagi para pengrajin lokal untuk menampilkan karya-karya mereka. Selain itu, *Furnico* juga dilengkapi dengan fitur artikel yang memberikan tips dan inspirasi seputar furnitur, desain interior, dan pemeliharaan produk. Dengan demikian, *Furnico* memudahkan pelanggan dalam menemukan furnitur berkualitas sambil memberdayakan pengrajin lokal. Setiap eksposur melalui *Furnico* bukan hanya sekadar untuk mendapatkan produk berkualitas, tetapi juga *mendukung keberlanjutan industri kerajinan* di *Semarang*.
 
-*Deskripsi Furnico*
+#### Deskripsi Furnico
 *Furnico* adalah solusi digital inovatif yang kami hadirkan untuk memudahkan masyarakat Kota Semarang dalam menemukan furnitur berkualitas dengan cepat dan praktis. Melalui aplikasi ini, pelanggan dapat mengeksplorasi berbagai pilihan furnitur yang tersedia di toko, lengkap dengan informasi detail seperti harga, deskripsi, dan desain. Aplikasi ini dirancang dengan interface yang sederhana dan mudah digunakan, sehingga siapa pun dapat menavigasi dan mencari produk sesuai kebutuhan mereka tanpa kesulitan.
 Selain kemudahan dalam menemukan produk, *Furnico* juga menyediakan berbagai fitur menarik yang membantu pelanggan membuat keputusan yang tepat sebelum membeli furnitur. Terdapat fitur pencarian dan filter yang memungkinkan user menemukan produk yang sesuai dengan kriteria spesifik, mulai dari kategori hingga rentang harga. Di samping itu, aplikasi ini juga dilengkapi dengan artikel inspiratif yang memberikan ide-ide tentang tren furnitur terbaru dan tips dekorasi rumah yang berguna sehingga menjadi sumber informasi yang komprehensif. User juga dapat memanfaatkan fitur wishlist untuk menyimpan produk favorit yang ingin mereka lihat atau beli di kemudian hari, serta rating yang memungkinkan mereka melihat ulasan dari pelanggan lain untuk memastikan kualitas produk. Tak kalah penting, fitur report memberikan kemudahan bagi pengguna untuk melaporkan masalah atau memberikan feedback terkait aplikasi atau produk, serta edit profile yang memungkinkan mereka mengelola dan memperbarui informasi profil secara mudah. Dengan semua fitur ini, *Furnico* memastikan user tidak lagi bingung mencari toko atau produk furnitur di Semarang, karena semua informasi dapat diakses dalam satu aplikasi praktis yang dirancang untuk memenuhi kebutuhan mereka.
 
@@ -67,18 +67,18 @@ Klik [disini](https://www.kaggle.com/datasets/mnuhrija/ikea-indonesia-chair-prod
 Kami akan memodifikasi dataset tersebut dengan menambahkan lebih banyak furnitur yang beragam, seperti lemari, sofa, dan lain-lainnya.
 
 ## 🕵🏻 Role Pengguna dan Deskripsinya 🕵🏻
-*Role Customer*
+#### Role Customer
 Customer adalah pengguna akhir dari aplikasi *Furnico* yang bertujuan untuk menemukan dan menjelajahi produk furnitur berkualitas. Sebagai customer, user dapat menggunakan aplikasi untuk mencari berbagai pilihan furnitur, mendapatkan informasi detail tentang produk, dan memanfaatkan fitur-fitur yang tersedia untuk meningkatkan pengalaman mencari produk.
 
-*Role Admin*
+#### Role Admin*
 Admin adalah pengguna yang memiliki akses khusus untuk mengelola dan mengawasi operasional aplikasi *Furnico*. Admin bertanggung jawab untuk memastikan semua fitur aplikasi berjalan dengan baik dan memberikan support kepada customer. Admin juga berperan dalam pengelolaan konten dan pengawasan kualitas produk yang ditawarkan di platform.
 
 <table>
-    <th>
+    <tr>
         <td>Modul</td>
         <td>Admin</td>
         <td>Customer</td>
-    </th>
+    </tr>
     <tr>
         <td>Produk & Filter</td>
         <td>
