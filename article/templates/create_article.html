@@ -1,18 +1,30 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
+
+{% load static %}
+
 {% block content %}
-<h1>Create New Article</h1>
 
-<form method="POST">
-  {% csrf_token %}
-  <table>
-    {{ form.as_table }}
-    <tr>
-      <td></td>
-      <td>
-        <input type="submit" value="Add Article Entry" />
-      </td>
-    </tr>
-  </table>
-</form>
+<div class="container mx-auto py-8">
+  <h1 class="text-3xl font-bold text-blue-600 mb-6">Create New Article</h1>
 
+  <form method="POST" class="bg-white p-8 rounded-lg shadow-md">
+      {% csrf_token %}
+      <div class="grid grid-cols-1 gap-6">
+          <div>
+              {{ form.title.label_tag }}
+              <input type="text" name="title" value="{{ form.title.value }}" class="w-full p-3 border border-transparent rounded-lg focus:border-blue-400 focus:ring focus:ring-blue-100 bg-gray-100" />
+          </div>
+          <div>
+              {{ form.content.label_tag }}
+              <textarea name="content" rows="6" class="w-full p-3 border border-transparent rounded-lg focus:border-blue-400 focus:ring focus:ring-blue-100 bg-gray-100">{{ form.content.value }}</textarea>
+          </div>
+      </div>
+
+      <div class="mt-6">
+          <input type="submit" value="Add Article Entry" class="bg-blue-500 text-white py-2 px-6 rounded-lg shadow hover:bg-blue-600 transition-colors duration-200"/>
+      </div>
+  </form>
+</div>
+
+</style>
 {% endblock %}

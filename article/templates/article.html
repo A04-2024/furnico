@@ -1,28 +1,33 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Articles</h1>
+<div class="container mx-auto py-8">
+  <h1 class="text-3xl font-bold text-blue-600 mb-8">Articles</h1>
 
-{% if not articles %}
-<p>Belum ada article saat ini.</p>
-{% else %}
-<div class="articles-list">
-  {% for article in articles %}
-  <div class="article-card">
-    <h2><a href="{% url 'article:article_detail' article.id %}">{{ article.title }}</a></h2>
-    <p><em>Created at: {{ article.created_at }}</em></p>
-    <div class="article-content">
-      <p>{{ article.content|truncatewords:20 }}</p> <!-- Preview limited to 20 words -->
-      <a href="{% url 'article:article_detail' article.id %}">Read More</a> <!-- Link to the full article -->
+  {% if not articles %}
+  <p class="text-gray-500">Belum ada article saat ini.</p>
+  {% else %}
+  <div class="articles-list grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+    {% for article in articles %}
+    <div class="article-card bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
+      <h2 class="text-xl font-semibold mb-2">
+        <a href="{% url 'article:article_detail' article.id %}" class="text-blue-500 hover:underline">{{ article.title }}</a>
+      </h2>
+      <p class="text-gray-400 text-sm mb-4">
+        <em>Created at: {{ article.created_at }}</em>
+      </p>
+      <div class="article-content">
+        <p class="text-gray-600 mb-4">{{ article.content|truncatewords:20 }}</p>
+        <a href="{% url 'article:article_detail' article.id %}" class="text-blue-500 hover:underline font-medium">Read More</a>
+      </div>
     </div>
+    {% endfor %}
   </div>
-  <hr>
-  {% endfor %}
+  {% endif %}
+
+  <div class="mt-8">
+    <a href="{% url 'article:create_article' %}">
+      <button class="bg-yellow-400 text-white py-2 px-4 rounded-lg shadow-md hover:bg-yellow-500 transition-colors duration-200">Add New Article</button>
+    </a>
+  </div>
 </div>
-{% endif %}
-
-<br />
-
-<a href="{% url 'article:create_article' %}">
-  <button>Add New Article</button>
-</a>
 {% endblock content %}

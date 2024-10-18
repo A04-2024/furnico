@@ -4,19 +4,26 @@
 
 {% block content %}
 
-<h1>Edit Article</h1>
+<div class="min-h-screen flex flex-col justify-between container mx-auto py-8">
+  <h1 class="text-3xl font-bold text-blue-600 mb-6">Edit Article</h1>
 
-<form method="POST">
-    {% csrf_token %}
-    <table>
-        {{ form.as_table }}
-        <tr>
-            <td></td>
-            <td>
-                <input type="submit" value="Edit Article"/>
-            </td>
-        </tr>
-    </table>
-</form>
+  <form method="POST" class="bg-white p-8 rounded-lg shadow-md w-full flex-grow">
+      {% csrf_token %}
+      <div class="grid grid-cols-1 gap-6">
+          <div>
+              {{ form.title.label_tag }}
+              <input type="text" name="title" value="{{ form.title.value }}" class="w-full p-3 border border-transparent rounded-lg focus:border-blue-400 focus:ring focus:ring-blue-100 bg-gray-100" />
+          </div>
+          <div>
+              {{ form.content.label_tag }}
+              <textarea name="content" rows="10" class="w-full p-3 border border-transparent rounded-lg focus:border-blue-400 focus:ring focus:ring-blue-100 bg-gray-100">{{ form.content.value }}</textarea>
+          </div>
+      </div>
+
+      <div class="mt-6">
+          <input type="submit" value="Edit Article" class="bg-blue-500 text-white py-2 px-6 rounded-lg shadow hover:bg-blue-600 transition-colors duration-200"/>
+      </div>
+  </form>
+</div>
 
 {% endblock %}

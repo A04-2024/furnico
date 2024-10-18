@@ -1,23 +1,32 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+
 {% block content %}
-<h1>{{ article.title }}</h1>
-<p><em>Created at: {{ article.created_at }}</em></p>
+<div class="container mx-auto py-8">
+    <h1 class="text-3xl font-bold text-blue-600 mb-4">{{ article.title }}</h1>
+    <p class="text-gray-400 mb-6"><em>Created at: {{ article.created_at }}</em></p>
 
-<div class="article-content">
-  <p>{{ article.content }}</p> <!-- Full content displayed -->
+    <div class="article-content bg-white p-6 rounded-lg shadow-md">
+        <!-- This is where you modify the content rendering to include the linebreaks filter -->
+        <p class="text-gray-700">{{ article.content|linebreaks }}</p> 
+        <!-- The linebreaks filter will correctly display the paragraphs and line breaks -->
+    </div>
+
+    <div class="mt-6 flex space-x-4">
+        <a href="{% url 'article:edit_article' article.pk %}">
+            <button class="bg-blue-500 text-white py-2 px-4 rounded-lg shadow hover:bg-blue-600 transition-colors duration-200">
+                Edit
+            </button>
+        </a>
+        <a href="{% url 'article:delete_article' article.pk %}">
+            <button class="bg-red-500 text-white py-2 px-4 rounded-lg shadow hover:bg-red-600 transition-colors duration-200">
+                Delete
+            </button>
+        </a>
+        <a href="{% url 'article:show_article' %}">
+            <button class="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg shadow hover:bg-gray-400 transition-colors duration-200">
+                Back to Articles List
+            </button>
+        </a>
+    </div>
 </div>
-
-<a href="{% url 'article:edit_article' article.pk %}">
-    <button>
-        Edit
-    </button>
-</a>
-<a href="{% url 'article:delete_article' article.pk %}">
-    <button>
-        Delete
-    </button>
-</a>
-<a href="{% url 'article:show_article' %}">
-  <button>Back to Articles List</button>
-</a>
 {% endblock content %}
