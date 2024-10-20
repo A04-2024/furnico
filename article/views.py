@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
-from article.forms import ArticleForm
+from article.forms import ArticleForm, CommentForm
 from article.models import Article
 
 def show_article(request):
@@ -23,10 +23,26 @@ def create_article(request):
     return render(request, "create_article.html", context)
 
 def article_detail(request, id):
-    article = get_object_or_404(Article, pk=id)  # Fetch the article by UUID
-    context = {'article': article}
-    return render(request, 'article_detail.html', context)
+    article = get_object_or_404(Article, pk=id)
+    comments = article.comments.all()
+    
+    # Handle comment form submission
+    if request.method == 'POST':
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.article = article
+            comment.save()
+            return redirect('article:article_detail', id=article.id)
+    else:
+        comment_form = CommentForm()
 
+    context = {
+        'article': article,
+        'comments': comments,
+        'comment_form': comment_form,
+    }
+    return render(request, 'article_detail.html', context)
 def edit_article(request, id):
     article = Article.objects.get(pk = id)
     form = ArticleForm(request.POST or None, instance=article)

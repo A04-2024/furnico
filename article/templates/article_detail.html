@@ -28,5 +28,45 @@
             </button>
         </a>
     </div>
+
+    <!-- Display Comments -->
+    <h2 class="text-2xl font-bold text-blue-600 mt-8">Comments</h2>
+    <div class="comments-list bg-white p-6 rounded-lg shadow-md mt-4">
+        {% for comment in comments %}
+            <div class="comment mb-4 p-4 border border-gray-200 rounded-lg shadow-sm">
+                <p class="text-lg font-semibold text-blue-600">{{ comment.name }}</p>
+                <p class="text-gray-500 text-sm">{{ comment.created_at }}</p>
+                <p class="mt-2 text-gray-700">{{ comment.body }}</p>
+            </div>
+        {% empty %}
+            <p class="text-gray-500">No comments yet. Be the first to comment!</p>
+        {% endfor %}
+    </div>
+
+    <!-- Comment Form -->
+    <h3 class="text-xl font-bold text-blue-600 mt-8">Leave a Comment</h3>
+    <form method="POST" class="bg-white p-6 rounded-lg shadow-md mt-4 space-y-4">
+        {% csrf_token %}
+        
+        <!-- Name Field -->
+        <div class="mb-4">
+            <label class="block text-gray-700 font-semibold mb-2" for="id_name">Name:</label>
+            <input type="text" name="name" id="id_name" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your name" required>
+        </div>
+
+        <!-- Comment Field -->
+        <div class="mb-4">
+            <label class="block text-gray-700 font-semibold mb-2" for="id_body">Comment:</label>
+            <textarea name="body" id="id_body" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" rows="4" placeholder="Write your comment here..." required></textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-right">
+            <button type="submit" class="bg-blue-500 text-white py-2 px-6 rounded-lg shadow hover:bg-blue-600 transition-colors duration-200">
+                Submit
+            </button>
+        </div>
+    </form>
+
 </div>
 {% endblock content %}
