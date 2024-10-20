@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from article.forms import ArticleForm, CommentForm
-from article.models import Article
+from article.models import Article, Comment
 
 def show_article(request):
     articles = Article.objects.all()
@@ -43,6 +43,7 @@ def article_detail(request, id):
         'comment_form': comment_form,
     }
     return render(request, 'article_detail.html', context)
+
 def edit_article(request, id):
     article = Article.objects.get(pk = id)
     form = ArticleForm(request.POST or None, instance=article)
@@ -58,3 +59,21 @@ def delete_article(request, id):
     article.delete()
     # Kembali ke halaman awal
     return HttpResponseRedirect(reverse('article:show_article'))
+
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    article_id = comment.article.id  # Get the related article ID before deleting
+    comment.delete()
+    return redirect('article:article_detail', id=article_id)
+
+
+# def delete_comment(request, comment_id):
+#     comment = get_object_or_404(Comment, id=comment_id)
+    
+#     # Allow only the comment author or a superuser to delete the comment
+#     if request.user == comment.author or request.user.is_superuser:
+#         article_id = comment.article.id
+#         comment.delete()
+#         return redirect('article:article_detail', id=article_id)
+#     else:
+#         return redirect('article:article_detail', id=comment.article.id)

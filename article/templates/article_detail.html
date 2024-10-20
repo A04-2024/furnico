@@ -33,15 +33,27 @@
     <h2 class="text-2xl font-bold text-blue-600 mt-8">Comments</h2>
     <div class="comments-list bg-white p-6 rounded-lg shadow-md mt-4">
         {% for comment in comments %}
-            <div class="comment mb-4 p-4 border border-gray-200 rounded-lg shadow-sm">
-                <p class="text-lg font-semibold text-blue-600">{{ comment.name }}</p>
-                <p class="text-gray-500 text-sm">{{ comment.created_at }}</p>
-                <p class="mt-2 text-gray-700">{{ comment.body }}</p>
+            <div class="comment mb-4 p-4 border border-gray-200 rounded-lg shadow-sm flex flex-col">
+                <!-- Comment content -->
+                <div>
+                    <p class="text-lg font-semibold text-blue-600">{{ comment.name }}</p>
+                    <p class="text-gray-500 text-sm">{{ comment.created_at }}</p>
+                    <p class="mt-2 text-gray-700">{{ comment.body }}</p>
+                </div>
+
+                <!-- Smaller Delete button aligned to bottom right -->
+                <form method="POST" action="{% url 'article:delete_comment' comment.id %}" class="self-end mt-4">
+                    {% csrf_token %}
+                    <button type="submit" class="text-red-500 py-1 px-2 text-sm rounded-lg shadow hover:bg-red-600 hover:text-white transition-colors duration-200">
+                        Delete
+                    </button>
+                </form>
             </div>
         {% empty %}
             <p class="text-gray-500">No comments yet. Be the first to comment!</p>
         {% endfor %}
     </div>
+
 
     <!-- Comment Form -->
     <h3 class="text-xl font-bold text-blue-600 mt-8">Leave a Comment</h3>
