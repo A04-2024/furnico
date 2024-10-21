@@ -6,9 +6,9 @@
     <p class="text-gray-400 mb-6"><em>Created at: {{ article.created_at }}</em></p>
 
     <div class="article-content bg-white p-6 rounded-lg shadow-md">
-        <!-- This is where you modify the content rendering to include the linebreaks filter -->
-        <p class="text-gray-700">{{ article.content|linebreaks }}</p> 
-        <!-- The linebreaks filter will correctly display the paragraphs and line breaks -->
+        <!-- This will render the article content with its rich formatting (HTML elements) -->
+        <div class="prose max-w-none text-gray-700">{{ article.content|safe }}</div> 
+        <!-- Using 'prose' from Tailwind Typography plugin for better content formatting -->
     </div>
 
     <div class="mt-6 flex space-x-4">
@@ -28,7 +28,6 @@
             </button>
         </a>
     </div>
-
     <!-- Display Comments -->
     <h2 class="text-2xl font-bold text-blue-600 mt-8">Comments</h2>
     <div class="comments-list bg-white p-6 rounded-lg shadow-md mt-4">
@@ -54,7 +53,6 @@
         {% endfor %}
     </div>
 
-
     <!-- Comment Form -->
     <h3 class="text-xl font-bold text-blue-600 mt-8">Leave a Comment</h3>
     <form method="POST" class="bg-white p-6 rounded-lg shadow-md mt-4 space-y-4">
@@ -79,6 +77,5 @@
             </button>
         </div>
     </form>
-
 </div>
 {% endblock content %}

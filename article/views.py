@@ -45,14 +45,17 @@ def article_detail(request, id):
     return render(request, 'article_detail.html', context)
 
 def edit_article(request, id):
-    article = Article.objects.get(pk = id)
-    form = ArticleForm(request.POST or None, instance=article)
-    if form.is_valid() and request.method == "POST":
-        form.save()
-        return HttpResponseRedirect(reverse('article:show_article'))
-
-    context = {'form': form}
-    return render(request, "edit_article.html", context)
+    article = get_object_or_404(Article, id=id)
+    if request.method == 'POST':
+        form = ArticleForm(request.POST, instance=article)
+        if form.is_valid():
+            form.save()
+            # Redirect back to the specific article's detail page after editing
+            return redirect('article:article_detail', id=article.id)
+    else:
+        form = ArticleForm(instance=article)
+    
+    return render(request, 'edit_article.html', {'form': form})
 
 def delete_article(request, id):
     article = Article.objects.get(pk = id)
