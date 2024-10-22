@@ -101,3 +101,19 @@ def edit_category(request, id):
 
     context = {'form': form}
     return render(request, "edit_category.html", context)
+
+def delete_product(request, id):
+    # Get product berdasarkan id
+    product = Product.objects.get(pk = id)
+    # Hapus product
+    product.delete()
+    # Kembali ke halaman awal
+    return HttpResponseRedirect(reverse('show_products:show_main'))
+
+def delete_category(request, id):
+    # Get category berdasarkan id
+    category = Categories.objects.get(pk = id)
+    # Hapus category
+    category.delete()
+    # Kembali ke halaman awal
+    return HttpResponseRedirect(reverse('show_products:show_main'))

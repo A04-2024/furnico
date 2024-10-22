@@ -18,6 +18,13 @@
                 </button>
             </a>
         </td>
+        <td>
+            <a href="{% url 'show_products:delete_category' category.pk %}">
+                <button>
+                    Delete
+                </button>
+            </a>
+        </td>
     </tr>
 
     {% if category.unique_products == 0 %}
@@ -59,6 +66,13 @@
                     <a href="{% url 'show_products:edit_product' product_entry.pk %}">
                         <button>
                             Edit
+                        </button>
+                    </a>
+                </td>
+                <td>
+                    <a href="{% url 'show_products:delete_product' product_entry.pk %}">
+                        <button>
+                            Delete
                         </button>
                     </a>
                 </td>
