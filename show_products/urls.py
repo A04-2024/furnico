@@ -6,4 +6,6 @@ app_name = 'show_products'
 urlpatterns = [
     path('', show_products, name='show_products'),
     path('dev', show_main, name='show_main'),
+    path('create_product', create_product_entry, name='create_product_entry'),
+    path('create_category', create_category, name='create_category'),
 ]

@@ -1,13 +1,50 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Mental Health Tracker</h1>
+{% if not product_entries %}
+<p>Belum ada data product pada furnico.</p>
+{% else %}
+<table>
+  <tr>
+    <th>Product Image</th>
+    <th>Product Name</th>
+    <th>Product Subtitle</th>
+    <th>Product Price</th>
+    <th>Product Description</th>
+    <th>Product Advantages</th>
+    <th>Product Material</th>
+    <th>Product Size</th>
+    <th>Product Category</th>
+    <th>Sold this week</th>
+    <th>People Bought</th>
+  </tr>
 
-<h5>NPM: </h5>
-<p>{{ npm }}<p>
+  {% comment %} Berikut cara memperlihatkan data mood di bawah baris ini 
+  {% endcomment %} 
+  {% for product_entry in product_entries %}
+  <tr>
+    <td>{{product_entry.product_image}}</td>
+    <td>{{product_entry.product_name}}</td>
+    <td>{{product_entry.product_subtitle}}</td>
+    <td>{{product_entry.product_price}}</td>
+    <td>{{product_entry.product_description}}</td>
+    <td>{{product_entry.product_advantages}}</td>
+    <td>{{product_entry.product_material}}</td>
+    <td>{{product_entry.product_size_length}} x {{product_entry.product_size_height}} x {{product_entry.product_size_long}}</td>
+    <td>{{product_entry.product_category}}</td>
+    <td>{{product_entry.sold_this_week}}</td>
+    <td>{{product_entry.people_bought}}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
 
-<h5>Name:</h5>
-<p>{{ name }}</p>
+<br />
 
-<h5>Class:</h5>
-<p>{{ class }}</p>
+<a href="{% url 'show_products:create_product_entry' %}">
+  <button>Add New Mood Entry</button>
+</a>
+
+<a href="{% url 'show_products:create_category' %}">
+  <button>Add New Category</button>
+</a>
 {% endblock content %}
