@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+{% include 'navbar.html' %}
 {% if not product_entries %}
 <p>Belum ada data product pada furnico.</p>
 {% else %}
@@ -50,7 +51,7 @@
         {% for product_entry in product_entries %}
             {% if product_entry.product_category == category %}
             <tr>
-                <td>{{product_entry.product_image}}</td>
+                <td><img src="{{product_entry.product_image}}"></td>
                 <td>{{product_entry.product_name}}</td>
                 <td>{{product_entry.product_subtitle}}</td>
                 <td>{{product_entry.product_price}}</td>
