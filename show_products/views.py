@@ -12,8 +12,10 @@ def show_products(request):
 
 def show_main(request):
     product_entries = Product.objects.all()
+    categories = Categories.objects.all()
     context = {
-        'product_entries': product_entries
+        'product_entries': product_entries,
+        'categories': categories
     }
 
     return render(request, "main.html", context)
@@ -22,9 +24,15 @@ def create_product_entry(request):
     form = ProductEntryForm(request.POST or None)
 
     if form.is_valid() and request.method == "POST":
-        form.save()
-        return redirect('show_products:show_main')
+        product_entry = form.save()  # Simpan produk baru
 
+        # Akses kategori terkait dan tambahkan 1 ke jumlah_product
+        category = product_entry.product_category
+        category.unique_products += 1
+        category.save()  # Simpan perubahan kategori
+
+        return redirect('show_products:show_main')
+    
     context = {'form': form}
     return render(request, "create_product_entry.html", context)
 
