@@ -8,6 +8,9 @@ urlpatterns = [
     path('dev', show_main, name='show_main'),
     path('create_product', create_product_entry, name='create_product_entry'),
     path('create_category', create_category, name='create_category'),
+    path('edit_product/<str:id>', edit_product, name='edit_product'),
+    path('edit_category/<str:id>', edit_category, name='edit_category'),
+
     path('xml/', show_xml, name='show_xml'),
     path('json/', show_json, name='show_json'),
     path('xml/<str:id>/', show_xml_by_id, name='show_xml_by_id'),

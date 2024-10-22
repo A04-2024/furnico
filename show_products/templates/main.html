@@ -11,6 +11,13 @@
   {% for category in categories %}
     <tr>
         <td>{{category.category_name}}</td>
+        <td>
+            <a href="{% url 'show_products:edit_category' category.pk %}">
+                <button>
+                    Edit Kategori
+                </button>
+            </a>
+        </td>
     </tr>
 
     {% if category.unique_products == 0 %}
@@ -47,6 +54,14 @@
                 <td>{{product_entry.product_category}}</td>
                 <td>{{product_entry.sold_this_week}}</td>
                 <td>{{product_entry.people_bought}}</td>
+
+                <td>
+                    <a href="{% url 'show_products:edit_product' product_entry.pk %}">
+                        <button>
+                            Edit
+                        </button>
+                    </a>
+                </td>
             </tr>
             {% endif %}
         {% endfor %}
