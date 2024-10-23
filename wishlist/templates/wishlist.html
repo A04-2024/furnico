@@ -1,0 +1,35 @@
+<!-- {% extends 'base.html' %}
+
+{% block content %}
+<h1>My Wishlist</h1>
+
+<h2>Default Wishlist</h2>
+<ul>
+    {% for item in default_items %}
+    <li>
+        {{ item.product.product_name }} 
+        <form action="{% url 'remove_from_wishlist' item.id %}" method="POST" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">Remove</button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+
+{% for collection in collections %}
+<h2>{{ collection.name }}</h2>
+<ul>
+    {% for item in collection.wishlistitem_set.all %}
+    <li>
+        {{ item.product.product_name }} 
+        <form action="{% url 'remove_from_wishlist' item.id %}" method="POST" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">Remove</button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+{% endfor %}
+
+<a href="{% url 'create_collection' %}">Create a New Collection</a>
+{% endblock %} -->
