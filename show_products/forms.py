@@ -9,4 +9,4 @@ class ProductEntryForm(ModelForm):
 class CategoryEntryForm(ModelForm):
     class Meta:
         model = Categories
-        fields = ["category_name"]
+        fields = ["category_name", "image_url"]
