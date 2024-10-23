@@ -1,3 +1,5 @@
 from django.db import models
 
-# Create your models here.
+class ProductRating(models.Model):
+    rating = models.PositiveSmallIntegerField()
+    description = models.TextField()
