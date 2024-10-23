@@ -19,41 +19,41 @@ Selain kemudahan dalam menemukan produk, **Furnico** juga menyediakan berbagai f
 
 ## 🚀 Fitur - Fitur Furnico 🚀
 <details>
-<summary>🪑 Produk & Filter 🪑</summary>
+<summary>🪑 Produk & Filter (Theo) 🪑</summary>
 Menyajikan katalog produk furnitur lengkap, memungkinkan pengguna dengan mudah menelusuri berbagai pilihan produk. Dilengkapi fitur filter yang canggih, pengguna dapat memfilter produk berdasarkan kategori, rentang harga, dan spesifikasi lainnya untuk menemukan produk yang sesuai dengan kebutuhan dan preferensi mereka.
 </details>
 
 <details>
 <summary>
-📰 Artikel 📰
+📰 Artikel (Joshua) 📰
 </summary>
 Menyediakan beragam artikel informatif yang mencakup tips memilih furnitur yang tepat, panduan merawat perabot, tren terbaru dalam desain interior, hingga inspirasi dekorasi rumah. Artikel ini dirancang untuk membantu pengguna membuat keputusan yang lebih cerdas dan kreatif dalam menata ruang mereka.
 </details>
 
 <details>
 <summary>
-🧺 Wishlist 🧺
+🧺 Wishlist (Sarah) 🧺
 </summary>
 Pengguna dapat menyimpan produk-produk yang mereka sukai ke dalam daftar wishlist. Fitur ini memungkinkan mereka untuk dengan mudah mengakses kembali produk yang diinginkan pada kunjungan berikutnya atau saat siap untuk melakukan pembelian.
 </details>
 
 <details>
 <summary>
-⭐ Rating & Ulasan ⭐
+⭐ Rating & Ulasan (Tyas) ⭐
 </summary>
 Menyediakan fitur penilaian dan ulasan yang memungkinkan pengguna melihat dan menulis ulasan dari pelanggan lain. Fitur ini membantu pengguna mendapatkan informasi tambahan mengenai kualitas produk berdasarkan pengalaman pengguna lain sebelum memutuskan pembelian.
 </details>
 
 <details>
 <summary>
-🚨 Report 🚨
+🚨 Report (Rafli) 🚨
 </summary>
 Memfasilitasi pengguna untuk melaporkan masalah atau memberikan feedback terkait produk.
 </details>
 
 <details>
 <summary>
-🪪 Edit Profile 🪪
+🪪 Edit Profile (Ghiza) 🪪
 </summary>
 Pengguna dapat dengan mudah mengelola dan memperbarui informasi akun mereka melalui fitur Edit Profile. Pengguna bisa memperbarui nama, nomor telepon, serta referensi lain yang mempermudah pengalaman berbelanja mereka di masa mendatang.
 </details>
@@ -171,4 +171,4 @@ Admin adalah pengguna yang memiliki akses khusus untuk mengelola dan mengawasi o
 
 
 ## Tautan deployment aplikasi
-### https://a04-2024.github.io/furnico/ 
+### http://patricia-herningtyas-furnico.pbp.cs.ui.ac.id/
