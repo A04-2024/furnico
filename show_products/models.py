@@ -27,3 +27,4 @@ class Product(models.Model):
     product_size_height = models.PositiveIntegerField()
     product_size_long = models.PositiveIntegerField()
     product_category = models.ForeignKey(Categories, on_delete=models.CASCADE)
+    

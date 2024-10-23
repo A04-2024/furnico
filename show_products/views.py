@@ -25,6 +25,10 @@ def show_main(request):
 
 def create_product_entry(request):
     form = ProductEntryForm(request.POST or None)
+    context = {
+        'categories': Categories.objects.all(),
+        'form': form,
+    }
 
     if form.is_valid() and request.method == "POST":
         product_entry = form.save()  # Simpan produk baru
@@ -36,7 +40,6 @@ def create_product_entry(request):
 
         return redirect('show_products:show_main')
     
-    context = {'form': form}
     return render(request, "create_product_entry.html", context)
 
 def create_category(request):
