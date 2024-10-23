@@ -1,8 +1,8 @@
 from django.urls import path
-from rating.views import show_rating
+from .views import show_rating 
 
-app_name = 'rating'
+app_name = 'rating' 
 
 urlpatterns = [
-    path('', show_rating, name='show_rating'),
+    path('products/<uuid:product_id>/ratings/', show_rating, name='show_rating'),
 ]
