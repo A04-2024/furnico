@@ -1,14 +1,8 @@
-# from django import forms
-# from .models import Collection
+from django.forms import ModelForm
+from wishlist.models import *
+from django import forms
 
-# class AddToWishlistForm(forms.Form):
-#     collection = forms.ModelChoiceField(
-#         queryset=Collection.objects.none(),
-#         required=False,
-#         empty_label="Default Wishlist"
-#     )
-
-#     def __init__(self, *args, **kwargs):
-#         user = kwargs.pop('user')
-#         super().__init__(*args, **kwargs)
-#         self.fields['collection'].queryset = Collection.objects.filter(user=user)
+class CollectionForm(forms.ModelForm):
+    class Meta:
+        model = Collection
+        fields = ["name"]
