@@ -37,7 +37,6 @@ def create_product_entry(request):
         category = product_entry.product_category
         category.unique_products += 1
         category.save()  # Simpan perubahan kategori
-
         return redirect('show_products:show_main')
     
     return render(request, "create_product_entry.html", context)
