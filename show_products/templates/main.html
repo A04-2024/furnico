@@ -187,6 +187,13 @@
                             </button>
                         </a>
                     </td>
+                    <td>
+                        <a href="{% url 'show_products:show_product' product_entry.pk %}">
+                            <button>
+                                Show detail
+                            </button>
+                        </a>
+                    </td>
                 </tr>
                 {% endif %}
             {% endfor %}
