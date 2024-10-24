@@ -1,12 +1,12 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect, reverse
 from show_products.models import Product
 from rating.forms import ProductRatingForm
 from rating.models import ProductRating
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils.html import strip_tags
-from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+# from django.urls import reverse
 from django.core import serializers
 
 
@@ -15,27 +15,21 @@ def show_rating(request):
 
     context = {
         'title': "Recent Review",
-        'ratings': ratings  # Pass all ratings to the template
+        'ratings': ratings
     }
 
     return render(request, 'rating.html', context)
 
+def create_rating(request):
+    form = ProductRatingForm(request.POST or None)
 
-@csrf_exempt
-@require_POST
-def add_rating_ajax(request):
-    form = ProductRatingForm(request.POST)
-    
-    if form.is_valid():
-        rating = form.save(commit=False) 
-        rating.user = request.user  
-        rating.save()
-        return HttpResponse("CREATED", status=201)
-    else:
-        # Send back an error message with status 400
-        error_message = ', '.join([f"{field}: {error[0]}" for field, error in form.errors.items()])
-        return HttpResponse(f"Error: {error_message}", status=400)
-    
+    if form.is_valid() and request.method == "POST":
+        form.save()
+        return redirect('rating:show_rating')
+
+    context = {'form': form}
+    return render(request, "create_rating.html", context)
+
 def edit_rating(request, id):
     # Get the product entry
     rating = ProductRating.objects.get(pk=id)
@@ -56,11 +50,11 @@ def delete_rating(request, id):
     return HttpResponseRedirect(reverse('rating:show_rating'))
 
 def show_xml(request):
-    data = ProductRating.objects.filter(user=request.user)
+    data = ProductRating.objects.all()
     return HttpResponse(serializers.serialize("xml", data), content_type='application/xml')
 
 def show_json(request):
-    data = ProductRating.objects.filter(user=request.user)
+    data = ProductRating.objects.all()
     return HttpResponse(serializers.serialize("json", data), content_type='application/json')
 
 def show_xml_by_id(request, id):
