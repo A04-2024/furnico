@@ -119,3 +119,9 @@ def delete_category(request, id):
     category.delete()
     # Kembali ke halaman awal
     return HttpResponseRedirect(reverse('show_products:show_main'))
+
+
+def show_product(request, id):
+    product = Product.objects.get(pk = id)
+    context = {'product': product}
+    return render(request, "product_page.html", context)
