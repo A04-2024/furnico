@@ -1,0 +1,8 @@
+<h2>Update Collection {{collection.name}}</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Update Collection</button>
+</form>
+<a href = "{% url 'wishlist:wishlist' %}" >Back To Wishlist</a>
