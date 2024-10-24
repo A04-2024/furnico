@@ -171,4 +171,4 @@ Admin adalah pengguna yang memiliki akses khusus untuk mengelola dan mengawasi o
 
 
 ## Tautan deployment aplikasi
-### https://a04-2024.github.io/furnico/ 
+### http://patricia-herningtyas-furnico.pbp.cs.ui.ac.id/
