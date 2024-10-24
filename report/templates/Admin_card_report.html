@@ -1,0 +1,9 @@
+<!-- report/templates/report/Admin_card_report.html -->
+<div class="report-card">
+    <p><strong>User:</strong> {{ report.user.username }}</p>
+    <p><strong>Furniture:</strong> {{ report.furniture.name }}</p>
+    <p><strong>Judul Report:</strong> {{ report.get_reason_display }}</p>
+    <p><strong>Info Tambahan:</strong> {{ report.additional_info }}</p>
+    <p><strong>Tanggal:</strong> {{ report.date_reported }}</p>
+</div>
+<hr>

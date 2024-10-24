@@ -1,16 +1,26 @@
 from django.db import models
 from django.contrib.auth.models import User
+from show_products.models import Product
 
-# Model Report untuk menyimpan laporan pengguna tentang furniture
+# Model untuk report
 class Report(models.Model):
     REASON_CHOICES = [
-        ('incorrect_info', 'Incorrect Information'),
-        ('wrong_image', 'Wrong Image'),
-        ('site_issue', 'Website Issue'),
-        ('other', 'Other'),
+        ('info_error', 'Kesalahan info furniture'),
+        ('image_error', 'Gambar furniture salah atau kurang jelas'),
+        ('website_issue', 'Masalah pada website'),
+        ('pricing_error', 'Kesalahan harga'),
+        ('out_of_stock', 'Barang tidak tersedia'),
+        ('slow_performance', 'Website lambat atau tidak responsif'),
+        ('layout_issue', 'Tampilan website tidak rapi'),
+        ('other', 'Lainnya'),
     ]
 
-    reason = models.CharField(max_length=50, choices=REASON_CHOICES)  # Alasan laporan
-    additional_info = models.TextField(blank=True, null=True)  # Kolom untuk keterangan tambahan
-    report_image = models.ImageField(upload_to='report_images/', blank=True, null=True)  # Menambahkan field untuk gambar
-    report_date = models.DateTimeField(auto_now_add=True)  # Tanggal laporan otomatis
+    # user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # furniture = models.ForeignKey(Product, on_delete=models.CASCADE)
+    reason = models.CharField(max_length=50, choices=REASON_CHOICES)
+    additional_info = models.TextField(blank=True, null=True)
+    date_reported = models.DateTimeField(auto_now_add=True)
+
+    # def __str__(self):
+    #     return f'Report by {self.user.username} on {self.furniture.name}'
+

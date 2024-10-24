@@ -1,0 +1,11 @@
+<!-- report/templates/report/Admin_Ajax_jumlah_report.html -->
+<div id="report-count-popup">
+    <p>{{ report_count }} report(s)</p>
+    {% if report_count > 0 %}
+        <a href="{% url 'Admin_list_report_furniture' furniture.id %}">
+            <button id="lihat-button">Lihat</button>
+        </a>
+    {% else %}
+        <button id="lihat-button" disabled>Lihat</button>
+    {% endif %}
+</div>

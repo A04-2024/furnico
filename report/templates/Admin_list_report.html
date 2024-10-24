@@ -1,0 +1,7 @@
+<!-- report/templates/report/Admin_list_report.html -->
+<h1>Daftar Report{% if furniture %} untuk {{ furniture.name }}{% endif %}</h1>
+{% for report in reports %}
+    {% include 'Admin_card_report.html' %}
+{% empty %}
+    <p>Tidak ada report.</p>
+{% endfor %}

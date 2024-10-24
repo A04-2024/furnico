@@ -1,0 +1,63 @@
+<!-- report/templates/report/Create_report.html -->
+<div id="report-popup">
+    <form id="report-form" method="post">
+        {% csrf_token %}
+        <h3>Pilih Alasan Laporan:</h3>
+        {{ form.reason }}
+        <div id="additional-info" style="display: none;">
+            <h4>Info Tambahan:</h4>
+            {{ form.additional_info }}
+        </div>
+        <button type="button" id="cancel-button">Cancel</button>
+        <button type="submit" id="submit-button" disabled>Submit</button>
+    </form>
+    <div id="thank-you-message" style="display: none;">
+        <p>Terima Kasih Atas Laporan Anda</p>
+        <button type="button" id="exit-button">Keluar</button>
+    </div>
+</div>
+
+<script>
+// JavaScript untuk mengontrol form
+document.addEventListener('DOMContentLoaded', function() {
+    const reasonRadios = document.querySelectorAll('input[name="reason"]');
+    const additionalInfo = document.getElementById('additional-info');
+    const submitButton = document.getElementById('submit-button');
+    const cancelButton = document.getElementById('cancel-button');
+    const exitButton = document.getElementById('exit-button');
+    const reportForm = document.getElementById('report-form');
+    const thankYouMessage = document.getElementById('thank-you-message');
+
+    reasonRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            additionalInfo.style.display = 'block';
+            submitButton.disabled = false;
+        });
+    });
+
+    cancelButton.addEventListener('click', function() {
+        document.getElementById('report-popup').style.display = 'none';
+    });
+
+    reportForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData(reportForm);
+        fetch("", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            reportForm.style.display = 'none';
+            thankYouMessage.style.display = 'block';
+        });
+    });
+
+    exitButton.addEventListener('click', function() {
+        document.getElementById('report-popup').style.display = 'none';
+    });
+});
+</script>
