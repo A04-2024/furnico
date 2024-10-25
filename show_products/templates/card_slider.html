@@ -24,15 +24,42 @@
       id="slider" 
       class="flex space-x-4 overflow-x-scroll no-scrollbar scroll-smooth w-full px-16"
     >
-      
+    <div class="min-w-[300px] max-w-[300px] relative rounded-lg overflow-hidden">
+      <img src="https://i.ytimg.com/vi/VgUcVjEOVDM/maxresdefault.jpg" class="h-full w-full object-cover" alt="Image">
+      <div class="absolute inset-0 bg-black bg-opacity-50 flex items-end justify-center">
+        <a href="{% url 'show_products:show_all_products' %}" class="hover:underline">
+          <button class="mb-4 px-6 py-2 bg-white bg-opacity-80 rounded-full hover:bg-opacity-100 font-bold">
+            Tampilkan semua produk
+          </button>
+        </a>
+      </div>
+    </div>
     {% for category in categories %}
       <!-- Card 1 -->
       <div class="min-w-[300px] max-w-[300px] relative rounded-lg overflow-hidden">
         <img src="{{ category.image_url }}" class="h-full w-full object-cover" alt="Image">
-        <div class="absolute inset-0 bg-black bg-opacity-50 flex items-end justify-center">
-          <button class="mb-4 px-6 py-2 bg-white bg-opacity-80 rounded-full hover:bg-opacity-100 font-bold">
-            {{ category.category_name }}
-          </button>
+        <div class="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center align-bottom">
+          <div class="p-2">
+            <a href="{% url 'show_products:show_category_products' category.pk %}" class="hover:underline p-2">
+              <button class="px-6 py-2 bg-red-500 rounded-full hover:bg-red-700 text-white font-bold">
+                Delete
+              </button>
+            </a>
+          </div>
+          <div class="p-2">
+            <a href="{% url 'show_products:show_category_products' category.pk %}" class="hover:underline p-2">
+              <button class="px-6 py-2 bg-blue-500 rounded-full hover:bg-blue-700 font-bold">
+                Edit
+              </button>
+            </a>
+          </div>
+          <div class="p-2">
+            <a href="{% url 'show_products:show_category_products' category.pk %}" class="hover:underline">
+              <button class="mb-4 px-6 py-2 bg-white bg-opacity-80 rounded-full hover:bg-opacity-100 font-bold">
+                {{ category.category_name }}
+              </button>
+            </a>
+          </div>
         </div>
       </div>
 

@@ -13,6 +13,8 @@ urlpatterns = [
     path('delete_product/<str:id>', delete_product, name='delete_product'),
     path('delete_category/<str:id>', delete_category, name='delete_category'),
     path('product/<str:id>', show_product, name='show_product'),
+    path('all_product', show_all_products, name='show_all_products'),
+    path('all_product/<str:id>', show_category_products, name='show_category_products'),
 
     path('xml/', show_xml, name='show_xml'),
     path('json/', show_json, name='show_json'),

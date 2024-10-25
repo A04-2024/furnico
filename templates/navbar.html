@@ -13,10 +13,14 @@
   
       <!-- search -->
       <div class="w-full max-w-xs xl:max-w-lg 2xl:max-w-2xl bg-gray-100 rounded-md hidden xl:flex items-center">
-        <select class="bg-transparent uppercase font-bold text-sm p-4 mr-4" name="" id="">
-          <option>all categories</option>
+        <select class="bg-transparent uppercase font-bold text-sm p-4 mr-4" name="" id="categoryDropdown">
+          <option value="{% url 'show_products:show_all_products' %}">
+            All Categories
+          </option>
           {% for category in categories %}
-          <option>{{category.category_name}}</option>
+          <option value="{% url 'show_products:show_category_products' category.pk %}">
+            {{ category.category_name }}
+          </option>
           {% endfor %}
         </select>
         <input class="border-l border-gray-300 bg-transparent font-semibold text-sm pl-4" type="text" placeholder="I'm searching for ...">
@@ -51,4 +55,14 @@
     </div>
     
     <hr>
+
+    <script>
+      document.getElementById('categoryDropdown').addEventListener('change', function () {
+        const selectedValue = this.value;
+        if (selectedValue) {
+          window.location.href = selectedValue;  // Redirect to the selected category URL
+        }
+      });
+    </script>
+    
   </header>

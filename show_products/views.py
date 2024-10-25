@@ -23,6 +23,28 @@ def show_main(request):
 
     return render(request, "main.html", context)
 
+def show_all_products(request):
+    product_entries = Product.objects.all()
+    categories = Categories.objects.all()
+    context = {
+        'product_entries': product_entries,
+        'categories': categories
+    }
+
+    return render(request, "all_products.html", context)
+
+def show_category_products(request, id):
+    categories = Categories.objects.all()
+    filtered_category = Categories.objects.get(pk=id)
+    product_entries = Product.objects.all()
+    context = {
+        'product_entries': product_entries,
+        'filtered_category': filtered_category,
+        'categories': categories
+    }
+
+    return render(request, "show_category.html", context)
+
 def create_product_entry(request):
     form = ProductEntryForm(request.POST or None)
     context = {
