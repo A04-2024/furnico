@@ -5,6 +5,7 @@ from show_products.models import *
 # returns data in xml and json
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
+from django.http import JsonResponse
 
 # Create your views here.
 def show_products(request):
@@ -151,4 +152,14 @@ def show_product(request, id):
     product = Product.objects.get(pk = id)
     context = {'product': product}
     return render(request, "product_page.html", context)
+
+def search_products(request):
+    query = request.GET.get('q', '')
+    products = Product.objects.filter(
+        product_name__icontains=query
+    ) | Product.objects.filter(
+        product_subtitle__icontains=query
+    )
+    product_data = list(products.values('pk', 'product_name', 'product_subtitle', 'product_image', 'product_price'))
+    return JsonResponse({'products': product_data})
 
