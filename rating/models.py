@@ -1,11 +1,14 @@
 from django.db import models
-from django.contrib.auth.models import User 
+from django.contrib.auth.models import User
+from show_products.models import Product
 import uuid
-from show_products.models import Product  
 
 class ProductRating(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    # user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)  
-    # product = models.ForeignKey(Product, on_delete=models.CASCADE) 
-    rating = models.PositiveSmallIntegerField()  
-    description = models.TextField()  
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    rating = models.PositiveSmallIntegerField()
+    description = models.TextField()
+
+    def __str__(self):
+        return f'{self.product.product_name} - {self.rating} by {self.user.username}'

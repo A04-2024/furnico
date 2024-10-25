@@ -1,36 +1,22 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Recent Review</h1>
+<h2>Ratings for {{ product.product_name }}</h2>
 
-
-{% if not ratings %}
-<p>Product ini belum pernah di-rating!</p>
+{% if product.ratings.exists %}
+    <ul>
+    {% for rating in product.ratings.all %}
+        <li>
+            <!-- <strong>{{ rating.user.username }}</strong> rated it {{ rating.rating }} stars: -->
+            <p>{{ rating.description }}</p>
+        </li>
+    {% endfor %}
+    </ul>
 {% else %}
-<table>
-  <tr>
-    <th>Rating</th>
-    <th>Description</th>
-  </tr>
-
-  {% for rating in ratings %}
-  <tr>
-    <td>{{rating.rating}}</td>
-    <td>{{rating.description}}</td>
-    <td>
-      <a href="{% url 'rating:edit_rating' rating.pk %}">
-          <button>
-              Edit
-          </button>
-      </a>
-    </td>
-  </tr>
-  {% endfor %}
-</table>
+    <p>No ratings yet. Be the first to rate this product!</p>
 {% endif %}
 
-<br />
-
-<a href="{% url 'rating:create_rating' %}">
-  <button>Add Rating</button>
+<a href="{% url 'ratings:add_rating' product.id %}" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded">
+  Add Rating
 </a>
+
 {% endblock content %}

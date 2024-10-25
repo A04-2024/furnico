@@ -1,66 +1,53 @@
-from django.shortcuts import render, get_object_or_404, redirect, reverse
-from show_products.models import Product
-from rating.forms import ProductRatingForm
-from rating.models import ProductRating
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
-from django.utils.html import strip_tags
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-# from django.urls import reverse
-from django.core import serializers
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from .models import ProductRating
+from .forms import ProductRatingForm
+from show_products.models import Product 
 
-
-def show_rating(request):
-    ratings = ProductRating.objects.all() 
-
-    context = {
-        'title': "Recent Review",
-        'ratings': ratings
-    }
-
-    return render(request, 'rating.html', context)
-
-def create_rating(request):
-    form = ProductRatingForm(request.POST or None)
-
-    if form.is_valid() and request.method == "POST":
-        form.save()
-        return redirect('rating:show_rating')
-
-    context = {'form': form}
-    return render(request, "create_rating.html", context)
-
-def edit_rating(request, id):
-    # Get the product entry
-    rating = ProductRating.objects.get(pk=id)
-
-    # Set product entry sebagai instance dari form
-    form = ProductRatingForm(request.POST or None, instance=rating)
-
-    if form.is_valid() and request.method == "POST":
-        form.save() # simpan form dan kembali ke halaman awal
-        return HttpResponseRedirect(reverse('rating:show_rating'))
+# @login_required
+def add_rating(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        form = ProductRatingForm(request.POST)
+        if form.is_valid():
+            rating = form.save(commit=False)
+            rating.product = product  
+            rating.user = request.user  
+            rating.save()
+            return redirect('show_products:show_product', product_id=product.id)
+    else:
+        form = ProductRatingForm()
     
-    context = {'form': form}
-    return render(request, "edit_rating.html", context)
+    return render(request, 'add_rating.html', {'form': form, 'product': product})
 
-def delete_rating(request, id):
-    rating = ProductRating.objects.get(pk=id) # Get product berdasarkan id
-    rating.delete() # hapus product
-    return HttpResponseRedirect(reverse('rating:show_rating'))
+# @login_required
+def edit_rating(request, rating_id):
+    rating = get_object_or_404(ProductRating, id=rating_id)
+    
+    if rating.user != request.user:
+        return redirect('show_products:show_product', product_id=rating.product.id)
+    
+    if request.method == 'POST':
+        form = ProductRatingForm(request.POST, instance=rating)
+        if form.is_valid():
+            form.save()
+            return redirect('show_products:show_product', product_id=rating.product.id)
+    else:
+        form = ProductRatingForm(instance=rating)
 
-def show_xml(request):
-    data = ProductRating.objects.all()
-    return HttpResponse(serializers.serialize("xml", data), content_type='application/xml')
+    return render(request, 'edit_rating.html', {'form': form, 'product': rating.product})
 
-def show_json(request):
-    data = ProductRating.objects.all()
-    return HttpResponse(serializers.serialize("json", data), content_type='application/json')
+# @login_required
+def delete_rating(request, rating_id):
+    rating = get_object_or_404(ProductRating, id=rating_id)
+    
+    if rating.user != request.user:
+        return redirect('show_products:show_product', product_id=rating.product.id)
+    
+    if request.method == 'POST':
+        product_id = rating.product.id
+        rating.delete()
+        return redirect('show_products:show_product', product_id=product_id)
 
-def show_xml_by_id(request, id):
-    data = ProductRating.objects.filter(pk=id)
-    return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
-
-def show_json_by_id(request, id):
-    data = ProductRating.objects.filter(pk=id)
-    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+    return render(request, 'delete_rating.html', {'rating': rating, 'product': rating.product})
