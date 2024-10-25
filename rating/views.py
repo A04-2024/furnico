@@ -5,7 +5,7 @@ from .models import ProductRating
 from .forms import ProductRatingForm
 from show_products.models import Product 
 
-# @login_required
+@login_required(login_url='login/')
 def add_rating(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     if request.method == 'POST':
@@ -21,7 +21,7 @@ def add_rating(request, product_id):
     
     return render(request, 'add_rating.html', {'form': form, 'product': product})
 
-# @login_required
+@login_required
 def edit_rating(request, rating_id):
     rating = get_object_or_404(ProductRating, id=rating_id)
     
@@ -38,7 +38,7 @@ def edit_rating(request, rating_id):
 
     return render(request, 'edit_rating.html', {'form': form, 'product': rating.product})
 
-# @login_required
+@login_required
 def delete_rating(request, rating_id):
     rating = get_object_or_404(ProductRating, id=rating_id)
     
