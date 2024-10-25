@@ -29,7 +29,7 @@ def edit_profile(request):
             password_form.save()
             update_session_auth_hash(request, password_form.user)  
             messages.success(request, 'Profil Anda telah berhasil diperbarui!')
-            return redirect('edit_profile') 
+            return redirect('show_products:show_main') 
 
     else:
         user_form = UserForm(instance=user)
@@ -52,7 +52,7 @@ def register(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Your account has been successfully created!')
-            return redirect('login')
+            return redirect('editp:login')
     context = {'form':form}
     return render(request, 'register.html', context)
 
@@ -63,7 +63,7 @@ def login_user(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('edit_profile')
+            return redirect('show_products:show_main')
 
     else:
       form = AuthenticationForm(request)
@@ -72,4 +72,4 @@ def login_user(request):
 
 def logout_user(request):
     logout(request)
-    return redirect('login')
+    return redirect('editp:login')
