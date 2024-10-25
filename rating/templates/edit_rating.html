@@ -10,8 +10,29 @@
     {% csrf_token %}
     
     <div>
-      <label for="id_rating" class="block font-semibold text-gray-700">Rating</label>
-      <input type="number" name="rating" id="id_rating" value="{{ form.rating.value }}" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" min="1" max="5" />
+      <label class="block font-semibold text-gray-700">Rating</label>
+      <div id="star-rating" class="flex space-x-1">
+        {% for i in "12345" %}
+            {% if form.rating.value == i %}
+                <svg class="star h-6 w-6 cursor-pointer text-yellow-400 hover:text-yellow-500" 
+                     data-value="{{ i }}" 
+                     xmlns="http://www.w3.org/2000/svg" 
+                     fill="currentColor" 
+                     viewBox="0 0 24 24">
+                    <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.782 1.4 8.161-7.334-3.862-7.334 3.862 1.4-8.161-5.934-5.782 8.2-1.192z"/>
+                </svg>
+            {% else %}
+                <svg class="star h-6 w-6 cursor-pointer text-gray-400 hover:text-yellow-500" 
+                     data-value="{{ i }}" 
+                     xmlns="http://www.w3.org/2000/svg" 
+                     fill="currentColor" 
+                     viewBox="0 0 24 24">
+                    <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.782 1.4 8.161-7.334-3.862-7.334 3.862 1.4-8.161-5.934-5.782 8.2-1.192z"/>
+                </svg>
+            {% endif %}
+        {% endfor %}
+      </div>
+      <input type="hidden" name="rating" id="rating-value" value="{{ form.rating.value }}">
     </div>
     
     <div>
@@ -24,4 +45,23 @@
     </button>
   </form>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const stars = document.querySelectorAll("#star-rating .star");
+        const ratingInput = document.getElementById("rating-value");
+
+        stars.forEach(star => {
+            star.addEventListener("click", function() {
+                ratingInput.value = this.getAttribute("data-value");
+                
+                stars.forEach(s => s.classList.remove("text-yellow-400"));
+                for (let i = 0; i < ratingInput.value; i++) {
+                    stars[i].classList.add("text-yellow-400");
+                }
+            });
+        });
+    });
+</script>
+
 {% endblock %}
