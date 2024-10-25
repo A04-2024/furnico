@@ -93,6 +93,7 @@ def edit_product(request, id):
     # Get product entry berdasarkan id
     product = Product.objects.get(pk = id)
     category = product.product_category
+    categories = Categories.objects.all()
 
     # Set product entry sebagai instance dari form
     form = ProductEntryForm(request.POST or None, instance=product)
@@ -108,7 +109,9 @@ def edit_product(request, id):
         category.save()  # Simpan perubahan kategori
         return HttpResponseRedirect(reverse('show_products:show_main'))
 
-    context = {'form': form}
+    context = {'form': form,
+               'product': product,
+               'categories':categories}
     return render(request, "edit_product.html", context)
 
 def edit_category(request, id):
@@ -123,7 +126,8 @@ def edit_category(request, id):
         form.save()
         return HttpResponseRedirect(reverse('show_products:show_main'))
 
-    context = {'form': form}
+    context = {'form': form,
+               'category': category}
     return render(request, "edit_category.html", context)
 
 def delete_product(request, id):
@@ -147,3 +151,4 @@ def show_product(request, id):
     product = Product.objects.get(pk = id)
     context = {'product': product}
     return render(request, "product_page.html", context)
+

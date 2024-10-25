@@ -33,6 +33,13 @@ all{% extends 'base.html' %}
             {% for category in categories %}
                 {% if category.unique_products != 0 %}
                 <h1 class="text-4xl font-extrabold pb-2 p">Kategori {{ category.category_name }}</h1>
+                <a href="{% url 'show_products:delete_category' category.pk %}">
+                    <button class="mb-4 px-3 py-2 bg-red-500 rounded-full hover:bg-red-700 text-white font-bold transition-colors duration-300">Delete Category</button>
+                  </a>
+                  
+                  <a href="{% url 'show_products:edit_category' category.pk %}">
+                    <button class="mb-4 px-3 py-2 bg-blue-500 rounded-full hover:bg-blue-700 text-white font-bold transition-colors duration-300">Edit Category</button>
+                  </a>
                 <div class="flex flex-row justify-start p-8 flex-wrap">
                         {% for product_entry in product_entries %}
                             {% if product_entry.product_category == category %}
