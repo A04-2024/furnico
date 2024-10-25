@@ -37,7 +37,6 @@ def create_product_entry(request):
         category = product_entry.product_category
         category.unique_products += 1
         category.save()  # Simpan perubahan kategori
-
         return redirect('show_products:show_main')
     
     return render(request, "create_product_entry.html", context)
@@ -120,3 +119,9 @@ def delete_category(request, id):
     category.delete()
     # Kembali ke halaman awal
     return HttpResponseRedirect(reverse('show_products:show_main'))
+
+
+def show_product(request, id):
+    product = Product.objects.get(pk = id)
+    context = {'product': product}
+    return render(request, "product_page.html", context)

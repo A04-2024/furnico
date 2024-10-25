@@ -12,6 +12,7 @@ urlpatterns = [
     path('edit_category/<str:id>', edit_category, name='edit_category'),
     path('delete_product/<str:id>', delete_product, name='delete_product'),
     path('delete_category/<str:id>', delete_category, name='delete_category'),
+    path('product/<str:id>', show_product, name='show_product'),
 
     path('xml/', show_xml, name='show_xml'),
     path('json/', show_json, name='show_json'),

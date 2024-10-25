@@ -1,0 +1,15 @@
+<h2>Add {{ product.product_name }} to Wishlist</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <label for="collection">Select a Collection:</label>
+    <select name="collection_id" id="collection">
+        <option value="">Semua Wishlist (Default)</option>
+        {% for collection in collections %}
+            <option value="{{ collection.id }}">{{ collection.name }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Add to Wishlist</button>
+</form>
+
+<a href="{% url 'wishlist:create_collection' %}">Create New Collection</a>

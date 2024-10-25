@@ -8,25 +8,33 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 
+from .models import UserProfile
+
 # Create your views here.
 @login_required
 def edit_profile(request):
+    user = request.user
+    # Ensure the user has a UserProfile instance
+    if not hasattr(user, 'userprofile'):
+        UserProfile.objects.create(user=user)
+    
     if request.method == 'POST':
-        user_form = UserForm(request.POST, instance=request.user)
-        profile_form = UserProfileForm(request.POST, request.FILES, instance=request.user.userprofile)
-        password_form = CustomPasswordChangeForm(user=request.user, data=request.POST)
+        user_form = UserForm(request.POST, instance=user)
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=user.userprofile)
+        password_form = CustomPasswordChangeForm(user=user, data=request.POST)
 
         if user_form.is_valid() and profile_form.is_valid() and password_form.is_valid():
             user_form.save()
             profile_form.save()
             password_form.save()
             update_session_auth_hash(request, password_form.user)  
-            return redirect('profile') 
+            messages.success(request, 'Profil Anda telah berhasil diperbarui!')
+            return redirect('edit_profile') 
 
     else:
-        user_form = UserForm(instance=request.user)
-        profile_form = UserProfileForm(instance=request.user.userprofile)
-        password_form = CustomPasswordChangeForm(user=request.user)
+        user_form = UserForm(instance=user)
+        profile_form = UserProfileForm(instance=user.userprofile)
+        password_form = CustomPasswordChangeForm(user=user)
 
     context = {
         'user_form': user_form,
@@ -34,7 +42,7 @@ def edit_profile(request):
         'password_form': password_form
     }
 
-    return render(request, 'editp.html', context)
+    return render(request, 'editprofile.html', context)
 
 def register(request):
     form = UserCreationForm()
@@ -49,18 +57,18 @@ def register(request):
     return render(request, 'register.html', context)
 
 def login_user(request):
-   if request.method == 'POST':
-      form = AuthenticationForm(data=request.POST)
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
 
-      if form.is_valid():
+        if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('editprofile')
+            return redirect('edit_profile')
 
-   else:
+    else:
       form = AuthenticationForm(request)
-   context = {'form': form}
-   return render(request, 'login.html', context)
+    context = {'form': form}
+    return render(request, 'login.html', context)
 
 def logout_user(request):
     logout(request)

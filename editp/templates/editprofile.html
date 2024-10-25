@@ -1,4 +1,11 @@
-<!-- <h2>Edit Profile</h2>
+<h2>Edit Profile</h2>
+{% if messages %}
+    {% for message in messages %}
+        <div>
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div>
@@ -26,6 +33,5 @@
         {{ password_form.new_password2 }}
     </div>
     <button type="submit">Save</button>
-    <a href="{% url 'profile' %}">Cancel</a>
-</form> -->
-<p>P</p>
+    <a href="{% url 'edit_profile' %}">Cancel</a>
+</form>

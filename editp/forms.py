@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
-from .models import EditProfile
+from .models import UserProfile
 
 class UserForm(forms.ModelForm):
     class Meta:
@@ -10,7 +10,7 @@ class UserForm(forms.ModelForm):
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
-        model = EditProfile
+        model = UserProfile
         fields = ['phone_number', 'profile_picture']
 
 class CustomPasswordChangeForm(PasswordChangeForm):
