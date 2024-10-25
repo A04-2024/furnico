@@ -26,6 +26,15 @@ all{% extends 'base.html' %}
         <h3 class="text-xl pb-8">Jelajahi penawaran {{filtered_category.category_name}} menarik yang sedang hits di Furnico.</h3>
     </div>
     
+    <a href="{% url 'show_products:create_product_entry' %}">
+        <button class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold">Add New Product</button>
+    </a>
+    
+    <a href="{% url 'show_products:create_category' %}">
+        <button class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold">Add New Category</button>
+    </a>
+
+    
     <div id="product-list" class="flex flex-row justify-start p-8 flex-wrap"></div>
 
     <div class="" id="default_tampilan">
@@ -39,15 +48,6 @@ all{% extends 'base.html' %}
     </div>
     
     <br />
-    
-    <a href="{% url 'show_products:create_product_entry' %}">
-      <button class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold">Add New Product</button>
-    </a>
-    
-    <a href="{% url 'show_products:create_category' %}">
-      <button class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold">Add New Category</button>
-    </a>
-
     
 </div>
 
@@ -99,9 +99,8 @@ all{% extends 'base.html' %}
     $('#carouselExample').carousel({
         interval: 2000
     });
-
-
 </script>
+
 <script>
     function searchProducts(query) {
         fetch(`/search/?q=${query}`)

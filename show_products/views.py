@@ -7,6 +7,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
 from django.http import JsonResponse
 
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 def show_products(request):
     context = {
@@ -14,6 +16,7 @@ def show_products(request):
     }
     return render(request, "show_products.html", context)
 
+@login_required(login_url='profile/login/')
 def show_main(request):
     product_entries = Product.objects.all()
     categories = Categories.objects.all()
@@ -66,12 +69,14 @@ def create_product_entry(request):
 
 def create_category(request):
     form = CategoryEntryForm(request.POST or None)
+    categories = Categories.objects.all()
 
     if form.is_valid() and request.method == "POST":
         form.save()
         return redirect('show_products:show_main')
 
-    context = {'form': form}
+    context = {'form': form,
+               'categories': categories}
     return render(request, "create_category.html", context)
 
 def show_xml(request):
@@ -118,6 +123,7 @@ def edit_product(request, id):
 def edit_category(request, id):
     # Get category berdasarkan id
     category = Categories.objects.get(pk = id)
+    categories = Categories.objects.all()
 
     # Set category sebagai instance dari form
     form = CategoryEntryForm(request.POST or None, instance=category)
