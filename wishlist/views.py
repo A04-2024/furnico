@@ -8,36 +8,28 @@ from django.contrib.auth.models import User
 import json
 from django.views.decorators.csrf import csrf_exempt
 
-
-def mock_user():
-    user, created = User.objects.get_or_create(username='mockuser', id=1)
-    return user
-
-# @login_required
+@login_required
 def add_to_wishlist(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    user = mock_user()
     if request.method == 'POST':
         collection_id = request.POST.get('collection_id')
         if collection_id:
-            collection = get_object_or_404(Collection, id=collection_id, user=user)
+            collection = get_object_or_404(Collection, id=collection_id, user=request.user)
         else:
-            collection, created = Collection.objects.get_or_create(user=user, name="Semua Wishlist")
+            collection, created = Collection.objects.get_or_create(user=request.user, name="Semua Wishlist")
         WishlistItem.objects.create(product=product, collection=collection)
         return JsonResponse({'success': True})
 
-    collections = Collection.objects.filter(user=user)
+    collections = Collection.objects.filter(user=request.user)
     return render(request, 'add_to_wishlist.html', {'product': product, 'collections': collections})
 
-# @login_required
+@login_required
 def wishlist_view(request):
-    user = mock_user()
-    collections = Collection.objects.filter(user=user)
+    collections = Collection.objects.filter(user=request.user)
     return render(request, 'wishlist.html', {'collections': collections})
 
 def wishlist_json_view(request):
-    user = mock_user()
-    collections = Collection.objects.filter(user=user).prefetch_related('wishlistitem_set__product')
+    collections = Collection.objects.filter(user=request.user).prefetch_related('wishlistitem_set__product')
 
     wishlist_data = []
     for collection in collections:
@@ -56,10 +48,9 @@ def wishlist_json_view(request):
 
     return JsonResponse({'collections': wishlist_data})
 
-# @login_required
+@login_required
 @csrf_exempt
 def create_collection(request):
-    user = mock_user()
 
     if request.method == 'POST':
         try:
@@ -69,7 +60,7 @@ def create_collection(request):
 
             if form.is_valid():
                 collection = form.save(commit=False)
-                collection.user = user
+                collection.user = request.user
                 collection.save()
 
                 return JsonResponse({
@@ -87,10 +78,9 @@ def create_collection(request):
 
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
-# @login_required
+@login_required
 def update_collection_name(request, collection_id):
-    user = mock_user()
-    collection = get_object_or_404(Collection, id=collection_id, user=user)
+    collection = get_object_or_404(Collection, id=collection_id, user=request.user)
 
     if request.method == 'POST':
         try:
@@ -114,15 +104,14 @@ def update_collection_name(request, collection_id):
 
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
-# @login_required
+@login_required
 def delete_collection(request, collection_id):
-    user = mock_user()
-    collection = get_object_or_404(Collection, id=collection_id, user=user)
+    collection = get_object_or_404(Collection, id=collection_id, user=request.user)
 
     if collection.name == "Semua Wishlist":
         return JsonResponse({'success': False, 'message': 'Cannot delete default collection'})
 
-    default_collection, created = Collection.objects.get_or_create(user=user, name="Semua Wishlist")
+    default_collection, created = Collection.objects.get_or_create(user=request.user, name="Semua Wishlist")
 
     collection_items = collection.wishlistitem_set.all()
     collection_items.update(collection=default_collection)
@@ -130,9 +119,8 @@ def delete_collection(request, collection_id):
 
     return JsonResponse({'success': True})
 
-# @login_required
+@login_required
 def remove_wishlist(request, wishlist_item_id):
-    user = mock_user()
-    wishlist_item = get_object_or_404(WishlistItem, id=wishlist_item_id, collection__user=user)
+    wishlist_item = get_object_or_404(WishlistItem, id=wishlist_item_id, collection__user=request.user)
     wishlist_item.delete()
     return JsonResponse({'success': True})
