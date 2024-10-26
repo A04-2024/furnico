@@ -57,9 +57,34 @@
             Add to Wishlist
           </button>
         </a>
-        <button class="bg-red-600 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-full">
-          Laporkan produk ini
-        </button>
+
+        <a href="{% url 'report:create_report' product.id %}">
+          <button class="bg-red-600 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-full">
+            Laporkan produk ini
+          </button>
+        </a>
+        {% comment %} {% if user.userprofile.tipe == 'admin' %}
+          <!-- Konten khusus untuk admin -->
+          <a href="{% url 'report:admin_jumlah_report_ajax' product.id %}">
+            <button class="bg-blue-600 hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded-full">
+              Lihat Laporan
+            </button>
+          </a>
+        {% elif user.userprofile.tipe == 'user' %}
+          <!-- Konten untuk user biasa -->
+          <a href="{% url 'report:create_report' product.id %}">
+            <button class="bg-red-600 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-full">
+              Laporkan produk ini
+            </button>
+          </a>
+        {% else %}
+          <!-- Konten untuk belum ada user -->
+          <a href="{% url 'report:create_report' product.id %}">
+            <button class="bg-red-600 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-full">
+              Laporkan produk ini
+            </button>
+          </a>
+        {% endif %} {% endcomment %}
       </div>
       <div>
             <h1 class="text-4xl font-extrabold pb-2">Ulasan Produk</h1>
