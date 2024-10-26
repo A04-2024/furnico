@@ -9,7 +9,7 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<div class="flex flex-col p-8 my-32">
+<div class="flex flex-col px-8 py-2 my-32">
     <div class="p-8">
         {% include "carousel.html" %}
     </div>
@@ -302,11 +302,11 @@
                         productList.innerHTML += `
                             <div class="max-w-2xl mx-auto p-2 shrink justify-start justify-items-start justify-self-start">
                     <div class="bg-white shadow-md rounded-lg max-w-80 border-gray-700 justify-start justify-items-start justify-self-start">
-                        <a href="/product/${product.pk}">
+                        <a href="/product/${product.id}">
                             <img class="rounded-t-lg p-8" src="${product.product_image}" alt="product image">
                         </a>
                             <div class="px-5 pb-5">
-                                <a href="/product/${product.pk}">
+                                <a href="/product/${product.id}">
                                     <h3 class="text-black-900 font-extrabold text-2xl tracking-tight">${product.product_name}</h3>
                                     <h3 class="text-black-900 font-semibold text-xl tracking-tight text-wrap text-clip overflow-hidden">${product.product_subtitle}</h3>
                                 </a>
@@ -345,19 +345,19 @@
                                 </div>
                                 <div class="flex items-center justify-between pb-4">
                                     <span class="text-xl font-bold text-black-900">Rp${product.product_price}</span>
-                                    <a href="/product/${product.pk}"
+                                    <a href="/product/${product.id}"
                                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View Detail</a>
                                 </div>
 
                                 <!-- TAMBAHIN PENGECEKAN USER ADMIN ATAU BUKAN DISINI -->
                                 <div class="flex items-center justify-between">
-                                    <a href="/delete_product/${product.pk}">
+                                    <a href="/delete_product/${product.id}">
                                         <button class="mb-4 px-3 py-2 bg-red-500 rounded-full hover:bg-red-700 text-white font-bold transition-colors duration-300">
                                             Delete product
                                         </button>
                                     </a>
                                     
-                                    <a href="/edit_product/${product.pk}">
+                                    <a href="/edit_product/${product.id}">
                                         <button class="mb-4 px-3 py-2 bg-blue-500 rounded-full hover:bg-blue-700 text-white font-bold transition-colors duration-300">
                                             Edit product
                                         </button>
