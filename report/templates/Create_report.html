@@ -1,5 +1,6 @@
 <!-- report/templates/report/create_report.html -->
-<div id="report-popup">
+<div id="report-popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+    background-color: white; padding: 20px; border: 1px solid #ccc; z-index: 1000;">
     <form id="report-form" method="post">
         {% csrf_token %}
         <h3>Pilih Alasan Laporan:</h3>
@@ -8,7 +9,7 @@
             <h4>Info Tambahan:</h4>
             {{ form.additional_info }}
         </div>
-        <button type="button" id="cancel-button">Cancel</button>
+        <button type="button" id="cancel-button" aria-label="Cancel Report">Cancel</button>
         <button type="submit" id="submit-button" disabled>Submit</button>
     </form>
     <div id="thank-you-message" style="display: none;">
@@ -42,17 +43,25 @@ document.addEventListener('DOMContentLoaded', function() {
     reportForm.addEventListener('submit', function(event) {
         event.preventDefault();
         const formData = new FormData(reportForm);
-        fetch("", {
+        fetch("{% url 'report:create_report' %}", {
             method: 'POST',
             headers: {
                 'X-CSRFToken': '{{ csrf_token }}',
             },
             body: formData
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
             reportForm.style.display = 'none';
             thankYouMessage.style.display = 'block';
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
         });
     });
 

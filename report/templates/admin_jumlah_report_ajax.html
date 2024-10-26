@@ -1,8 +1,9 @@
 <!-- report/templates/report/admin_jumlah_report_ajax.html -->
-<div id="report-count-popup">
+<div id="report-count-popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background-color: white; padding: 20px; border: 1px solid #ccc; z-index: 1000;">
     <p>{{ report_count }} report(s)</p>
     {% if report_count > 0 %}
-        <a href="{% url 'Admin_list_report_furniture' furniture.id %}">
+        <a href="{% url 'report:admin_list_report_furniture' furniture.id %}">
             <button id="lihat-button">Lihat</button>
         </a>
     {% else %}

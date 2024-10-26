@@ -15,12 +15,12 @@ class Report(models.Model):
         ('other', 'Lainnya'),
     ]
 
-    # user = models.ForeignKey(User, on_delete=models.CASCADE)
-    # furniture = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    furniture = models.ForeignKey(Product, on_delete=models.CASCADE)
     reason = models.CharField(max_length=50, choices=REASON_CHOICES)
     additional_info = models.TextField(blank=True, null=True)
     date_reported = models.DateTimeField(auto_now_add=True)
 
-    # def __str__(self):
-    #     return f'Report by {self.user.username} on {self.furniture.name}'
+    def __str__(self):
+        return f'Report by {self.user.username} on {self.furniture.name}'
 

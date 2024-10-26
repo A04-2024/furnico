@@ -1,9 +1,49 @@
 <!-- report/templates/report/admin_card_report.html -->
-<div class="report-card">
-    <p><strong>User:</strong> {{ report.user.username }}</p>
-    <p><strong>Furniture:</strong> {{ report.furniture.name }}</p>
-    <p><strong>Judul Report:</strong> {{ report.get_reason_display }}</p>
-    <p><strong>Info Tambahan:</strong> {{ report.additional_info }}</p>
-    <p><strong>Tanggal:</strong> {{ report.date_reported }}</p>
+<div class="report-card" style="
+    position: relative;
+    width: 90%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    font-family: 'Arial', sans-serif;">
+    
+    <!-- Bagian Furniture -->
+    <div style="margin-bottom: 15px;">
+        <p style="font-weight: bold; font-size: 26px; color: #333; text-transform: uppercase;">{{ report.furniture.name }}</p>
+    </div>
+
+    <!-- Separator Line -->
+    <hr style="border: none; border-top: 1px solid #e0e0e0; margin-bottom: 15px;">
+
+    <!-- Bagian Judul Report -->
+    <div style="margin-bottom: 15px;">
+        <p style="font-weight: bold; font-size: 22px; color: #ff0000;">{{ report.get_reason_display }}</p>
+    </div>
+
+    <!-- Informasi Lainnya -->
+    <div style="margin-bottom: 10px; color: #555;">
+        <p style="font-size: 16px; margin: 0;"><span style="font-weight: bold;">User:</span> {{ report.user.username }}</p>
+        <p style="font-size: 16px; margin: 0;"><span style="font-weight: bold;">Info Tambahan:</span> {{ report.additional_info }}</p>
+    </div>
+
+    <!-- Separator Line -->
+    <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 15px 0;">
+
+    <!-- Bagian Tanggal -->
+    <div style="margin-top: 10px;">
+        <p style="font-size: 14px; color: #888;"><span style="font-weight: bold;">Tanggal:</span> {{ report.date_reported }}</p>
+    </div>
 </div>
-<hr>
+
+<!-- Animasi hover menggunakan CSS -->
+<style>
+    .report-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+    }
+</style>
