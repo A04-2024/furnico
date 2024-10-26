@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Ratings</title>
+</head>
+<body>
+    <h1>Ratings for Product {{ product.id }}</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Rating</th>
+                <th>Comment</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rating in ratings %}
+            <tr>
+                <td>{{ rating.rating }}</td>
+                <td>{{ rating.comment }}</td>
+                <td>{{ rating.created_at }}</td>
+                <td>
+                    <a href="{% url 'update_rating' rating.id %}">Edit</a>
+                    <a href="{% url 'delete_rating' rating.id %}">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No ratings available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'create_rating' product_id=product.id %}">Add a Rating</a>
+</body>
+</html>

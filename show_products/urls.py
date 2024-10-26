@@ -17,6 +17,8 @@ urlpatterns = [
     path('all_product/<str:id>', show_category_products, name='show_category_products'),
     path('search/', search_products, name='search_products'),
 
+    path('create_product_ajax', create_product_entry_ajax, name='create_product_entry_ajax'),
+
     path('xml/', show_xml, name='show_xml'),
     path('json/', show_json, name='show_json'),
     path('xml/<str:id>/', show_xml_by_id, name='show_xml_by_id'),

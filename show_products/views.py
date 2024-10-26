@@ -9,6 +9,10 @@ from django.http import JsonResponse
 
 from django.contrib.auth.decorators import login_required
 
+# ajax
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+
 # Create your views here.
 def show_products(request):
     context = {
@@ -169,3 +173,39 @@ def search_products(request):
     product_data = list(products.values('pk', 'product_name', 'product_subtitle', 'product_image', 'product_price'))
     return JsonResponse({'products': product_data})
 
+@csrf_exempt
+@require_POST
+def create_product_entry_ajax(request):
+    product_image = request.POST.get("product_image")
+    product_name = request.POST.get("product_name")
+    product_subtitle = request.POST.get("product_subtitle")
+    product_price = request.POST.get("product_price")
+    sold_this_week = request.POST.get("sold_this_week")
+    people_bought = request.POST.get("people_bought")
+    product_description = request.POST.get("product_description")
+    product_advantages = request.POST.get("product_advantages")
+    product_material = request.POST.get("product_material")
+    product_size_length = request.POST.get("product_size_length")
+    product_size_height = request.POST.get("product_size_height")
+    product_size_long = request.POST.get("product_size_long")
+    product_category = request.POST.get("product_category")
+
+    new_product = Product(
+        product_image = product_image,
+        product_name = product_name,
+        product_subtitle = product_subtitle,
+        product_price = product_price ,
+        sold_this_week = sold_this_week,
+        people_bought = people_bought,
+        product_description = product_description,
+        product_advantages = product_advantages,
+        product_material = product_material,
+        product_size_length = product_size_length,
+        product_size_height = product_size_height,
+        product_size_long = product_size_long,
+        product_category = product_category,
+    )
+
+    new_product.save()
+
+    return HttpResponse(b"CREATED", status=201)
