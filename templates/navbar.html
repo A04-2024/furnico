@@ -72,7 +72,7 @@
   <div id="mobile-menu" class="hidden md:hidden bg-gray-100">
     <div class="flex items-center justify-between px-4 py-2">
       <select class="bg-transparent uppercase font-bold text-sm p-4 mr-4" name="" id="mobile-categoryDropdown">
-        <option value="{% url 'show_products:show_all_products' %}">All Categories</option>
+        <option value="{% url 'show_products:show_all_products' %}">semua kategori</option>
         {% for category in categories %}
         <option value="{% url 'show_products:show_category_products' category.pk %}">{{ category.category_name }}</option>
         {% endfor %}
