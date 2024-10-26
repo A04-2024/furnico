@@ -56,37 +56,6 @@ def show_category_products(request, id):
 
     return render(request, "show_category.html", context)
 
-
-def create_product_entry(request):
-    form = ProductEntryForm(request.POST or None)
-    context = {
-        'categories': Categories.objects.all(),
-        'form': form,
-    }
-
-    if form.is_valid() and request.method == "POST":
-        product_entry = form.save()  # Simpan produk baru
-
-        # Akses kategori terkait dan tambahkan 1 ke jumlah_product
-        category = product_entry.product_category
-        category.unique_products += 1
-        category.save()  # Simpan perubahan kategori
-        return redirect('show_products:show_main')
-    
-    return render(request, "create_product_entry.html", context)
-
-def create_category(request):
-    form = CategoryEntryForm(request.POST or None)
-    categories = Categories.objects.all()
-
-    if form.is_valid() and request.method == "POST":
-        form.save()
-        return redirect('show_products:show_main')
-
-    context = {'form': form,
-               'categories': categories}
-    return render(request, "create_category.html", context)
-
 def show_xml(request):
     # data = Product.objects.all()
     data = Product.objects.all() # ganti jadi .filter(user=request.user)
