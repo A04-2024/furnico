@@ -15,7 +15,7 @@
                 {% for item in collection.wishlistitem_set.all %}
                 <li class="flex justify-between items-center bg-gray-100 p-3 rounded-md">
                     <span>{{ item.product.product_name }}</span>
-                    <a href="#" class="text-red-500 hover:text-red-700 font-semibold remove-item" data-item-id="{{ item.pk }}">
+                    <a href="#" class="text-red-500 hover:text-red-700 font-semibold remove-item" data-item-id="{{ item.product.id }}">
                         <svg class="h-5 w-5 inline-block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                             <path fill="currentColor" d="M19 13H5v-2h14v2z"/>
                         </svg> Remove

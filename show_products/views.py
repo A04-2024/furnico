@@ -19,6 +19,8 @@ def show_products(request):
 @login_required(login_url='profile/login/')
 def show_main(request):
     product_entries = Product.objects.all()
+    for product in product_entries :
+        product.in_wishlist = product.is_in_wishlist(request.user)
     categories = Categories.objects.all()
     context = {
         'product_entries': product_entries,

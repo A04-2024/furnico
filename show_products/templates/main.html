@@ -13,7 +13,7 @@
     <div class="p-8">
         {% include "carousel.html" %}
     </div>
-    
+
     <div class="">
         <h1 class="text-4xl font-extrabold pb-2">Halo Username! Jelajahi kategori unggulan kami</h1>
         <h3 class="text-xl">Temukan beragam produk yang sesuai dengan gaya dan kebutuhan Anda.</h3>
@@ -23,7 +23,7 @@
     <div class="p-8">
         {% include "card_slider.html"  with categories=categories %}
     </div>
-    
+
 
     <div class="py-8 pb-0">
         <h1 class="text-4xl font-extrabold pb-2 p">Produk Populer</h1>
@@ -32,29 +32,29 @@
 
     <div id="product-list" class="flex flex-row justify-start p-8 flex-wrap"></div>
 
-    
+
     <div class="flex flex-row justify-start p-8 flex-wrap" id="default_tampilan">
         {% if not product_entries %}
             <p>Belum ada data product pada furnico.</p>
-        {% else %}   
+        {% else %}
             {% for product_entry in product_entries|slice:":10" %}
                 {% include "product_card.html" with product_entry=product_entry %}
             {% endfor %}
             <div class="w-full mt-4">
-               
+
                 <a href="{% url 'show_products:show_all_products' %}"
 						class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Show All Products</a>
             </div>
         {% endif %}
     </div>
-    
-    
+
+
     <br />
-    
+
     <a href="{% url 'show_products:create_product_entry' %}">
         <button class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold">Add New Product</button>
       </a>
-      
+
       <a href="{% url 'show_products:create_category' %}">
         <button class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold">Add New Category</button>
       </a>
@@ -148,7 +148,7 @@
                                         <h3 class="text-black-900 font-semibold text-xl tracking-tight">${product.product_subtitle}</h3>
                                         <div class="flex items-center justify-between">
                                             <span class="text-xl font-bold text-black-900">Rp${product.product_price}</span>
-                                            <a href="/show_products/${product.pk}/" 
+                                            <a href="/show_products/${product.pk}/"
                                                 class="text-white bg-blue-700 hover:bg-blue-800 px-2 py-2.5 rounded-lg">
                                                 View Detail
                                             </a>
@@ -156,7 +156,7 @@
                                     </div>
                                 </div>
                             </div>`;
-                        
+
                         count++; // Increment counter
                     });
 
@@ -165,6 +165,113 @@
             })
             .catch(error => console.error('Error fetching products:', error));
     }
+
+</script>
+
+<script>
+    function addToWishlist(productId) {
+    fetch(`/wishlist/add-to-wishlist/${productId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json'
+        }
+    }).then(response => {
+        if (response.ok) {
+            alert("Added to wishlist!");
+            location.reload();
+        }
+    });
+}
+
+function removeFromWishlist(productId) {
+    fetch(`/wishlist/remove-wishlist/${productId}/`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json'
+        }
+    }).then(response => {
+        if (response.ok) {
+            location.reload();
+        }
+    });
+}
+// Show the add-wishlist modal and fetch list collection
+document.querySelectorAll('.add-wishlist-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const productId = this.getAttribute('product-entry-id');
+        document.getElementById('product-entry-id').value = productId;
+
+        // Show the modal
+        document.getElementById('add-wishlist-modal').classList.remove('hidden');
+
+        // Fetch the list of wishlists for the user
+        fetch(`/wishlist/wishlist-json/`, {
+            method: 'GET',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const wishlistDropdown = document.getElementById('wishlist-collection');
+            wishlistDropdown.innerHTML = ''; // Clear previous options
+
+            // Populate wishlist collection in the dropdown
+            if (data.collections.length > 0) {
+                data.collections.forEach(wishlist => {
+                    const option = document.createElement('option');
+                    option.value = wishlist.collection_id;
+                    option.textContent = wishlist.collection_name;
+                    wishlistDropdown.appendChild(option);
+                });
+            } else {
+                wishlistDropdown.innerHTML = '<option disabled>No wishlists available</option>';
+            }
+        })
+        .catch(error => console.error('Error fetching wishlist collection:', error));
+    });
+});
+
+// Close the modal on cancel
+document.getElementById('cancel-add-wishlist').addEventListener('click', function() {
+    document.getElementById('add-wishlist-modal').classList.add('hidden');
+});
+
+// Confirm and add to wishlist without page refresh
+document.getElementById('confirm-add-wishlist').addEventListener('click', function() {
+    const selectedWishlist = document.getElementById('wishlist-collection').value;
+    const productId = document.getElementById('product-entry-id').value;
+
+    if (selectedWishlist) {
+        fetch(`/wishlist/add-to-wishlist/${productId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ collection_id: selectedWishlist })
+        })
+        .then(response => {
+            if (response.ok) {
+                // Reload the page to reflect changes
+                location.reload();
+
+                // Hide the modal
+                document.getElementById('add-wishlist-modal').classList.add('hidden');
+            } else {
+                alert("Failed to add to wishlist. Please try again.");
+            }
+        })
+        .catch(error => console.error('Error adding to wishlist:', error));
+    } else {
+        alert("Please select a wishlist.");
+    }
+});
+
+
 
 </script>
 {% endblock content %}
