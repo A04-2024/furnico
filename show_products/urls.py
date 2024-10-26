@@ -18,6 +18,7 @@ urlpatterns = [
     path('search/', search_products, name='search_products'),
 
     path('create_product_ajax', create_product_entry_ajax, name='create_product_entry_ajax'),
+    path('create_category_ajax', create_category_ajax, name='create_category_ajax'),
 
     path('xml/', show_xml, name='show_xml'),
     path('json/', show_json, name='show_json'),

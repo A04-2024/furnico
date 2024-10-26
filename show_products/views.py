@@ -195,21 +195,33 @@ def create_product_entry_ajax(request):
     product_category = request.POST.get("product_category")
 
     new_product = Product(
-        product_image = product_image,
-        product_name = product_name,
-        product_subtitle = product_subtitle,
-        product_price = product_price ,
-        sold_this_week = sold_this_week,
-        people_bought = people_bought,
-        product_description = product_description,
-        product_advantages = product_advantages,
-        product_material = product_material,
-        product_size_length = product_size_length,
-        product_size_height = product_size_height,
-        product_size_long = product_size_long,
-        product_category = product_category,
+        product_image=product_image,
+        product_name=product_name,
+        product_subtitle=product_subtitle,
+        product_price=product_price,
+        sold_this_week=sold_this_week,
+        people_bought=people_bought,
+        product_description=product_description,
+        product_advantages=product_advantages,
+        product_material=product_material,
+        product_size_length=product_size_length,
+        product_size_height=product_size_height,
+        product_size_long=product_size_long,
+        product_category=Categories.objects.get(id=product_category)
+    )
+    new_product.save()
+
+    return HttpResponse(b"CREATED", status=201)
+
+def create_category_ajax(request):
+    category_name = request.POST.get("category_name")
+    image_url = request.POST.get("image_url")
+
+    new_category = Categories(
+        category_name=category_name,
+        image_url=image_url
     )
 
-    new_product.save()
+    new_category.save()
 
     return HttpResponse(b"CREATED", status=201)

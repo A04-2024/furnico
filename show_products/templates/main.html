@@ -30,9 +30,7 @@
         <h3 class="text-xl pb-4">Temukan penawaran menarik untuk melihat yang sedang hits di Furnico.</h3>
     </div>
 
-    <a href="{% url 'show_products:create_product_entry' %}">
-        <button class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold">Add New Product</button>
-    </a>
+    <button data-modal-target="crudModal" data-modal-toggle="crudModal" class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold" onclick="showModal();">Add New Product</button>
     
     <a href="{% url 'show_products:create_category' %}">
         <button class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold">Add New Category</button>
@@ -67,6 +65,122 @@
     <div>
         <p>tempat dan waktu dipersilahkan kepada joshua</p>
     </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="crudModal" tabindex="-1" aria-hidden="true" 
+  class="hidden fixed inset-0 z-50 w-full flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-x-hidden overflow-y-auto transition-opacity duration-300 ease-out">
+
+  <div id="crudModalContent" class="container max-w-screen-lg mx-auto">
+    <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
+      <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
+        <div class="text-gray-600">
+          <p class="font-medium text-lg">Product Details</p>
+          <p>Please fill out all the fields.</p>
+          <div class="text-red-600 text-sm">{{ form.errors }}</div>
+        </div>
+
+        <div class="lg:col-span-2">
+          <form id="productEntryForm" method="POST">
+            {% csrf_token %}
+            <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
+              <div class="md:col-span-5">
+                <label for="product_name">Product Name</label>
+                <input type="text" name="product_name" id="product_name" max_length=255 
+                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" />
+              </div>
+
+              <div class="md:col-span-5">
+                <label for="product_subtitle">Product Subtitle</label>
+                <input type="text" name="product_subtitle" id="product_subtitle" maxlength=255 
+                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" 
+                  placeholder="Penjelasan singkat produk" />
+              </div>
+
+              <div class="md:col-span-5">
+                <label for="product_image">Product Image URL</label>
+                <input type="url" name="product_image" id="product_image" 
+                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" />
+              </div>
+
+              <div class="md:col-span-3">
+                <label for="product_category">Kategori Produk</label>
+                <select id="product_category" name="product_category" 
+                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50">
+                  {% for category in categories %}
+                    <option value={{category.id}}>{{ category.category_name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="md:col-span-2">
+                <label for="product_price">Product Price</label>
+                <input type="number" name="product_price" id="product_price" 
+                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" />
+              </div>
+
+              <div class="md:col-span-2">
+                <label for="sold_this_week">Sold This Week</label>
+                <input type="number" name="sold_this_week" id="sold_this_week" 
+                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" />
+              </div>
+
+              <div class="md:col-span-2">
+                <label for="people_bought">People Bought</label>
+                <input type="number" name="people_bought" id="people_bought" 
+                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" />
+              </div>
+
+              <div class="md:col-span-5">
+                <label for="product_description">Product Description</label>
+                <input type="text" name="product_description" id="product_description" 
+                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" 
+                  placeholder="Penjelasan detail produk" />
+              </div>
+
+              <div class="md:col-span-5">
+                <label for="product_advantages">Product Advantages</label>
+                <input type="text" name="product_advantages" id="product_advantages" 
+                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" 
+                  placeholder="Penjelasan kelebihan produk" />
+              </div>
+
+              <div class="md:col-span-5">
+                <label for="product_material">Product Material</label>
+                <input type="text" name="product_material" id="product_material" maxlength=225 
+                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" 
+                  placeholder="Penjelasan bahan produk" />
+              </div>
+
+              <div class="md:col-span-1">
+                <label for="product_size_length">Lebar produk</label>
+                <input type="number" name="product_size_length" id="product_size_length" 
+                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" />
+              </div>
+
+              <div class="md:col-span-1">
+                <label for="product_size_height">Tinggi produk</label>
+                <input type="number" name="product_size_height" id="product_size_height" 
+                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" />
+              </div>
+
+              <div class="md:col-span-1">
+                <label for="product_size_long">Panjang produk</label>
+                <input type="number" name="product_size_long" id="product_size_long" 
+                  class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" />
+              </div>
+
+              <div class="md:col-span-5 text-right">
+                <button type="button" id="cancelButton" class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold">Cancel</button>
+                <input type="submit" value="Add Product" id="submitProductEntry" form="productEntryForm"
+                  class="mb-4 px-6 py-2 bg-blue-500 bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold" />
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 
@@ -265,5 +379,59 @@
         document.getElementById("default_tampilan").innerHTML = htmlString;
     }
     refreshProductEntries();
+</script>
+
+<!-- buat modal -->
+<script>
+      const modal = document.getElementById('crudModal');
+      const modalContent = document.getElementById('crudModalContent');
+    
+      function showModal() {
+          const modal = document.getElementById('crudModal');
+          const modalContent = document.getElementById('crudModalContent');
+    
+          modal.classList.remove('hidden'); 
+          setTimeout(() => {
+            modalContent.classList.remove('opacity-0', 'scale-95');
+            modalContent.classList.add('opacity-100', 'scale-100');
+          }, 50); 
+      }
+    
+      function hideModal() {
+          const modal = document.getElementById('crudModal');
+          const modalContent = document.getElementById('crudModalContent');
+    
+          modalContent.classList.remove('opacity-100', 'scale-100');
+          modalContent.classList.add('opacity-0', 'scale-95');
+    
+          setTimeout(() => {
+            modal.classList.add('hidden');
+          }, 150); 
+      }
+    
+      document.getElementById("cancelButton").addEventListener("click", hideModal);
+      document.getElementById("closeModalBtn").addEventListener("click", hideModal);
+</script>
+
+<!-- buat nambah produk ajax -->
+<script>
+    function addProductEntry() {
+      fetch("{% url 'show_products:create_product_entry_ajax' %}", {
+        method: "POST",
+        body: new FormData(document.querySelector('#productEntryForm')),
+      })
+      .then(response => refreshProductEntries())
+  
+      document.getElementById("productEntryForm").reset(); 
+      document.querySelector("[data-modal-toggle='crudModal']").click();
+  
+      return false;
+    }
+
+    document.getElementById("productEntryForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        console.log("Form submitted");
+        addProductEntry();
+    })
 </script>
 {% endblock content %}
