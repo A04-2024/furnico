@@ -211,3 +211,14 @@ def create_category_ajax(request):
     new_category.save()
 
     return HttpResponse(b"CREATED", status=201)
+
+# Example in Django (views.py)
+def search_products(request):
+    query = request.GET.get('q', '')
+    offset = int(request.GET.get('offset', 0))  # Default to 0
+    limit = int(request.GET.get('limit', 10))  # Default to 10
+
+    # Search logic (replace with your actual logic)
+    products = Product.objects.filter(product_name__icontains=query)[offset:offset + limit]
+    data = {'products': list(products.values())}
+    return JsonResponse(data)

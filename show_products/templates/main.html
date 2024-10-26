@@ -54,12 +54,8 @@
     
     
 
-    <div id="product-list" class="flex flex-row justify-start p-8 flex-wrap"></div>
-
-    
-    <div class="flex flex-row justify-start p-8 flex-wrap" id="default_tampilan">
-   
-    </div>
+    <div id="product-list"></div>
+    <div id="default_tampilan"></div>
     
     
     <br />
@@ -287,10 +283,16 @@
             .then(response => response.json())
             .then(data => {
                 const productList = document.getElementById('product-list');
+                productList.className = "flex flex-row justify-start p-8 flex-wrap"
                 productList.innerHTML = ''; // Clear previous results
 
                 if (data.products.length === 0) {
-                    productList.innerHTML = '<h3 class="text-xl">Produk tidak ditemukan :(</h3>';
+                    productList.innerHTML = `
+                    <div class="w-full flex flex-col items-center justify-center">
+                        <p class="text-xl text-center mb-4">Produk tidak ditemukan :(</p>
+                        <img src="https://global-uploads.webflow.com/63c864d518fab2c78dbdbef6/63c864d518fab282d1bdc13d_empty.gif" alt="empty image">
+                    </div>
+                    `;
                 } else {
                     let count = 0; // Initialize counter for displayed products
 
@@ -404,7 +406,12 @@
         let htmlString = "";
 
         if (productEntries.length === 0) {
-            htmlString = `<p>Belum ada data product pada furnico.</p>`;
+            htmlString = `
+            <div class="w-full flex flex-col items-center justify-center">
+                <p class="text-xl text-center mb-4">Belum ada data product pada kategori ini :(</p>
+                <img src="https://global-uploads.webflow.com/63c864d518fab2c78dbdbef6/63c864d518fab282d1bdc13d_empty.gif" alt="empty image">
+            </div>
+            `;
         }
         else {
             productEntries.forEach((item) => {
@@ -485,6 +492,7 @@
 						class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Show All Products</a>
             </div>`;
         }
+        document.getElementById("default_tampilan").className = "flex flex-row justify-start p-8 flex-wrap";
         document.getElementById("default_tampilan").innerHTML = htmlString;
     }
     refreshProductEntries();

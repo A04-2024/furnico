@@ -48,14 +48,8 @@
         <button data-modal-target="category_modal" data-modal-toggle="category_modal" class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold" onclick="showModalCat();">Add New Category</button>
     </div>
 
-
-    <div id="product-list" class="flex flex-row justify-start p-8 flex-wrap"></div>
-
-    
-    <div class="flex flex-row justify-start p-8 flex-wrap" id="default_tampilan">
-       
-    </div>
-    
+    <div id="product-list"></div>
+    <div id="default_tampilan"></div>
     
     <br />
     <p id="key">{{ filtered_category.id }}</p>
@@ -270,15 +264,19 @@
             .then(response => response.json())
             .then(data => {
                 const productList = document.getElementById('product-list');
+                productList.className = "flex flex-row justify-start p-8 flex-wrap"
                 productList.innerHTML = ''; // Clear previous results
 
                 if (data.products.length === 0) {
-                    productList.innerHTML = '<h3 class="text-xl">Produk tidak ditemukan :(</h3>';
+                    productList.innerHTML = `
+                    <div class="w-full flex flex-col items-center justify-center">
+                        <p class="text-xl text-center mb-4">Produk tidak ditemukan :(</p>
+                        <img src="https://global-uploads.webflow.com/63c864d518fab2c78dbdbef6/63c864d518fab282d1bdc13d_empty.gif" alt="empty image">
+                    </div>
+                    `;
                 } else {
-                    let count = 0; // Initialize counter for displayed products
 
                     data.products.forEach(product => {
-                        if (count >= 10) return; // Stop after 10 products
 
                         productList.innerHTML += `
                             <div class="max-w-2xl mx-auto p-2 shrink justify-start justify-items-start justify-self-start">
@@ -350,7 +348,6 @@
 
                 </div>`;
                         
-                        count++; // Increment counter
                     });
 
                     document.getElementById("default_tampilan").style.display = "none";
@@ -358,8 +355,9 @@
             })
             .catch(error => console.error('Error fetching products:', error));
     }
-
 </script>
+
+  
 
 <!-- buat ajax -->
 <script>
@@ -384,7 +382,13 @@
         let htmlString = "";
 
         if (productEntries.length === 0) {
-            htmlString = `<p>Belum ada data product pada kategori ini :(</p>`;
+            htmlString = `
+            <div class="w-full flex flex-col items-center justify-center">
+                <p class="text-xl text-center mb-4">Belum ada data product pada kategori ini :(</p>
+                <img src="https://global-uploads.webflow.com/63c864d518fab2c78dbdbef6/63c864d518fab282d1bdc13d_empty.gif" alt="empty image">
+            </div>
+
+            `;
         }
         else {
             productEntries.forEach((item) => {
@@ -462,6 +466,7 @@
             });
             
         }
+        document.getElementById("default_tampilan").className = "flex flex-row justify-start p-8 flex-wrap";
         document.getElementById("default_tampilan").innerHTML = htmlString;
     }
     refreshProductEntries();

@@ -276,7 +276,12 @@
                 productList.innerHTML = ''; // Clear previous results
 
                 if (data.products.length === 0) {
-                    productList.innerHTML = '<h3 class="text-xl">Produk tidak ditemukan :(</h3>';
+                    productList.innerHTML = productList.innerHTML = `
+                    <div class="w-full flex flex-col items-center justify-center">
+                        <p class="text-xl text-center mb-4">Produk tidak ditemukan :(</p>
+                        <img src="https://global-uploads.webflow.com/63c864d518fab2c78dbdbef6/63c864d518fab282d1bdc13d_empty.gif" alt="empty image">
+                    </div>
+                    `;
                 } else {
                     let count = 0; // Initialize counter for displayed products
 
@@ -376,7 +381,13 @@
         let htmlString = "";
 
         if (productEntries.length === 0) {
-            htmlString = `<p>Belum ada data product pada furnico.</p>`;
+            htmlString = `
+            <div class="w-full flex flex-col items-center justify-center">
+                <p class="text-xl text-center mb-4">Belum ada data product pada kategori ini :(</p>
+                <img src="https://global-uploads.webflow.com/63c864d518fab2c78dbdbef6/63c864d518fab282d1bdc13d_empty.gif" alt="empty image">
+            </div>
+
+            `;
         }
         else {
             productEntries.forEach((item) => {
