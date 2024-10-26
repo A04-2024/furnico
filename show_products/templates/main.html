@@ -14,13 +14,13 @@
         {% include "carousel.html" %}
     </div>
     
-    <div class="">
+    <div class="px-8">
         <h1 class="text-4xl font-extrabold pb-2">Halo Username! Jelajahi kategori unggulan kami</h1>
         <h3 class="text-xl">Temukan beragam produk yang sesuai dengan gaya dan kebutuhan Anda.</h3>
     </div>
 
     <!-- Category carousel -->
-    <div class="p-8">
+    <div class="py-8 md:p-8">
     <div class="relative w-full">
         <!-- Slider Container -->
         <div id="category_slider" class="flex space-x-4 overflow-x-auto no-scrollbar scroll-smooth w-full px-16">
@@ -44,24 +44,20 @@
     </div>
     
 
-    <div class="py-8 pb-0">
+    <div class="p-8 pb-0">
         <h1 class="text-4xl font-extrabold pb-2 p">Produk Populer</h1>
         <h3 class="text-xl pb-4">Temukan penawaran menarik untuk melihat yang sedang hits di Furnico.</h3>
         <button data-modal-target="crudModal" data-modal-toggle="crudModal" class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold" onclick="showModal();">Add New Product</button>
         <button data-modal-target="category_modal" data-modal-toggle="category_modal" class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold" onclick="showModalCat();">Add New Category</button>
     </div>
 
-    
-    
-
     <div id="product-list"></div>
     <div id="default_tampilan"></div>
-    
     
     <br />
 
     <!-- article -->
-    <div class="">
+    <div class="px-8">
         <h1 class="text-4xl font-extrabold pb-2">Terbaru di Furnico</h1>
         <h3 class="text-xl">Butuh inspirasi? Cek ide-ide ruangan kami yang telah dikurasi di artikel Furnico!</h3>
     </div>
@@ -283,7 +279,7 @@
             .then(response => response.json())
             .then(data => {
                 const productList = document.getElementById('product-list');
-                productList.className = "flex flex-row justify-start p-8 flex-wrap"
+                productList.className = "flex flex-row justify-start py-8 md:p-8 flex-wrap"
                 productList.innerHTML = ''; // Clear previous results
 
                 if (data.products.length === 0) {
@@ -492,7 +488,7 @@
 						class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Show All Products</a>
             </div>`;
         }
-        document.getElementById("default_tampilan").className = "flex flex-row justify-start p-8 flex-wrap";
+        document.getElementById("default_tampilan").className = "flex flex-row justify-start py-8 md:p-8 flex-wrap";
         document.getElementById("default_tampilan").innerHTML = htmlString;
     }
     refreshProductEntries();

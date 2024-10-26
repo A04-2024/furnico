@@ -11,7 +11,7 @@
 
 <div class="flex flex-col p-8 my-32">
     
-    <div class="">
+    <div class="px-8">
         <h1 class="text-4xl font-extrabold pb-2">Halo Username! Jelajahi kategori unggulan kami
         </h1>
         <h3 class="text-xl">Temukan beragam produk yang sesuai dengan gaya dan kebutuhan Anda.
@@ -19,7 +19,7 @@
     </div>
 
     <!-- Category carousel -->
-    <div class="p-8">
+    <div class="py-8 md:p-8">
         <div class="relative w-full">
             <!-- Slider Container -->
             <div id="category_slider" class="flex space-x-4 overflow-x-auto no-scrollbar scroll-smooth w-full px-16">
@@ -43,24 +43,17 @@
         </div>
     
 
-    <div class="py-8 pb-0">
+    <div class="p-8 pb-0">
         <h1 class="text-4xl font-extrabold pb-2 p">Produk Populer</h1>
         <h3 class="text-xl pb-4">Temukan penawaran menarik untuk melihat yang sedang hits di Furnico.</h3>
         <button data-modal-target="crudModal" data-modal-toggle="crudModal" class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold" onclick="showModal();">Add New Product</button>
         <button data-modal-target="category_modal" data-modal-toggle="category_modal" class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold" onclick="showModalCat();">Add New Category</button>
     </div>
 
-
-    <div id="product-list" class="flex flex-row justify-start p-8 flex-wrap"></div>
-
-    
-    <div class="flex flex-row justify-start p-8 flex-wrap" id="default_tampilan">
-       
-    </div>
-    
+    <div id="product-list"></div>
+    <div id="default_tampilan"></div>
     
     <br />
-
     
 </div>
 
@@ -273,6 +266,7 @@
             .then(response => response.json())
             .then(data => {
                 const productList = document.getElementById('product-list');
+                productList.className = "flex flex-row justify-start py-8 md:p-8 flex-wrap"
                 productList.innerHTML = ''; // Clear previous results
 
                 if (data.products.length === 0) {
@@ -464,6 +458,7 @@
             });
             
         }
+        document.getElementById("default_tampilan").className = "flex flex-row justify-start py-8 md:p-8 flex-wrap";
         document.getElementById("default_tampilan").innerHTML = htmlString;
     }
     refreshProductEntries();
