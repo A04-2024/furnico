@@ -77,15 +77,3 @@ def delete_comment(request, comment_id):
         article_id = comment.article.id  # Get the related article ID before deleting
         comment.delete()
         return redirect('article:article_detail', id=article_id)
-
-
-# def delete_comment(request, comment_id):
-#     comment = get_object_or_404(Comment, id=comment_id)
-    
-#     # Allow only the comment author or a superuser to delete the comment
-#     if request.user == comment.author or request.user.is_superuser:
-#         article_id = comment.article.id
-#         comment.delete()
-#         return redirect('article:article_detail', id=article_id)
-#     else:
-#         return redirect('article:article_detail', id=comment.article.id)
