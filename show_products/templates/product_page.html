@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+<title>Product Page</title>
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="flex flex-col md:flex-row px-8 py-2 my-32">
+  <div class="basis-1/2">
+    <div>
+        <div class="flex flex-col p-8">
+          <div class="">
+            <div class="place-items-center">
+              <div class="w-1/2">
+                <img src="{{ product.product_image }}" alt="{{ product.product_name }}" class="w-full h-auto object-cover rounded-md pb-8">
+              </div>
+            </div>
+  
+      
+          <div>
+            <h1 class="text-4xl font-extrabold pb-2">Rincian Produk</h1>
+            <h3 class="text-xl pb-8">{{ product.product_description }}</h3>
+          </div>
+          <div>
+            <h1 class="text-4xl font-extrabold pb-2">Ukuran Produk</h1>
+            <h3 class="text-xl">Panjang produk: {{ product.product_size_long }} cm</h3>
+            <h3 class="text-xl">Lebar produk: {{ product.product_size_length }} cm</h3>
+            <h3 class="text-xl">Tinggi produk: {{ product.product_size_height }} cm</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="basis-1/2">
+    <div class="flex flex-col p-8">
+      <div>
+            <h1 class="text-4xl font-extrabold pb-2">{{ product.product_name }}</h1>
+            <h3 class="text-xl">{{ product.product_subtitle }}</h3>
+            <p class="text-2xl font-extrabold pb-8">Rp {{ product.product_price }}</p>
+
+            {% if product.sold_this_week != 0 %}
+            <div class="bg-yellow-300 w-full p-3 md:w-1/2">
+              <h3 class="text-l">{{ product.sold_this_week }} barang telah terjual di minggu ini!</h3>
+            </div>
+            {% endif %}
+            <h3 class="text-l p-2 pb-8">{{ product.people_bought }} orang telah membeli produk ini</h3>
+      </div>
+      <div>
+            <h3 class="text-xl pb-3">Produk terbuat dari {{ product.product_material }} berkualitas</h3>
+            <h3 class="text-xl pb-8">{{ product.product_advantages }}.</h3>
+      </div>
+      <div class="pb-8">
+        <a href="{% url 'wishlist:add_to_wishlist' product.id %}">
+          <button class="bg-blue-500 hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded-full">
+            Tambahkan ke wishlist
+          </button>
+        </a>
+        <button class="bg-red-600 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-full">
+          Laporkan produk ini
+        </button>
+      </div>
+      <div>
+            <h1 class="text-4xl font-extrabold pb-2">Ulasan Produk</h1>
+      </div>
+      <div>
+        {% include 'rating.html' %}
+      </div>
+    </div>
+    
+  </div>
+</div>
+{% endblock content %}
