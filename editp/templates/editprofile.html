@@ -1,4 +1,6 @@
 <h2>Edit Profile</h2>
+
+<!-- Tampilkan pesan sukses -->
 {% if messages %}
     {% for message in messages %}
         <div>
@@ -6,11 +8,17 @@
         </div>
     {% endfor %}
 {% endif %}
+
+<!-- Formulir edit profil -->
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div>
         <label for="id_first_name">Nama</label>
         {{ user_form.first_name }}
+    </div>
+    <div>
+        <label for="id_last_name">Nama Belakang</label>
+        {{ user_form.last_name }}
     </div>
     <div>
         <label for="id_phone_number">Nomor Telepon</label>
@@ -24,6 +32,12 @@
         <label for="id_profile_picture">Ubah Foto Profil</label>
         {{ profile_form.profile_picture }}
     </div>
+    {% if user.is_superuser or user.userprofile.role == 'admin' %}
+    <div>
+        <label for="id_role">Peran</label>
+        {{ profile_form.role }}
+    </div>
+    {% endif %}
     <div>
         <label for="id_password">Password</label>
         {{ password_form.old_password }}
