@@ -31,6 +31,7 @@
   {% endif %}
 
   <!-- Add New Article Button -->
+  {% if request.user.is_authenticated and request.user.userprofile.type == 'admin' %}
   <div class="mt-8 flex justify-center">
     <a href="{% url 'article:create_article' %}">
       <button class="bg-yellow-400 text-white py-2 px-6 rounded-lg shadow-md hover:bg-yellow-500 transition-colors duration-200">
@@ -38,5 +39,6 @@
       </button>
     </a>
   </div>
+  {% endif %}
 </div>
 {% endblock content %}
