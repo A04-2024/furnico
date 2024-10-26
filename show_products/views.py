@@ -228,6 +228,8 @@ def create_product_entry_ajax(request):
 
     return HttpResponse(b"CREATED", status=201)
 
+@csrf_exempt
+@require_POST
 def create_category_ajax(request):
     category_name = request.POST.get("category_name")
     image_url = request.POST.get("image_url")

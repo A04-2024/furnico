@@ -16,22 +16,38 @@
         <h3 class="text-xl">Temukan beragam {{ filtered_category.category_name }} yang sesuai dengan gaya dan kebutuhan Anda.</h3>
     </div>
 
-    <!-- Category carousel new  -->
+    <!-- Category carousel -->
     <div class="p-8">
-        {% include "card_slider.html"  with categories=categories %}
-    </div>
+        <div class="relative w-full">
+            <!-- Slider Container -->
+            <div id="category_slider" class="flex space-x-4 overflow-x-auto no-scrollbar scroll-smooth w-full px-16">
+                <!-- The dynamically added categories will be injected here -->
+            </div>
+    
+            <!-- Left Button -->
+            <button id="leftButton" class="absolute left-4 top-1/2 -translate-y-1/2 bg-transparent p-3 rounded-full hover:bg-white hover:bg-opacity-30">
+                <svg class="w-8 h-8 text-gray-500 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+    
+            <!-- Right Button -->
+            <button id="rightButton" class="absolute right-4 top-1/2 -translate-y-1/2 bg-transparent p-3 rounded-full hover:bg-white hover:bg-opacity-30">
+                <svg class="w-8 h-8 text-gray-500 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
+        </div>
+        </div>
     
 
     <div class="py-8 pb-0">
         <h1 class="text-4xl font-extrabold pb-2 p">Produk Populer</h1>
         <h3 class="text-xl pb-4">Temukan penawaran menarik untuk melihat yang sedang hits di Furnico.</h3>
+        <button data-modal-target="crudModal" data-modal-toggle="crudModal" class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold" onclick="showModal();">Add New Product</button>
+        <button data-modal-target="category_modal" data-modal-toggle="category_modal" class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold" onclick="showModalCat();">Add New Category</button>
     </div>
 
-    <button data-modal-target="crudModal" data-modal-toggle="crudModal" class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold" onclick="showModal();">Add New Product</button>
-    
-    <a href="{% url 'show_products:create_category' %}">
-        <button class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold">Add New Category</button>
-    </a>
 
     <div id="product-list" class="flex flex-row justify-start p-8 flex-wrap"></div>
 
@@ -161,6 +177,40 @@
   </div>
 </div>
 
+<!-- category make modal -->
+<div id="category_modal" class="hidden fixed inset-0 z-50 w-full flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-x-hidden overflow-y-auto transition-opacity duration-300 ease-out">
+    <!-- Modal Content -->
+    <div id="category_modal_content" class="modal-content bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6 z-50 relative">
+      <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
+        <div class="text-gray-600">
+          <p class="font-medium text-lg">Category Details</p>
+          <p>Please fill out all the fields.</p>
+          <div class="text-red-600 text-sm">{{ form.errors }}</div>
+        </div>
+        <div class="lg:col-span-2"> 
+          <form method="POST" id="categoryForm">
+            {% csrf_token %}
+            <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
+              <div class="md:col-span-5">
+                <label for="category_name">Category Name</label>
+                <input type="text" name="category_name" id="category_name" max_length=255 class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" />
+              </div>
+  
+              <div class="md:col-span-5 pb-4">
+                <label for="image_url">Category Image URL</label>
+                <input type="url" name="image_url" id="image_url" class="rounded-md h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" placeholder="" />
+              </div>
+  
+              <div class="md:col-span-5 text-right">
+                  <button type="button" id="cancelButtonCat" class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold">Cancel</button>
+                  <input type="submit" value="Add Category" class="rounded-md p-2 border-solid border-2 border-sky-500 hover:border-slate-400"/>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 
 <script>
     document.addEventListener('alpine:init', () => {
@@ -420,4 +470,138 @@
         addProductEntry();
     })
 </script>
+
+
+<!-- buat card slider -->
+<style>
+    /* Hide the scrollbar */
+    #slider::-webkit-scrollbar {
+        display: none;
+    }
+    #slider {
+        -ms-overflow-style: none;  /* Internet Explorer 10+ */
+        scrollbar-width: none;  /* Firefox */
+    }
+    </style>
+    <script>
+        const slider = document.getElementById('category_slider');
+        const leftButton = document.getElementById('leftButton');
+        const rightButton = document.getElementById('rightButton');
+    
+        // Scroll left when the left button is clicked
+        leftButton.addEventListener('click', () => {
+          slider.scrollBy({ left: -300, behavior: 'smooth' });
+        });
+    
+        // Scroll right when the right button is clicked
+        rightButton.addEventListener('click', () => {
+          slider.scrollBy({ left: 300, behavior: 'smooth' });
+        });
+    </script>
+    
+    <!-- get category json -->
+    <script>
+    async function getCategories(){
+        return fetch("{% url 'show_products:show_json_cat' %}").then((res) => res.json())
+    }
+    
+     async function refreshCategories() {
+        document.getElementById("category_slider").innerHTML = "";
+        const categories = await getCategories();
+        let htmlString = `
+        <div class="min-w-[300px] max-w-[300px] relative rounded-lg overflow-hidden">
+          <img src="https://i.ytimg.com/vi/VgUcVjEOVDM/maxresdefault.jpg" class="h-full w-full object-cover" alt="Image">
+          <div class="absolute inset-0 bg-black bg-opacity-50 flex items-end justify-center">
+            <a href="{% url 'show_products:show_all_products' %}" class="hover:underline">
+              <button class="mb-4 px-6 py-2 bg-white bg-opacity-80 rounded-full hover:bg-opacity-100 font-bold">
+                Tampilkan semua produk
+              </button>
+            </a>
+          </div>
+        </div>
+        `;
+      
+        categories.forEach((item) => {
+            htmlString += `
+            <div class="min-w-[300px] max-w-[300px] relative rounded-lg overflow-hidden">
+                <img src="${item.fields.image_url}" class="h-full w-full object-cover" alt="${item.fields.category_name}">
+                <div class="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center align-bottom">
+                    <div class="p-2">
+                        <a href="/delete_category/${item.pk}" class="hover:underline p-2">
+                            <button class="px-6 py-2 bg-red-500 rounded-full hover:bg-red-700 text-white font-bold">Delete</button>
+                        </a>
+                    </div>
+                    <div class="p-2">
+                        <a href="/edit_category/${item.pk}" class="hover:underline p-2">
+                            <button class="px-6 py-2 bg-blue-500 rounded-full hover:bg-blue-700 font-bold">Edit</button>
+                        </a>
+                    </div>
+                    <div class="p-2">
+                        <a href="/all_product/${item.pk}" class="hover:underline">
+                            <button class="mb-4 px-6 py-2 bg-white bg-opacity-80 rounded-full hover:bg-opacity-100 font-bold">${item.fields.category_name}</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            `;
+        });
+        
+        document.getElementById("category_slider").innerHTML = htmlString;
+    }
+    refreshCategories();
+    </script>
+    
+    <!-- category modal -->
+    <script>
+          const cat_modal = document.getElementById('category_modal');
+          const cat_modalContent = document.getElementById('category_modal_content');
+        
+          function showModalCat() {
+              const cat_modal = document.getElementById('category_modal');
+              const cat_modalContent = document.getElementById('category_modal_content');
+        
+              cat_modal.classList.remove('hidden'); 
+              setTimeout(() => {
+                cat_modalContent.classList.remove('opacity-0', 'scale-95');
+                cat_modalContent.classList.add('opacity-100', 'scale-100');
+              }, 50); 
+          }
+        
+          function hideModalCat() {
+              const cat_modal = document.getElementById('category_modal');
+              const cat_modalContent = document.getElementById('category_modal_content');
+        
+              cat_modalContent.classList.remove('opacity-100', 'scale-100');
+              cat_modalContent.classList.add('opacity-0', 'scale-95');
+        
+              setTimeout(() => {
+                cat_modal.classList.add('hidden');
+              }, 150); 
+          }
+        
+          document.getElementById("cancelButtonCat").addEventListener("click", hideModalCat);
+          document.getElementById("closeModalBtnCat").addEventListener("click", hideModalCat);
+        </script>
+    
+    <!-- tambah kategori ajax -->
+    
+    <script>
+      function addCategory() {
+        fetch("{% url 'show_products:create_category_ajax' %}", {
+          method: "POST",
+          body: new FormData(document.querySelector('#categoryForm')),
+        })
+        .then(response => refreshCategories())
+    
+        document.getElementById("categoryForm").reset(); 
+        document.querySelector("[data-modal-toggle='category_modal']").click();
+    
+        return false;
+      }
+    
+      document.getElementById("categoryForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        addCategory();
+      })
+    </script>
 {% endblock content %}
