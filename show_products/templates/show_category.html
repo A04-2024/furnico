@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+all{% extends 'base.html' %}
 {% block content %}
 {% include 'navbar.html' %}
 <script defer src="https://unpkg.com/alpinejs@3.2.3/dist/cdn.min.js"></script>
@@ -10,9 +10,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <div class="flex flex-col p-8 my-32">
-    <div class="p-8">
-        {% include "carousel.html" %}
-    </div>
     
     <div class="">
         <h1 class="text-4xl font-extrabold pb-2">Halo Username! Jelajahi kategori unggulan kami</h1>
@@ -24,49 +21,34 @@
         {% include "card_slider.html"  with categories=categories %}
     </div>
     
-
     <div class="py-8 pb-0">
-        <h1 class="text-4xl font-extrabold pb-2 p">Produk Populer</h1>
-        <h3 class="text-xl">Geser untuk jelajahi penawaran menarik untuk melihat yang sedang hits di Furnico.</h3>
+        <h1 class="text-4xl font-extrabold pb-2 p">Produk Populer di kategori {{filtered_category.category_name}}</h1>
+        <h3 class="text-xl pb-8">Jelajahi penawaran {{filtered_category.category_name}} menarik yang sedang hits di Furnico.</h3>
     </div>
-
-    <div id="product-list" class="flex flex-row justify-start p-8 flex-wrap"></div>
-
-    
-    <div class="flex flex-row justify-start p-8 flex-wrap" id="default_tampilan">
-        {% if not product_entries %}
-            <p>Belum ada data product pada furnico.</p>
-        {% else %}   
-            {% for product_entry in product_entries|slice:":10" %}
-                {% include "product_card.html" with product_entry=product_entry %}
-            {% endfor %}
-            <div class="w-full mt-4">
-               
-                <a href="{% url 'show_products:show_all_products' %}"
-						class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Show All Products</a>
-            </div>
-        {% endif %}
-    </div>
-    
-    
-    <br />
     
     <a href="{% url 'show_products:create_product_entry' %}">
         <button class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold">Add New Product</button>
-      </a>
-      
-      <a href="{% url 'show_products:create_category' %}">
+    </a>
+    
+    <a href="{% url 'show_products:create_category' %}">
         <button class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold">Add New Category</button>
-      </a>
+    </a>
 
-    <!-- article -->
-    <div class="">
-        <h1 class="text-4xl font-extrabold pb-2">Terbaru di Furnico</h1>
-        <h3 class="text-xl">Butuh inspirasi? Cek ide-ide ruangan kami yang telah dikurasi di artikel Furnico!</h3>
+    
+    <div id="product-list" class="flex flex-row justify-start p-8 flex-wrap"></div>
+
+    <div class="" id="default_tampilan">
+        <div class="flex flex-row justify-start p-8 flex-wrap">
+            {% for product_entry in product_entries %}
+                {% if product_entry.product_category == filtered_category %}
+                    {% include "product_card.html" with product_entry=product_entry %}
+                {% endif %}
+            {% endfor %}
+        </div>
     </div>
-    <div>
-        <p>tempat dan waktu dipersilahkan kepada joshua</p>
-    </div>
+    
+    <br />
+    
 </div>
 
 
@@ -117,8 +99,6 @@
     $('#carouselExample').carousel({
         interval: 2000
     });
-
-
 </script>
 
 <script>
@@ -130,13 +110,9 @@
                 productList.innerHTML = ''; // Clear previous results
 
                 if (data.products.length === 0) {
-                    productList.innerHTML = '<h3 class="text-xl">Produk tidak ditemukan :(</h3>';
+                    productList.innerHTML = '<p>Produk tidak ditemukan.</p>';
                 } else {
-                    let count = 0; // Initialize counter for displayed products
-
                     data.products.forEach(product => {
-                        if (count >= 10) return; // Stop after 10 products
-
                         productList.innerHTML += `
                             <div class="max-w-2xl mx-auto p-2">
                                 <div class="bg-white shadow-md rounded-lg max-w-80 border-gray-700">
@@ -156,15 +132,13 @@
                                     </div>
                                 </div>
                             </div>`;
-                        
-                        count++; // Increment counter
                     });
-
                     document.getElementById("default_tampilan").style.display = "none";
+
                 }
             })
             .catch(error => console.error('Error fetching products:', error));
     }
-
 </script>
+
 {% endblock content %}
