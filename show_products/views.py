@@ -44,7 +44,10 @@ def show_all_products(request):
 def show_category_products(request, id):
     categories = Categories.objects.all()
     filtered_category = Categories.objects.get(pk=id)
-    product_entries = Product.objects.all()
+
+    # Filter product entries based on the selected category
+    product_entries = Product.objects.filter(product_category=filtered_category)
+
     context = {
         'product_entries': product_entries,
         'filtered_category': filtered_category,
@@ -52,6 +55,7 @@ def show_category_products(request, id):
     }
 
     return render(request, "show_category.html", context)
+
 
 def create_product_entry(request):
     form = ProductEntryForm(request.POST or None)
@@ -93,14 +97,25 @@ def show_json(request):
     data = Product.objects.all() # ganti jadi .filter(user=request.user)
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
+
+def show_json_cat(request):
+    # data = Product.objects.all()
+    data = Categories.objects.all() # ganti jadi .filter(user=request.user)
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
+def show_json_filtered(request, id):
+    category = Categories.objects.get(pk=id)
+    data = Product.objects.filter(product_category=category)
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
 def show_xml_by_id(request, id):
     # data = Product.objects.filter(pk=id)
-    data = Product.objects.all() # ganti jadi .filter(user=request.user)
+    data = Product.objects.filter(pk=id) 
     return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
 
 def show_json_by_id(request, id):
     # data = Product.objects.filter(pk=id)
-    data = Product.objects.all() # ganti jadi .filter(user=request.user)
+    data = Product.objects.filter(pk=id) 
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
 def edit_product(request, id):

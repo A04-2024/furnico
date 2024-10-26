@@ -19,9 +19,11 @@ urlpatterns = [
 
     path('create_product_ajax', create_product_entry_ajax, name='create_product_entry_ajax'),
     path('create_category_ajax', create_category_ajax, name='create_category_ajax'),
+    path('json_filtered/<str:id>/', show_json_filtered, name='show_json_filtered'),
 
     path('xml/', show_xml, name='show_xml'),
     path('json/', show_json, name='show_json'),
+    path('json_cat/', show_json_cat, name='show_json_cat'),
     path('xml/<str:id>/', show_xml_by_id, name='show_xml_by_id'),
     path('json/<str:id>/', show_json_by_id, name='show_json_by_id'),
 ]
