@@ -12,7 +12,8 @@ from django.views.decorators.csrf import csrf_exempt
 def add_to_wishlist(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     if request.method == 'POST':
-        collection_id = request.POST.get('collection_id')
+        data = json.loads(request.body)
+        collection_id = data.get('collection_id')
         if collection_id:
             collection = get_object_or_404(Collection, id=collection_id, user=request.user)
         else:
@@ -120,7 +121,7 @@ def delete_collection(request, collection_id):
     return JsonResponse({'success': True})
 
 @login_required
-def remove_wishlist(request, wishlist_item_id):
-    wishlist_item = get_object_or_404(WishlistItem, id=wishlist_item_id, collection__user=request.user)
+def remove_wishlist(request, product_id):
+    wishlist_item = get_object_or_404(WishlistItem, product__id=product_id, collection__user=request.user)
     wishlist_item.delete()
     return JsonResponse({'success': True})
