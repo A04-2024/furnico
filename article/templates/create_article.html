@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block content %}
+<head>
+    <title>Create New Article</title>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+    <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-2xl">
+        <h1 class="text-blue-600 text-3xl font-bold text-center mb-8">Create New Article</h1>
+        
+        <form method="POST" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+            
+            <!-- Title Field -->
+            <div>
+                {{ form.title.label_tag }}
+                <input type="text" name="title" value="{{ form.title.value|default_if_none:'' }}" placeholder="Article Title"
+                       class="w-full border {% if form.title.errors %}border-red-500{% else %}border-blue-500{% endif %} p-3 rounded-lg focus:outline-none focus:ring-2 {% if form.title.errors %}focus:ring-red-500{% else %}focus:ring-blue-500{% endif %} transition duration-150">
+                {% if form.title.errors %}
+                    <p class="text-red-500 text-sm">{{ form.title.errors }}</p>
+                {% endif %}
+            </div>
+            
+            <!-- Quill Editor for Content -->
+            <div id="editor-container" class="h-64 bg-white border border-gray-300 rounded-lg p-4"></div>
+            <textarea name="content" id="content" style="display:none;">{{ form.content.value|safe }}</textarea>
+
+            <!-- Image Upload Field -->
+            <div>
+                {{ form.image.label_tag }}
+                <input type="file" name="image" class="w-full">
+                {% if form.image.errors %}
+                    <p class="text-red-500 text-sm">{{ form.image.errors }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="submit" 
+                        class="bg-yellow-400 text-blue-500 font-bold text-lg px-6 py-2 rounded-lg shadow-lg hover:bg-yellow-500 transition duration-150">
+                    Save
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        var quill = new Quill('#editor-container', {
+            theme: 'snow',
+            placeholder: 'Compose your article...',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+                    ['blockquote', 'code-block'],
+
+                    [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+                    [{ 'direction': 'rtl' }],                         // text direction
+
+                    [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+                    [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+                    [{ 'font': [] }],
+                    [{ 'align': [] }],
+
+                    ['clean']                                         // remove formatting button
+                ]
+            }
+        });
+
+        // Restore the editor content from the textarea (if there's any)
+        var content = document.querySelector('textarea[name=content]').value;
+        if (content) {
+            quill.root.innerHTML = content;
+        }
+
+        var form = document.querySelector('form');
+        form.onsubmit = function() {
+            // Populate the hidden textarea with the editor content
+            var content = document.querySelector('textarea[name=content]');
+            content.value = quill.root.innerHTML;
+        };
+    </script>
+</body>
+{% endblock content %}

@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<!-- <h1>Edit Product</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="Edit Product"/>
+            </td>
+        </tr>
+    </table>
+</form> -->
+
+
+<div class="min-h-screen p-6 bg-gray-100 flex items-center justify-center  my-32">
+  <div class="container max-w-screen-lg mx-auto">
+    <div>
+      
+      <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
+        <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
+          <div class="text-gray-600">
+            <p class="font-medium text-lg">Product Details</p>
+            <p>Please fill out all the fields.</p>
+            <div class="text-red-600 text-sm">{{ form.errors }}</div>
+          </div>
+          <div class="lg:col-span-2"> 
+            <form method="POST">
+              {% csrf_token %}
+            <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
+              <div class="md:col-span-5">
+                <label for="product_name">Product Name</label>
+                <input type="text" name="product_name" id="product_name" max_length=255 class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{product.product_name}}" />
+              </div>
+
+              <div class="md:col-span-5">
+                <label for="product_subtitle">Product Subtitle</label>
+                <input type="text" name="product_subtitle" id="product_subtitle" maxlength=255 class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{product.product_subtitle}}" placeholder="Penjelasan singkat produk" />
+              </div>
+
+              <div class="md:col-span-5">
+                <label for="product_image">Product Image URL</label>
+                <input type="url" name="product_image" id="product_image" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{product.product_image}}" placeholder="" />
+              </div>
+
+              <div class="md:col-span-3">
+                <label for="product_category">Kategori Produk</label>
+                <select id="product_category" name="product_category" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"> 
+                  {% for category in categories %}
+                    <option value={{category.id}}>{{ category.category_name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="md:col-span-2">
+                <label for="product_price">Product Price</label>
+                <input type="number" name="product_price" id="product_price" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{product.product_price}}" placeholder="" />
+              </div>
+      
+              <div class="md:col-span-2">
+                <label for="sold_this_week">Sold This Week</label>
+                <input type="number" name="sold_this_week" id="sold_this_week" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{product.sold_this_week}}" placeholder="" />
+              </div>
+
+              <div class="md:col-span-2">
+                <label for="people_bought">People Bought</label>
+                <input type="number" name="people_bought" id="people_bought" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{product.people_bought}}" placeholder="" />
+              </div>
+
+              <div class="md:col-span-5 md:row-span-5">
+                <label for="product_description">Product Description</label>
+                <input type="text" name="product_description" id="product_description" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{product.product_description}}" placeholder="Penjelasan detail produk" />
+              </div>
+      
+              <div class="md:col-span-5 md:row-span-5">
+                <label for="product_advantages">Product Advantages</label>
+                <input type="text" name="product_advantages" id="product_advantages" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{product.product_advantages}}" placeholder="Penjelasan kelebihan produk" />
+              </div>
+      
+              <div class="md:col-span-5 md:row-span-5">
+                <label for="product_material">Product Material</label>
+                <input type="text" name="product_material" id="product_material" maxlength=225 class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{product.product_material}}" placeholder="Penjelasan bahan produk" />
+              </div>
+      
+              <div class="md:col-span-1">
+                <label for="product_size_length">Lebar produk</label>
+                <input type="number" name="product_size_length" id="product_size_length" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{product.product_size_length}}" placeholder="" />
+              </div>
+
+              <div class="md:col-span-1">
+                <label for="product_size_height">Tinggi produk</label>
+                <input type="number" name="product_size_height" id="product_size_height" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{product.product_size_length}}" placeholder="" />
+              </div>
+              <div class="md:col-span-1">
+                <label for="product_size_long">Panjang produk</label>
+                <input type="number" name="product_size_long" id="product_size_long" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{product.product_size_long}}" placeholder="" />
+              </div>
+
+              <div class="md:col-span-5 text-right">
+                <div class="inline-flex items-end">
+                  <input type="submit" value="Edit Product" class="mb-4 px-6 py-2 bg-blue-500 bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold"/>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
