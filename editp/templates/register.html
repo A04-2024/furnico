@@ -106,11 +106,38 @@
 <div class="register-box">
   <h1>Register</h1>
 
+  {% if messages %}
+  <ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
 
+    <!-- Display non-field errors -->
+    {% if user_form.non_field_errors %}
+    <div class="error">
+      {{ user_form.non_field_errors }}
+    </div>
+    {% endif %}
+
+    {% if profile_form.non_field_errors %}
+    <div class="error">
+      {{ profile_form.non_field_errors }}
+    </div>
+    {% endif %}
+
     <div class="input-field">
       {{ user_form.username.label_tag }}<br>
+      <!-- Display field errors -->
+      {% if user_form.username.errors %}
+      <div class="error">
+        {{ user_form.username.errors }}
+      </div>
+      {% endif %}
       {{ user_form.username }}<hr>
       {% if user_form.username.help_text %}
       <small class="help-text">{{ user_form.username.help_text }}</small>
@@ -119,6 +146,11 @@
 
     <div class="input-field">
       {{ user_form.password1.label_tag }}<br>
+      {% if user_form.password1.errors %}
+      <div class="error">
+        {{ user_form.password1.errors }}
+      </div>
+      {% endif %}
       {{ user_form.password1 }}<hr>
       {% if user_form.password1.help_text %}
       <small class="help-text">{{ user_form.password1.help_text }}</small>
@@ -127,6 +159,11 @@
 
     <div class="input-field">
       {{ user_form.password2.label_tag }}<br>
+      {% if user_form.password2.errors %}
+      <div class="error">
+        {{ user_form.password2.errors }}
+      </div>
+      {% endif %}
       {{ user_form.password2 }}<hr>
       {% if user_form.password2.help_text %}
       <small class="help-text">{{ user_form.password2.help_text }}</small>
@@ -137,6 +174,11 @@
 
       <div class="input-field">
         {{ profile_form.phone_number.label_tag }}<br>
+        {% if profile_form.phone_number.errors %}
+        <div class="error">
+          {{ profile_form.phone_number.errors }}
+        </div>
+        {% endif %}
         {{ profile_form.phone_number }}<hr>
         {% if profile_form.phone_number.help_text %}
         <small class="help-text">{{ profile_form.phone_number.help_text }}</small>
@@ -145,6 +187,11 @@
 
       <div class="input-field">
         {{ profile_form.profile_picture.label_tag }}<br>
+        {% if profile_form.profile_picture.errors %}
+        <div class="error">
+          {{ profile_form.profile_picture.errors }}
+        </div>
+        {% endif %}
         {{ profile_form.profile_picture }}<hr>
         {% if profile_form.profile_picture.help_text %}
         <small class="help-text">{{ profile_form.profile_picture.help_text }}</small>
@@ -154,6 +201,11 @@
 
     <div class="input-field">
       {{ profile_form.role.label_tag }}<br>
+      {% if profile_form.role.errors %}
+      <div class="error">
+        {{ profile_form.role.errors }}
+      </div>
+      {% endif %}
       {{ profile_form.role }}
       {% if profile_form.role.help_text %}
       <small class="help-text">{{ profile_form.role.help_text }}</small>
@@ -162,14 +214,6 @@
 
     <input class="btn register_btn" type="submit" name="submit" value="Daftar" />
   </form>
-
-  {% if messages %}
-  <ul>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
 </div>
 
 {% endblock content %}

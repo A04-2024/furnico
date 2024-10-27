@@ -61,6 +61,7 @@ def register(request):
     if request.method == "POST":
         user_form = UserCreationForm(request.POST)
         profile_form = UserProfileForm(request.POST, request.FILES)
+
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save()
             profile = profile_form.save(commit=False)
@@ -68,6 +69,8 @@ def register(request):
             profile.save() 
             messages.success(request, 'Your account has been successfully created!')
             return redirect('editp:login')
+        else:
+            messages.error(request, 'Please correct the errors below.')
     else:
         user_form = UserCreationForm()
         profile_form = UserProfileForm()
