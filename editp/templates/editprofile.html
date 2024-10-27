@@ -1,37 +1,173 @@
-<h2>Edit Profile</h2>
-{% if messages %}
-    {% for message in messages %}
-        <div>
-            {{ message }}
+{% extends 'base.html' %}
+
+{% block meta %}
+<title>Edit Profile</title>
+{% endblock meta %}
+
+{% block content %}
+
+<style>
+  body, html {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    background-color: #f0f0f0;
+  }
+
+  .edit-profile-box {
+    width: 600px; 
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    text-align: left;
+  }
+
+  .edit-profile-box h2 {
+    font-weight: bold;
+    margin-bottom: 20px;
+    font-size: 2em;
+  }
+
+  .input-field {
+    margin-bottom: 20px;
+    text-align: left;
+  }
+
+  .input-field label {
+    font-weight: bold;
+  }
+
+  .input-field input,
+  .input-field select {
+    border: none;
+    outline: none;
+    width: 100%;
+  }
+
+  .input-field hr {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    margin-top: 5px;
+  }
+
+  .side-by-side {
+    display: flex;
+    gap: 20px; 
+  }
+
+  .side-by-side .input-field {
+    flex: 1; 
+  }
+
+  .btn {
+    padding: 10px 30px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s ease;
+    margin: 5px;
+    text-decoration: none; 
+    display: inline-block;
+    text-align: center;
+  }
+
+  .btn.same-size {
+    width: 120px; 
+  }
+
+  .btn:hover {
+    transform: scale(1.05);
+  }
+
+  .message {
+    color: green;
+    margin-bottom: 20px;
+  }
+
+  .button-container {
+    text-align: center;
+  }
+</style>
+
+<div class="edit-profile-box">
+  <h2>Edit Profile</h2>
+
+  {% if messages %}
+      {% for message in messages %}
+          <div class="message">
+              {{ message }}
+          </div>
+      {% endfor %}
+  {% endif %}
+
+  <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      <div class="side-by-side">
+        <div class="input-field">
+            <label for="id_first_name">Nama Depan</label>
+            {{ user_form.first_name }}<hr>
         </div>
-    {% endfor %}
-{% endif %}
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div>
-        <label for="id_first_name">Nama</label>
-        {{ user_form.first_name }}
-    </div>
-    <div>
-        <label for="id_phone_number">Nomor Telepon</label>
-        {{ profile_form.phone_number }}
-    </div>
-    <div>
-        <label for="id_email">Email</label>
-        {{ user_form.email }}
-    </div>
-    <div>
-        <label for="id_profile_picture">Ubah Foto Profil</label>
-        {{ profile_form.profile_picture }}
-    </div>
-    <div>
-        <label for="id_password">Password</label>
-        {{ password_form.old_password }}
-        <label for="id_new_password">Password Baru</label>
-        {{ password_form.new_password1 }}
-        <label for="id_new_password_confirm">Konfirmasi Password Baru</label>
-        {{ password_form.new_password2 }}
-    </div>
-    <button type="submit">Save</button>
-    <a href="{% url 'show_products:show_main' %}">Cancel</a>
-</form>
+
+        <div class="input-field">
+            <label for="id_last_name">Nama Belakang</label>
+            {{ user_form.last_name }}<hr>
+        </div>
+      </div>
+
+      <div class="input-field">
+          <label for="id_phone_number">Nomor Telepon</label>
+          {{ profile_form.phone_number }}<hr>
+      </div>
+
+      <div class="input-field">
+          <label for="id_email">Email</label>
+          {{ user_form.email }}<hr>
+      </div>
+
+      <div class="input-field">
+          <label for="id_profile_picture">Ubah Foto Profil</label>
+          {{ profile_form.profile_picture }}<hr>
+      </div>
+
+      {% if user.is_superuser or user.userprofile.role == 'admin' %}
+      <div class="input-field">
+          <label for="id_role">Peran</label>
+          {{ profile_form.role }}<hr>
+      </div>
+      {% endif %}
+
+      <div class="input-field">
+          <label for="id_password">Password Lama</label>
+          {{ password_form.old_password }}<hr>
+      </div>
+      
+
+      <div class="side-by-side">
+
+        <div class="input-field">
+            <label for="id_new_password">Password Baru</label>
+            {{ password_form.new_password1 }}<hr>
+        </div>
+
+        <div class="input-field">
+            <label for="id_new_password_confirm">Konfirmasi Password Baru</label>
+            {{ password_form.new_password2 }}<hr>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <input class="btn same-size" type="submit" value="Save">
+        <a href="{% url 'show_products:show_main' %}" class="btn same-size">Cancel</a>
+      </div>
+  </form>
+</div>
+
+{% endblock content %}

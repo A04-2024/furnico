@@ -14,7 +14,8 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     profile_picture = models.CharField(max_length=10000, blank=True, null=True)
-    tipe = models.CharField(max_length=10, choices=USER_TYPES, blank=True, null=True)
+    role = models.CharField(max_length=10, choices=USER_TYPES, default='user')
+    
     def __str__(self):
         return self.user.username
     
@@ -23,7 +24,7 @@ class UserProfile(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        UserProfile.objects.create(user=instance)
+        UserProfile.objects.create(user=instance, role='user')
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):

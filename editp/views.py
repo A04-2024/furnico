@@ -9,18 +9,29 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 
 from .models import UserProfile
+from django.contrib.auth.decorators import user_passes_test
 
 # Create your views here.
+def is_admin(user):
+    return user.is_superuser or (hasattr(user, 'userprofile') and user.userprofile.role == 'admin')
+
+@user_passes_test(is_admin)
+def admin_only_view(request):
+    return render(request, 'admin_page.html')
+
 @login_required
 def edit_profile(request):
     user = request.user
-    # Ensure the user has a UserProfile instance
     if not hasattr(user, 'userprofile'):
         UserProfile.objects.create(user=user)
     
     if request.method == 'POST':
         user_form = UserForm(request.POST, instance=user)
+
         profile_form = UserProfileForm(request.POST, request.FILES, instance=user.userprofile)
+        if not is_admin(user):
+            profile_form.fields.pop('role') 
+        
         password_form = CustomPasswordChangeForm(user=user, data=request.POST)
 
         if user_form.is_valid() and profile_form.is_valid() and password_form.is_valid():
@@ -34,6 +45,8 @@ def edit_profile(request):
     else:
         user_form = UserForm(instance=user)
         profile_form = UserProfileForm(instance=user.userprofile)
+        if not is_admin(user):
+            profile_form.fields.pop('role') 
         password_form = CustomPasswordChangeForm(user=user)
 
     context = {
@@ -45,16 +58,25 @@ def edit_profile(request):
     return render(request, 'editprofile.html', context)
 
 def register(request):
-    form = UserCreationForm()
-
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
+        user_form = UserCreationForm(request.POST)
+        profile_form = UserProfileForm(request.POST, request.FILES)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user = user_form.save()
+            profile = profile_form.save(commit=False)
+            profile.user = user 
+            profile.save() 
             messages.success(request, 'Your account has been successfully created!')
             return redirect('editp:login')
-    context = {'form':form}
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        user_form = UserCreationForm()
+        profile_form = UserProfileForm()
+    context = {'user_form': user_form, 'profile_form': profile_form}
     return render(request, 'register.html', context)
+
 
 def login_user(request):
     if request.method == 'POST':
