@@ -175,6 +175,7 @@ def delete_category(request, id):
 
 def show_product(request, id):
     product = Product.objects.get(pk = id)
+    product.in_wishlist = product.is_in_wishlist(request.user)
     context = {'product': product}
     return render(request, "product_page.html", context)
 
