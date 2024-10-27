@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block meta %}
 <title>Register</title>
@@ -6,19 +7,104 @@
 
 {% block content %}
 
-<div class="login">
-  <h1>Register</h1>
+<style>
+  body, html {
+    height: 100%;
+    margin: 0;
+    background: url("{% static 'image/blurbg.png' %}") no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-  <form method="POST">
-    {% csrf_token %}
-    <table>
-      {{ form.as_table }}
-      <tr>
-        <td></td>
-        <td><input type="submit" name="submit" value="Daftar" /></td>
-      </tr>
-    </table>
-  </form>
+  .register-box {
+    width: 500px;
+    padding: 30px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    text-align: center;
+  }
+
+  .register-box h1 {
+    font-weight: bold;
+    margin-bottom: 20px;
+    font-size: 2em; 
+  }
+
+  .input-field {
+    margin-bottom: 20px;
+    text-align: left;
+  }
+
+  .input-field label {
+    font-weight: bold;
+  }
+
+  .input-field input,
+  .input-field select {
+    border: none;
+    outline: none;
+    padding: 8px 0;
+  }
+
+  .input-field input {
+    width: 100%;
+  }
+
+  .input-field select {
+    width: auto;
+    min-width: 150px; 
+    border-bottom: none; 
+  }
+
+  .input-field hr {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    margin-top: 5px;
+  }
+
+  .side-by-side {
+    display: flex;
+    gap: 20px; 
+  }
+
+  .side-by-side .input-field {
+    flex: 1; 
+  }
+
+  .help-text {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 5px;
+    text-align: left;
+  }
+
+  .btn.register_btn {
+    padding: 10px 30px;
+    background-color: #007bff; 
+    color: white;
+    border: none;
+    border-radius: 30px; 
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn.register_btn:hover {
+    background-color: #0056b3;
+  }
+
+  .register-text {
+    margin-top: 20px;
+    font-size: 14px;
+  }
+</style>
+
+<div class="register-box">
+  <h1>Register</h1>
 
   {% if messages %}
   <ul>
@@ -27,6 +113,107 @@
     {% endfor %}
   </ul>
   {% endif %}
+
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <!-- Display non-field errors -->
+    {% if user_form.non_field_errors %}
+    <div class="error">
+      {{ user_form.non_field_errors }}
+    </div>
+    {% endif %}
+
+    {% if profile_form.non_field_errors %}
+    <div class="error">
+      {{ profile_form.non_field_errors }}
+    </div>
+    {% endif %}
+
+    <div class="input-field">
+      {{ user_form.username.label_tag }}<br>
+      <!-- Display field errors -->
+      {% if user_form.username.errors %}
+      <div class="error">
+        {{ user_form.username.errors }}
+      </div>
+      {% endif %}
+      {{ user_form.username }}<hr>
+      {% if user_form.username.help_text %}
+      <small class="help-text">{{ user_form.username.help_text }}</small>
+      {% endif %}
+    </div>
+
+    <div class="input-field">
+      {{ user_form.password1.label_tag }}<br>
+      {% if user_form.password1.errors %}
+      <div class="error">
+        {{ user_form.password1.errors }}
+      </div>
+      {% endif %}
+      {{ user_form.password1 }}<hr>
+      {% if user_form.password1.help_text %}
+      <small class="help-text">{{ user_form.password1.help_text }}</small>
+      {% endif %}
+    </div>
+
+    <div class="input-field">
+      {{ user_form.password2.label_tag }}<br>
+      {% if user_form.password2.errors %}
+      <div class="error">
+        {{ user_form.password2.errors }}
+      </div>
+      {% endif %}
+      {{ user_form.password2 }}<hr>
+      {% if user_form.password2.help_text %}
+      <small class="help-text">{{ user_form.password2.help_text }}</small>
+      {% endif %}
+    </div>
+
+    <div class="side-by-side">
+
+      <div class="input-field">
+        {{ profile_form.phone_number.label_tag }}<br>
+        {% if profile_form.phone_number.errors %}
+        <div class="error">
+          {{ profile_form.phone_number.errors }}
+        </div>
+        {% endif %}
+        {{ profile_form.phone_number }}<hr>
+        {% if profile_form.phone_number.help_text %}
+        <small class="help-text">{{ profile_form.phone_number.help_text }}</small>
+        {% endif %}
+      </div>
+
+      <div class="input-field">
+        {{ profile_form.profile_picture.label_tag }}<br>
+        {% if profile_form.profile_picture.errors %}
+        <div class="error">
+          {{ profile_form.profile_picture.errors }}
+        </div>
+        {% endif %}
+        {{ profile_form.profile_picture }}<hr>
+        {% if profile_form.profile_picture.help_text %}
+        <small class="help-text">{{ profile_form.profile_picture.help_text }}</small>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="input-field">
+      {{ profile_form.role.label_tag }}<br>
+      {% if profile_form.role.errors %}
+      <div class="error">
+        {{ profile_form.role.errors }}
+      </div>
+      {% endif %}
+      {{ profile_form.role }}
+      {% if profile_form.role.help_text %}
+      <small class="help-text">{{ profile_form.role.help_text }}</small>
+      {% endif %}
+    </div>
+
+    <input class="btn register_btn" type="submit" name="submit" value="Daftar" />
+  </form>
 </div>
 
 {% endblock content %}

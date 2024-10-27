@@ -1,22 +1,110 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block meta %}
 <title>Login</title>
 {% endblock meta %}
 
 {% block content %}
-<div class="login">
-  <h1>Login</h1>
+
+<style>
+  body, html {
+    height: 100%;
+    margin: 0;
+    background: url("{% static 'image/blurbg.png' %}") no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .login-box {
+    width: 600px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: rgb(255, 255, 255); 
+    text-align: center;
+  }
+
+  .login-box h1 {
+    font-weight: bold;
+    margin-bottom: 20px;
+    font-size: 2em;
+  }
+
+  .input-field {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .input-field label {
+    font-weight: bold;
+  }
+
+  .input-field input {
+    border: none;
+    outline: none;
+    width: 50%;
+    margin: 0 auto;
+  }
+
+  .input-field hr {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    margin-top: 5px;
+    width: 50%;
+    margin: 5px auto 0;
+  }
+
+  .btn.login_btn {
+    padding: 10px 30px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s ease;
+  }
+
+  .btn.login_btn:hover {
+    transform: scale(1.05);
+  }
+
+  .register-text {
+    margin-top: 20px;
+    font-size: 14px;
+  }
+
+  .register-text a {
+    color: #007bff;
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  .register-text a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="login-box">
+  <h1>Selamat datang di Furnico!</h1>
 
   <form method="POST" action="">
     {% csrf_token %}
-    <table>
-      {{ form.as_table }}
-      <tr>
-        <td></td>
-        <td><input class="btn login_btn" type="submit" value="Login" /></td>
-      </tr>
-    </table>
+    
+    <div class="input-field">
+      <label for="id_username">Username</label><br>
+      {{ form.username }}<hr>
+    </div>
+    <div class="input-field">
+      <label for="id_password">Password</label><br>
+      {{ form.password }}<hr>
+    </div>
+
+    <input class="btn login_btn" type="submit" value="Login" />
   </form>
 
   {% if messages %}
@@ -25,8 +113,9 @@
     <li>{{ message }}</li>
     {% endfor %}
   </ul>
-  {% endif %} Don't have an account yet?
-  <a href="{% url 'editp:register' %}">Register Now</a>
+  {% endif %} 
+  
+  <p class="register-text">Don't have an account yet? <a href="{% url 'editp:register' %}">Register Now</a></p>
 </div>
 
 {% endblock content %}
