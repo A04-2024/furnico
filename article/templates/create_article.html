@@ -9,7 +9,7 @@
     <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-2xl">
         <h1 class="text-blue-600 text-3xl font-bold text-center mb-8">Create New Article</h1>
         
-        <form method="POST" class="space-y-6">
+        <form method="POST" enctype="multipart/form-data" class="space-y-6">
             {% csrf_token %}
             
             <!-- Title Field -->
@@ -25,6 +25,15 @@
             <!-- Quill Editor for Content -->
             <div id="editor-container" class="h-64 bg-white border border-gray-300 rounded-lg p-4"></div>
             <textarea name="content" id="content" style="display:none;">{{ form.content.value|safe }}</textarea>
+
+            <!-- Image Upload Field -->
+            <div>
+                {{ form.image.label_tag }}
+                <input type="file" name="image" class="w-full">
+                {% if form.image.errors %}
+                    <p class="text-red-500 text-sm">{{ form.image.errors }}</p>
+                {% endif %}
+            </div>
 
             <!-- Submit Button -->
             <div class="text-center">
