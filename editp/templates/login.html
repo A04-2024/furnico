@@ -7,13 +7,10 @@
 
 {% block content %}
 
-<!-- CSS for Styling the Login Page -->
 <style>
-  /* Ensure full-screen layout and center alignment */
   body, html {
     height: 100%;
     margin: 0;
-    /* Add the background image */
     background: url("{% static 'image/blurbg.png' %}") no-repeat center center fixed;
     background-size: cover;
     display: flex;
@@ -21,25 +18,22 @@
     align-items: center;
   }
 
-  /* Main container for login */
   .login-box {
     width: 600px;
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    background-color: rgb(255, 255, 255); /* Slightly transparent background */
+    background-color: rgb(255, 255, 255); 
     text-align: center;
   }
 
-  /* Header with bold text */
   .login-box h1 {
     font-weight: bold;
     margin-bottom: 20px;
     font-size: 2em;
   }
 
-  /* Input fields styling */
   .input-field {
     margin-bottom: 20px;
     text-align: center;
@@ -64,7 +58,6 @@
     margin: 5px auto 0;
   }
 
-  /* Login button styling */
   .btn.login_btn {
     padding: 10px 30px;
     background-color: #007bff;
@@ -76,12 +69,10 @@
     transition: transform 0.2s ease;
   }
 
-  /* Hover effect */
   .btn.login_btn:hover {
     transform: scale(1.05);
   }
 
-  /* Register text at the bottom in one line */
   .register-text {
     margin-top: 20px;
     font-size: 14px;
@@ -98,16 +89,12 @@
   }
 </style>
 
-<!-- Login Page Content -->
 <div class="login-box">
-  <!-- Header -->
   <h1>Selamat datang di Furnico!</h1>
 
-  <!-- Login Form -->
   <form method="POST" action="">
     {% csrf_token %}
     
-    <!-- Centered Username and Password fields -->
     <div class="input-field">
       <label for="id_username">Username</label><br>
       {{ form.username }}<hr>
@@ -117,11 +104,9 @@
       {{ form.password }}<hr>
     </div>
 
-    <!-- Login Button -->
     <input class="btn login_btn" type="submit" value="Login" />
   </form>
 
-  <!-- Messages and Register Link -->
   {% if messages %}
   <ul>
     {% for message in messages %}

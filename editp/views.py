@@ -17,7 +17,6 @@ def is_admin(user):
 
 @user_passes_test(is_admin)
 def admin_only_view(request):
-    # Logic untuk halaman admin
     return render(request, 'admin_page.html')
 
 @login_required
@@ -31,7 +30,7 @@ def edit_profile(request):
 
         profile_form = UserProfileForm(request.POST, request.FILES, instance=user.userprofile)
         if not is_admin(user):
-            profile_form.fields.pop('role')  # Remove 'role' field if not admin
+            profile_form.fields.pop('role') 
         
         password_form = CustomPasswordChangeForm(user=user, data=request.POST)
 
@@ -47,7 +46,7 @@ def edit_profile(request):
         user_form = UserForm(instance=user)
         profile_form = UserProfileForm(instance=user.userprofile)
         if not is_admin(user):
-            profile_form.fields.pop('role')  # Remove 'role' field if not admin
+            profile_form.fields.pop('role') 
         password_form = CustomPasswordChangeForm(user=user)
 
     context = {
@@ -65,8 +64,8 @@ def register(request):
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save()
             profile = profile_form.save(commit=False)
-            profile.user = user  # Assign the user to the profile
-            profile.save()  # Now save the profile to the database
+            profile.user = user 
+            profile.save() 
             messages.success(request, 'Your account has been successfully created!')
             return redirect('editp:login')
     else:

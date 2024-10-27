@@ -6,37 +6,32 @@
 
 {% block content %}
 
-<!-- CSS for Styling the Edit Profile Page -->
 <style>
-  /* Full screen layout and center alignment */
   body, html {
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0;
-    background-color: #f0f0f0; /* Light grey background */
+    background-color: #f0f0f0;
   }
 
-  /* Main container for edit profile */
   .edit-profile-box {
-    width: 600px; /* Increased width to fit side-by-side elements */
+    width: 600px; 
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     background-color: #ffffff;
-    text-align: left; /* Align text to the left */
+    text-align: left;
   }
 
-  /* Title styling */
   .edit-profile-box h2 {
     font-weight: bold;
     margin-bottom: 20px;
-    font-size: 2em; /* Twice as big */
+    font-size: 2em;
   }
 
-  /* Input fields styling */
   .input-field {
     margin-bottom: 20px;
     text-align: left;
@@ -59,17 +54,15 @@
     margin-top: 5px;
   }
 
-  /* Styling for side-by-side fields */
   .side-by-side {
     display: flex;
-    gap: 20px; /* Space between the fields */
+    gap: 20px; 
   }
 
   .side-by-side .input-field {
-    flex: 1; /* Evenly distribute space */
+    flex: 1; 
   }
 
-  /* Buttons styling */
   .btn {
     padding: 10px 30px;
     background-color: #007bff;
@@ -80,38 +73,32 @@
     font-weight: bold;
     transition: transform 0.2s ease;
     margin: 5px;
-    text-decoration: none; /* Remove underline from anchor buttons */
+    text-decoration: none; 
     display: inline-block;
     text-align: center;
   }
 
-  /* Set fixed width for buttons */
   .btn.same-size {
-    width: 120px; /* Set desired width */
+    width: 120px; 
   }
 
-  /* Hover effect for buttons */
   .btn:hover {
     transform: scale(1.05);
   }
 
-  /* Message styling */
   .message {
     color: green;
     margin-bottom: 20px;
   }
 
-  /* Adjust button container */
   .button-container {
     text-align: center;
   }
 </style>
 
-<!-- Edit Profile Content -->
 <div class="edit-profile-box">
   <h2>Edit Profile</h2>
 
-  <!-- Display success messages -->
   {% if messages %}
       {% for message in messages %}
           <div class="message">
@@ -120,67 +107,62 @@
       {% endfor %}
   {% endif %}
 
-  <!-- Edit Profile Form -->
   <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       
-      <!-- Side by Side: Nama Depan and Nama Belakang -->
       <div class="side-by-side">
-        <!-- First Name -->
         <div class="input-field">
             <label for="id_first_name">Nama Depan</label>
             {{ user_form.first_name }}<hr>
         </div>
-        <!-- Last Name -->
+
         <div class="input-field">
             <label for="id_last_name">Nama Belakang</label>
             {{ user_form.last_name }}<hr>
         </div>
       </div>
 
-      <!-- Phone Number -->
       <div class="input-field">
           <label for="id_phone_number">Nomor Telepon</label>
           {{ profile_form.phone_number }}<hr>
       </div>
-      <!-- Email -->
+
       <div class="input-field">
           <label for="id_email">Email</label>
           {{ user_form.email }}<hr>
       </div>
-      <!-- Profile Picture -->
+
       <div class="input-field">
           <label for="id_profile_picture">Ubah Foto Profil</label>
           {{ profile_form.profile_picture }}<hr>
       </div>
-      <!-- Role (if admin) -->
+
       {% if user.is_superuser or user.userprofile.role == 'admin' %}
       <div class="input-field">
           <label for="id_role">Peran</label>
           {{ profile_form.role }}<hr>
       </div>
       {% endif %}
-      <!-- Password Fields -->
+
       <div class="input-field">
           <label for="id_password">Password Lama</label>
           {{ password_form.old_password }}<hr>
       </div>
       
-      <!-- Side by Side: Password Baru and Konfirmasi Password Baru -->
+
       <div class="side-by-side">
-        <!-- New Password -->
+
         <div class="input-field">
             <label for="id_new_password">Password Baru</label>
             {{ password_form.new_password1 }}<hr>
         </div>
-        <!-- Confirm New Password -->
+
         <div class="input-field">
             <label for="id_new_password_confirm">Konfirmasi Password Baru</label>
             {{ password_form.new_password2 }}<hr>
         </div>
       </div>
 
-      <!-- Buttons -->
       <div class="button-container">
         <input class="btn same-size" type="submit" value="Save">
         <a href="{% url 'show_products:show_main' %}" class="btn same-size">Cancel</a>
