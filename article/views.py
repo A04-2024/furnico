@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from article.forms import ArticleForm, CommentForm
 from article.models import Article, Comment
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, login_required
 
 def is_admin(user):
     return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.tipe == 'admin'
@@ -17,15 +17,18 @@ def show_article(request):
     return render(request, "article.html", context)
 
 @user_passes_test(is_admin)
+@login_required
 def create_article(request):
-    form = ArticleForm(request.POST or None)
+    form = ArticleForm(request.POST or None, request.FILES or None)  # Include request.FILES
 
     if form.is_valid() and request.method == "POST":
-        form.save()
+        article = form.save(commit=False)
+        article.author = request.user
+        article.save()
         return redirect('article:show_article')
 
     context = {'form': form}
-    return render(request, "create_article.html", context)
+    return render(request, 'create_article.html', context)
 
 def article_detail(request, id):
     article = get_object_or_404(Article, id=id)
@@ -51,18 +54,17 @@ def article_detail(request, id):
 
 
 @user_passes_test(is_admin)
+@login_required
 def edit_article(request, id):
     article = get_object_or_404(Article, id=id)
-    if request.method == 'POST':
-        form = ArticleForm(request.POST, instance=article)
-        if form.is_valid():
-            form.save()
-            # Redirect back to the specific article's detail page after editing
-            return redirect('article:article_detail', id=article.id)
-    else:
-        form = ArticleForm(instance=article)
-    
-    return render(request, 'edit_article.html', {'form': form})
+    form = ArticleForm(request.POST or None, request.FILES or None, instance=article)  
+
+    if form.is_valid() and request.method == "POST":
+        form.save()
+        return redirect('article:article_detail', id=article.id)
+
+    context = {'form': form}
+    return render(request, 'edit_article.html', context)
 
 @user_passes_test(is_admin)
 def delete_article(request, id):
@@ -72,8 +74,10 @@ def delete_article(request, id):
     return HttpResponseRedirect(reverse('article:show_article'))
 
 def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+
     if comment.user == request.user:
-        comment = get_object_or_404(Comment, id=comment_id)
-        article_id = comment.article.id  # Get the related article ID before deleting
-        comment.delete()
+        article_id = comment.article.id  
         return redirect('article:article_detail', id=article_id)
+    else:
+        return redirect('article:article_detail', id=comment.article.id)

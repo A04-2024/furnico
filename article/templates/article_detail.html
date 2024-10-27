@@ -3,12 +3,19 @@
 {% block content %}
 <div class="container mx-auto py-8">
     <h1 class="text-3xl font-bold text-blue-600 mb-4">{{ article.title }}</h1>
-    <p class="text-gray-400 mb-6"><em>Created at: {{ article.created_at }}</em></p>
+    <p class="text-gray-400 mb-2">
+        <em>By: {{ article.author.username }}</em> <!-- Displaying the author's name -->
+    </p>
+    <p class="text-gray-400 mb-6">
+        <em>Created at: {{ article.created_at }}</em>
+    </p>
+
+    {% if article.image %}
+    <img src="{{ article.image.url }}" alt="Article Image" class="mb-6 rounded-lg shadow-md"/> <!-- Displaying the image -->
+    {% endif %}
 
     <div class="article-content bg-white p-6 rounded-lg shadow-md">
-        <!-- This will render the article content with its rich formatting (HTML elements) -->
         <div class="prose max-w-none text-gray-700">{{ article.content|safe }}</div> 
-        <!-- Using 'prose' from Tailwind Typography plugin for better content formatting -->
     </div>
 
     <div class="mt-6 flex space-x-4">
@@ -18,8 +25,6 @@
                 Edit
             </button>
         </a>
-        {% endif %}
-        {% if request.user.is_authenticated and request.user.userprofile.tipe == 'admin' %}
         <a href="{% url 'article:delete_article' article.pk %}">
             <button class="bg-red-500 text-white py-2 px-4 rounded-lg shadow hover:bg-red-600 transition-colors duration-200">
                 Delete
@@ -32,19 +37,17 @@
             </button>
         </a>
     </div>
+
     <!-- Display Comments -->
     <h2 class="text-2xl font-bold text-blue-600 mt-8">Comments</h2>
     <div class="comments-list bg-white p-6 rounded-lg shadow-md mt-4">
         {% for comment in comments %}
             <div class="comment mb-4 p-4 border border-gray-200 rounded-lg shadow-sm flex flex-col">
-                <!-- Comment content -->
                 <div>
                     <p class="text-lg font-semibold text-blue-600">{{ comment.user.username }}</p>
                     <p class="text-gray-500 text-sm">{{ comment.created_at }}</p>
                     <p class="mt-2 text-gray-700">{{ comment.body }}</p>
                 </div>
-
-                <!-- Smaller Delete button aligned to bottom right -->
                 {% if comment.user == request.user %}
                 <form method="POST" action="{% url 'article:delete_comment' comment.id %}" class="self-end mt-4">
                     {% csrf_token %}
@@ -63,20 +66,10 @@
     <h3 class="text-xl font-bold text-blue-600 mt-8">Leave a Comment</h3>
     <form method="POST" class="bg-white p-6 rounded-lg shadow-md mt-4 space-y-4">
         {% csrf_token %}
-        
-        <!-- Name Field
-        <div class="mb-4">
-            <label class="block text-gray-700 font-semibold mb-2" for="id_name">Name:</label>
-            <input type="text" name="name" id="id_name" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter your name" required>
-        </div> -->
-
-        <!-- Comment Field -->
         <div class="mb-4">
             <label class="block text-gray-700 font-semibold mb-2" for="id_body">Comment:</label>
             <textarea name="body" id="id_body" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" rows="4" placeholder="Write your comment here..." required></textarea>
         </div>
-
-        <!-- Submit Button -->
         <div class="text-right">
             <button type="submit" class="bg-blue-500 text-white py-2 px-6 rounded-lg shadow hover:bg-blue-600 transition-colors duration-200">
                 Submit

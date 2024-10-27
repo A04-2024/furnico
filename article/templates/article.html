@@ -12,6 +12,11 @@
   <div class="articles-list grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
     {% for article in articles %}
     <div class="article-card bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200">
+
+      {% if article.image %}
+        <img src="{{ article.image.url }}" alt="Article Image" class="w-full h-48 object-cover mb-4 rounded-lg">
+      {% endif %}
+      
       <h2 class="text-xl font-semibold mb-2 text-blue-500 hover:text-blue-700 transition-colors duration-200">
         <a href="{% url 'article:article_detail' article.id %}" class="hover:underline">{{ article.title }}</a>
       </h2>
