@@ -31,7 +31,9 @@
     <p class="text-gray-500">No ratings yet. Be the first to rate this product!</p>
 {% endif %} -->
 
-<div id="rating_cards"></div>
+
+
+    <div id="rating_cards"></div>
 
 <div id="crudModal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 w-full flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-x-hidden overflow-y-auto transition-opacity duration-300 ease-out">
     <div id="crudModalContent" class="relative bg-white p-5 rounded-lg shadow-lg w-5/6 sm:w-3/4 md:w-1/2 lg:w-1/3 mx-4 sm:mx-0 transform scale-95 opacity-0 transition-transform transition-opacity duration-300 ease-out">
@@ -127,10 +129,10 @@
                         <p class="text-gray-700 mt-2">${ item.description }</p>
                         <div class="mt-4 flex space-x-2">
                             ${item.is_owner ? `
-                            <a href="/ratings/${item.id}/edit" class="text-blue-500 hover:text-blue-700">
+                            <a href="/rating/product/${item.id}/edit" class="text-blue-500 hover:text-blue-700">
                                 <i class="fas fa-edit"></i> 
                             </a>
-                            <a href="/ratings/${item.id}/delete" class="text-red-500 hover:text-red-700" onclick="return confirm('Are you sure you want to delete this rating?');">
+                            <a href="/rating/product/${item.id}/delete" class="text-red-500 hover:text-red-700" onclick="return confirm('Are you sure you want to delete this rating?');">
                                 <i class="fas fa-trash-alt"></i> 
                             </a>
                             ` : ''}
