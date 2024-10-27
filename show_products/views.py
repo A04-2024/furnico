@@ -62,10 +62,37 @@ def show_xml(request):
     return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
 
 def show_json(request):
-    # data = Product.objects.all()
-    data = Product.objects.all() # ganti jadi .filter(user=request.user)
-    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+    user = request.user
+    products = Product.objects.all()
 
+    # Create a custom list of dictionaries with the data and the extra field
+    product_list = []
+    for product in products:
+        product_dict = {
+            "model": "show_products.product",
+            "pk": str(product.pk),  # Convert UUID to string
+            "fields": {
+                "product_image": product.product_image,
+                "product_name": product.product_name,
+                "product_subtitle": product.product_subtitle,
+                "product_price": product.product_price,
+                "sold_this_week": product.sold_this_week,
+                "people_bought": product.people_bought,
+                "product_description": product.product_description,
+                "product_advantages": product.product_advantages,
+                "product_material": product.product_material,
+                "product_size_length": product.product_size_length,
+                "product_size_height": product.product_size_height,
+                "product_size_long": product.product_size_long,
+                "product_category": str(product.product_category.id) if product.product_category else None,
+                "product_rating": product.product_rating,
+                "in_wishlist": product.is_in_wishlist(user) if user.is_authenticated else False,
+            }
+        }
+        product_list.append(product_dict)
+
+    # Use JsonResponse to return the custom list
+    return JsonResponse(product_list, safe=False)
 
 def show_json_cat(request):
     # data = Product.objects.all()

@@ -28,3 +28,7 @@ class Product(models.Model):
     product_size_long = models.PositiveIntegerField()
     product_category = models.ForeignKey(Categories, on_delete=models.CASCADE)
     product_rating = models.PositiveSmallIntegerField()
+
+    def is_in_wishlist(self, user):
+        from wishlist.models import WishlistItem
+        return WishlistItem.objects.filter(product = self, collection__user = user).exists()
