@@ -38,14 +38,8 @@
       <!-- Modal header -->
        <div class="flex flex-row">
       <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Add Rating for {{ product.product_name }}</h1>
-      <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-4 ml-auto inline-flex items-center" id="closeModalBtn" onclick="hideModal()">
-        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-          <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-        </svg>
-        <span class="sr-only">Close modal</span>
-      </button>
+      <button type="button" class="text-black bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-4 ml-auto inline-flex items-center" id="closeModalBtn" onclick="hideModal()">
         </div>
-    
         <form method="post" class="space-y-4" id="ratingEntryForm">
         {% csrf_token %}
         
@@ -132,44 +126,21 @@
                         </div>
                         <p class="text-gray-700 mt-2">${ item.description }</p>
                         <div class="mt-4 flex space-x-2">
-
-
-                    <div id="user-data" 
-                        data-rating-user-id="{{ rating.user.id }}" 
-                        data-logged-in-user-id="{{ request.user.id }}">
-                    </div>
-
-                    <a href="/ratings/edit/{{ rating.id }}" 
-                    class="text-blue-500 hover:text-blue-700" 
-                    id="edit-button" 
-                    style="display: none;">
-                        <i class="fas fa-edit"></i>
-                    </a>
-
-                    <a href="/ratings/delete/{{ rating.id }}" 
-                    class="text-red-500 hover:text-red-700" 
-                    id="delete-button" 
-                    style="display: none;" 
-                    onclick="return confirm('Are you sure you want to delete this rating?');">
-                        <i class="fas fa-trash-alt"></i>
-                    </a>
-
-                    </div>
+                            ${item.is_owner ? `
+                            <a href="/ratings/${item.id}/edit" class="text-blue-500 hover:text-blue-700">
+                                <i class="fas fa-edit"></i> 
+                            </a>
+                            <a href="/ratings/${item.id}/delete" class="text-red-500 hover:text-red-700" onclick="return confirm('Are you sure you want to delete this rating?');">
+                                <i class="fas fa-trash-alt"></i> 
+                            </a>
+                            ` : ''}
+                        </div>
                     </div>
                 `;
             });
         }
         document.getElementById("rating_cards").className  = classNameString;
         document.getElementById("rating_cards").innerHTML = htmlString;
-
-        const userData = document.getElementById('user-data');
-        const ratingUserId = userData.getAttribute('data-rating-user-id');
-        const loggedInUserId = userData.getAttribute('data-logged-in-user-id');
-
-        if (ratingUserId === loggedInUserId) {
-            document.getElementById('edit-button').style.display = 'inline';
-            document.getElementById('delete-button').style.display = 'inline';
-        }
     }
     refreshRatings();
 
@@ -223,6 +194,7 @@
         });
     });
 
+    
 </script>
 {% endblock content %}
 

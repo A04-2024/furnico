@@ -31,7 +31,13 @@ class UserSerializer(serializers.ModelSerializer):
 class ProductRatingSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)  # Nested product details
     user = UserSerializer(read_only=True)  # Nested user details
+    is_owner = serializers.SerializerMethodField()  # New field to check ownership
 
     class Meta:
         model = ProductRating
-        fields = ['id', 'product', 'user', 'rating', 'description']
+        fields = ['id', 'product', 'user', 'rating', 'description', 'is_owner']
+
+    def get_is_owner(self, obj):
+        # Checks if the logged-in user is the owner of this rating
+        request = self.context.get('request')
+        return obj.user == request.user if request else False

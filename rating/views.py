@@ -56,11 +56,8 @@ def show_json(request):
     all_rating = ProductRating.objects.all()
     # user_rating = ProductRating.objects.filter(user=request.user)
     # all_rating = all_rating - user_rating
-    serializer = ProductRatingSerializer(all_rating, many=True)
+    serializer = ProductRatingSerializer(all_rating, many=True, context={'request': request})
     json = JSONRenderer().render(serializer.data)
-
-    print(json)
-    print(request.user)
     return HttpResponse(json, content_type="application/json")
 
 def show_json_by_id(request, id):
