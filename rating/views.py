@@ -1,9 +1,15 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse
-from django.contrib.auth.decorators import login_required
+
+from rating.serializers import ProductRatingSerializer
 from .models import ProductRating
 from .forms import ProductRatingForm
 from show_products.models import Product 
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.http import HttpResponse
+from django.core import serializers
+
+from rest_framework.renderers import JSONRenderer
 
 def add_rating(request, id):
     product = get_object_or_404(Product, id=id)
@@ -45,3 +51,33 @@ def delete_rating(request, rating_id):
         return redirect('show_products:show_product', id=product_id)
 
     return redirect('show_products:show_product', id=rating.product.id)
+
+def show_json(request):
+    all_rating = ProductRating.objects.all()
+    # user_rating = ProductRating.objects.filter(user=request.user)
+    # all_rating = all_rating - user_rating
+    serializer = ProductRatingSerializer(all_rating, many=True)
+    json = JSONRenderer().render(serializer.data)
+
+    print(json)
+    print(request.user)
+    return HttpResponse(json, content_type="application/json")
+
+def show_json_by_id(request, id):
+    data = ProductRating.objects.filter(pk=id)
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
+@csrf_exempt
+@require_POST
+def add_rating_ajax(request, id):
+    rating = request.POST.get("rating")
+    description = request.POST.get("description")
+    prod = Product.objects.get(pk=id)
+    user = request.user
+
+    new_rating = ProductRating(
+        rating=rating, description=description, user=user, product=prod
+    )
+    new_rating.save()
+
+    return HttpResponse(b"CREATED", status=201)
