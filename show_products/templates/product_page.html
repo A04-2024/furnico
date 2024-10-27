@@ -57,11 +57,11 @@
             Tambahkan ke wishlist
           </button>
         </a>
-                  <a href="{% url 'report:admin_jumlah_report_ajax' product.id %}">
+        <a href="{% url 'report:admin_jumlah_report_ajax' product.id %}">
             <button class="bg-blue-600 hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded-full">
               Lihat Laporan
             </button>
-          </a>
+        </a>
         {% comment %} {% if user.userprofile.tipe == 'admin' %}
           <!-- Konten khusus untuk admin -->
           <a href="{% url 'report:admin_jumlah_report_ajax' product.id %}">

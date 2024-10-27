@@ -11,22 +11,28 @@
 <div class="flex flex-col items-center justify-center min-h-screen p-8">
   <div class="w-full md:w-1/2">
     <div class="flex flex-col items-center p-8 bg-white rounded-md shadow-lg">
+       
+      <!-- Bagian Judul Daftar Laporan -->
       <div class="mb-8 text-center">
         <h1 class="text-4xl font-extrabold" style="position: relative; z-index: 10;">Daftar Laporan</h1>
       </div>
+
       <div class="w-full">
         {% for report in reports %}
+          <!-- Bagian Report User -->
           <div class="bg-gray-100 p-4 rounded-md mb-4 shadow">
             {% include 'report/admin_card_report.html' %}
             <!-- Separator Line -->
             <hr style="border: none; border-top: 1px solid #e0e0e0; margin-bottom: 15px;">
           </div>
+        <!-- Bagian Belum Ada Report -->
         {% empty %}
           <div class="mb-8 text-center">
-            <p style="font-weight: bold; font-size: 22px; color: #ff0000;">Belum ada laporan.</p>
+            <p style="font-weight: bold; font-size: 22px; color: #ff0000;">Belum ada laporan...</p>
           </div>
         {% endfor %}
       </div>
+
     </div>
   </div>
 </div>
