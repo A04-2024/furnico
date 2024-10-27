@@ -53,7 +53,8 @@ def run():
                 product_size_length=product_size_length,
                 product_size_height=product_size_height,
                 product_size_long=product_size_long,
-                product_category=categories[i % 5]
+                product_category=categories[i % 5],
+                product_rating=0
             )
             i += 1
 
