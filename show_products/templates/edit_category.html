@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<!-- <h1>Edit Category</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="Edit Category"/>
+            </td>
+        </tr>
+    </table>
+</form> -->
+
+<div class="min-h-screen p-6 bg-gray-100 flex items-center justify-center  my-32">
+    <div class="container max-w-screen-lg mx-auto">
+      <div>
+        
+        <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
+          <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
+            <div class="text-gray-600">
+              <p class="font-medium text-lg">Category Details</p>
+              <p>Please fill out all the fields.</p>
+              <div class="text-red-600 text-sm">{{ form.errors }}</div>
+            </div>
+            <div class="lg:col-span-2"> 
+              <form method="POST">
+                {% csrf_token %}
+              <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
+                <div class="md:col-span-5">
+                  <label for="category_name">Category Name</label>
+                  <input type="text" name="category_name" id="category_name" max_length=255 class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{category.category_name}}" />
+                </div>
+  
+                <div class="md:col-span-5 pb-4">
+                  <label for="image_url">Category Image URL</label>
+                  <input type="url" name="image_url" id="image_url" class="rounded-md h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="{{category.image_url}}" placeholder="" />
+                </div>
+  
+                <div class="md:col-span-5 text-right">
+                  <div class="inline-flex items-end">
+                    <input type="submit" value="Edit Category" class="mb-4 px-6 py-2 bg-blue-500 bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

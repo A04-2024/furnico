@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="container mx-auto py-12">
+    <h2 class="text-3xl font-bold mb-8 text-center">Your Wishlist Collections</h2>
+
+    <!-- Wishlist Collections -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for collection in collections %}
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <h3 class="text-xl font-semibold mb-4">{{ collection.name }}</h3>
+
+            <ul class="space-y-2 mb-4">
+                {% for item in collection.wishlistitem_set.all %}
+                <li class="flex justify-between items-center bg-gray-100 p-3 rounded-md">
+                    <span>{{ item.product.product_name }}</span>
+                    <a href="#" class="text-red-500 hover:text-red-700 font-semibold remove-item" data-item-id="{{ item.product.id }}">
+                        <svg class="h-5 w-5 inline-block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M19 13H5v-2h14v2z"/>
+                        </svg> Remove
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+
+            <!-- Edit and Delete buttons -->
+            <div class="flex space-x-2">
+                <button class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition update-collection-btn"
+                    data-collection-id="{{ collection.id }}" data-collection-name="{{ collection.name }}">
+                    Edit
+                </button>
+                {% if collection.name != "Semua Wishlist" %}
+                <button class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition delete-collection-btn"
+                    data-collection-id="{{ collection.id }}">
+                    Delete
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Create New Collection Button -->
+    <div class="mt-8 text-center">
+        <button id="create-collection-btn" class="bg-green-500 text-white px-6 py-3 rounded-md text-lg hover:bg-green-600 transition">
+            Create New Collection
+        </button>
+    </div>
+</div>
+
+<!-- Create Collection Modal -->
+<div id="create-collection-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+    <div class="bg-white rounded-lg p-8 shadow-lg w-1/3">
+        <h3 class="text-lg font-bold mb-4">Create New Collection</h3>
+        <form id="create-collection-form">
+            <input type="text" id="collection-name" class="border rounded-md w-full px-4 py-2 mb-4" placeholder="Collection Name" required>
+            <div class="flex justify-end space-x-4">
+                <button type="button" id="cancel-create-collection" class="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500">Cancel</button>
+                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Create</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Update Collection Modal -->
+<div id="update-collection-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+    <div class="bg-white rounded-lg p-8 shadow-lg w-1/3">
+        <h3 class="text-lg font-bold mb-4">Update Collection</h3>
+        <form id="update-collection-form">
+            <input type="text" id="update-collection-name" class="border rounded-md w-full px-4 py-2 mb-4" required>
+            <input type="hidden" id="update-collection-id">
+            <div class="flex justify-end space-x-4">
+                <button type="button" id="cancel-update-collection" class="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500">Cancel</button>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Update</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+
+    // Show the create collection modal
+    document.getElementById('create-collection-btn').addEventListener('click', function() {
+        document.getElementById('create-collection-modal').classList.remove('hidden');
+    });
+
+    // Hide the create collection modal
+    document.getElementById('cancel-create-collection').addEventListener('click', function() {
+        document.getElementById('create-collection-modal').classList.add('hidden');
+    });
+
+    // Create Collection with AJAX
+    document.getElementById('create-collection-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const collectionName = document.getElementById('collection-name').value;
+
+        fetch("{% url 'wishlist:create_collection' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken  // Pass the CSRF token here
+            },
+            body: JSON.stringify({
+                'collection_name': collectionName
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Collection created: ' + data.collection.name);
+                location.reload();
+            } else {
+                alert('Error: ' + (data.errors || 'Unable to create collection'));
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    // Show the update collection modal
+    document.querySelectorAll('.update-collection-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const collectionId = this.getAttribute('data-collection-id');
+            const collectionName = this.getAttribute('data-collection-name');
+
+            document.getElementById('update-collection-id').value = collectionId;
+            document.getElementById('update-collection-name').value = collectionName;
+            document.getElementById('update-collection-modal').classList.remove('hidden');
+        });
+    });
+
+    // Hide the update collection modal
+    document.getElementById('cancel-update-collection').addEventListener('click', function() {
+        document.getElementById('update-collection-modal').classList.add('hidden');
+    });
+
+    // Update Collection with AJAX
+    document.getElementById('update-collection-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const collectionId = document.getElementById('update-collection-id').value;
+        const collectionName = document.getElementById('update-collection-name').value;
+
+        fetch(`/wishlist/update-collection-name/${collectionId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({
+                'collection_name': collectionName
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Collection updated: ' + data.collection.name);
+                location.reload();
+            } else {
+                alert('Error: ' + (data.errors || 'Unable to update collection'));
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    // Delete Collection with AJAX
+    document.querySelectorAll('.delete-collection-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const collectionId = this.getAttribute('data-collection-id');
+
+            if (confirm('Are you sure you want to delete this collection?')) {
+                fetch(`/wishlist/delete-collection/${collectionId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Collection deleted');
+                        location.reload();
+                    } else {
+                        alert('Error: ' + (data.message || 'Unable to delete collection'));
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        });
+    });
+
+    // Remove Item with AJAX
+    document.querySelectorAll('.remove-item').forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            const itemId = this.getAttribute('data-item-id');
+
+            if (confirm('Are you sure you want to remove this item?')) {
+                fetch(`/wishlist/remove-wishlist/${itemId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Item removed');
+                        location.reload();
+                    } else {
+                        alert('Error: Unable to remove item');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        });
+    });
+</script>
+
+{% endblock %}
