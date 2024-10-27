@@ -29,11 +29,9 @@ def edit_profile(request):
     if request.method == 'POST':
         user_form = UserForm(request.POST, instance=user)
 
-        if is_admin(user):
-            profile_form = UserProfileForm(request.POST, request.FILES, instance=user.userprofile)
-        else:
-            # kalau bukan admin, jangan field 'role'
-            profile_form = UserProfileForm(request.POST, request.FILES, instance=user.userprofile, exclude=['role'])
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=user.userprofile)
+        if not is_admin(user):
+            profile_form.fields.pop('role')  # Remove 'role' field if not admin
         
         password_form = CustomPasswordChangeForm(user=user, data=request.POST)
 
@@ -43,16 +41,13 @@ def edit_profile(request):
             password_form.save()
             update_session_auth_hash(request, password_form.user)  
             messages.success(request, 'Profil Anda telah berhasil diperbarui!')
-            return redirect('edit_profile') 
+            return redirect('show_products:show_main') 
 
     else:
         user_form = UserForm(instance=user)
-
-        if is_admin(user):
-            profile_form = UserProfileForm(instance=user.userprofile)
-        else:
-            profile_form = UserProfileForm(instance=user.userprofile)
-            profile_form.fields.pop('role')  # apus field 'role' kalau bukan admin
+        profile_form = UserProfileForm(instance=user.userprofile)
+        if not is_admin(user):
+            profile_form.fields.pop('role')  # Remove 'role' field if not admin
         password_form = CustomPasswordChangeForm(user=user)
 
     context = {
@@ -64,16 +59,22 @@ def edit_profile(request):
     return render(request, 'editprofile.html', context)
 
 def register(request):
-    form = UserCreationForm()
-
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
+        user_form = UserCreationForm(request.POST)
+        profile_form = UserProfileForm(request.POST, request.FILES)
+        if user_form.is_valid() and profile_form.is_valid():
+            user = user_form.save()
+            profile = profile_form.save(commit=False)
+            profile.user = user  # Assign the user to the profile
+            profile.save()  # Now save the profile to the database
             messages.success(request, 'Your account has been successfully created!')
-            return redirect('login')
-    context = {'form':form}
+            return redirect('editp:login')
+    else:
+        user_form = UserCreationForm()
+        profile_form = UserProfileForm()
+    context = {'user_form': user_form, 'profile_form': profile_form}
     return render(request, 'register.html', context)
+
 
 def login_user(request):
     if request.method == 'POST':
@@ -91,4 +92,4 @@ def login_user(request):
 
 def logout_user(request):
     logout(request)
-    return redirect('login')
+    return redirect('editp:login')

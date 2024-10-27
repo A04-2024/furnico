@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block meta %}
 <title>Register</title>
@@ -6,20 +7,182 @@
 
 {% block content %}
 
-<div class="login">
+<!-- CSS for Styling the Register Page -->
+<style>
+  /* Full screen and center alignment */
+  body, html {
+    height: 100%;
+    margin: 0;
+    /* Add the background image */
+    background: url("{% static 'image/blurbg.png' %}") no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Main container for register with increased width */
+  .register-box {
+    width: 500px;
+    padding: 30px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    text-align: center;
+  }
+
+  /* Bold title */
+  .register-box h1 {
+    font-weight: bold;
+    margin-bottom: 20px;
+    font-size: 2em; /* Twice as big */
+  }
+
+  /* Input fields styling */
+  .input-field {
+    margin-bottom: 20px;
+    text-align: left;
+  }
+
+  .input-field label {
+    font-weight: bold;
+  }
+
+  .input-field input,
+  .input-field select {
+    border: none;
+    outline: none;
+    padding: 8px 0;
+  }
+
+  /* Remove full width for input fields */
+  .input-field input {
+    width: 100%;
+  }
+
+  /* Adjust the select input for Role */
+  .input-field select {
+    width: auto;
+    min-width: 150px; /* Set a minimum width if needed */
+    border-bottom: none; /* Remove the underline */
+  }
+
+  .input-field hr {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    margin-top: 5px;
+  }
+
+  /* Styling for side-by-side fields */
+  .side-by-side {
+    display: flex;
+    gap: 20px; /* Space between the fields */
+  }
+
+  .side-by-side .input-field {
+    flex: 1; /* Evenly distribute space */
+  }
+
+  /* Styling for help text */
+  .help-text {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 5px;
+    text-align: left;
+  }
+
+  /* Register button styling */
+  .btn.register_btn {
+    padding: 10px 30px;
+    background-color: #007bff; /* Blue color */
+    color: white;
+    border: none;
+    border-radius: 30px; /* Oval shape */
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn.register_btn:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+
+  /* Register text styling */
+  .register-text {
+    margin-top: 20px;
+    font-size: 14px;
+  }
+</style>
+
+<!-- Register Page Content -->
+<div class="register-box">
+  <!-- Title -->
   <h1>Register</h1>
 
-  <form method="POST">
+  <!-- Register Form -->
+  <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    <table>
-      {{ form.as_table }}
-      <tr>
-        <td></td>
-        <td><input type="submit" name="submit" value="Daftar" /></td>
-      </tr>
-    </table>
+
+    <!-- User Form Fields with Underline and Help Text -->
+    <div class="input-field">
+      {{ user_form.username.label_tag }}<br>
+      {{ user_form.username }}<hr>
+      {% if user_form.username.help_text %}
+      <small class="help-text">{{ user_form.username.help_text }}</small>
+      {% endif %}
+    </div>
+
+    <div class="input-field">
+      {{ user_form.password1.label_tag }}<br>
+      {{ user_form.password1 }}<hr>
+      {% if user_form.password1.help_text %}
+      <small class="help-text">{{ user_form.password1.help_text }}</small>
+      {% endif %}
+    </div>
+
+    <div class="input-field">
+      {{ user_form.password2.label_tag }}<br>
+      {{ user_form.password2 }}<hr>
+      {% if user_form.password2.help_text %}
+      <small class="help-text">{{ user_form.password2.help_text }}</small>
+      {% endif %}
+    </div>
+
+    <!-- Side by Side Fields: Nomor Telepon and Foto Profil -->
+    <div class="side-by-side">
+      <!-- Nomor Telepon -->
+      <div class="input-field">
+        {{ profile_form.phone_number.label_tag }}<br>
+        {{ profile_form.phone_number }}<hr>
+        {% if profile_form.phone_number.help_text %}
+        <small class="help-text">{{ profile_form.phone_number.help_text }}</small>
+        {% endif %}
+      </div>
+      <!-- Foto Profil -->
+      <div class="input-field">
+        {{ profile_form.profile_picture.label_tag }}<br>
+        {{ profile_form.profile_picture }}<hr>
+        {% if profile_form.profile_picture.help_text %}
+        <small class="help-text">{{ profile_form.profile_picture.help_text }}</small>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Role Field -->
+    <div class="input-field">
+      {{ profile_form.role.label_tag }}<br>
+      {{ profile_form.role }}
+      {% if profile_form.role.help_text %}
+      <small class="help-text">{{ profile_form.role.help_text }}</small>
+      {% endif %}
+    </div>
+
+    <!-- Register Button -->
+    <input class="btn register_btn" type="submit" name="submit" value="Daftar" />
   </form>
 
+  <!-- Messages -->
   {% if messages %}
   <ul>
     {% for message in messages %}
