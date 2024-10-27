@@ -12,14 +12,14 @@
     </div>
 
     <div class="mt-6 flex space-x-4">
-        {% if request.user.is_authenticated and request.user.userprofile.type == 'admin' %}
+        {% if request.user.is_authenticated and request.user.userprofile.tipe == 'admin' %}
         <a href="{% url 'article:edit_article' article.pk %}">
             <button class="bg-blue-500 text-white py-2 px-4 rounded-lg shadow hover:bg-blue-600 transition-colors duration-200">
                 Edit
             </button>
         </a>
         {% endif %}
-        {% if request.user.is_authenticated and request.user.userprofile.type == 'admin' %}
+        {% if request.user.is_authenticated and request.user.userprofile.tipe == 'admin' %}
         <a href="{% url 'article:delete_article' article.pk %}">
             <button class="bg-red-500 text-white py-2 px-4 rounded-lg shadow hover:bg-red-600 transition-colors duration-200">
                 Delete

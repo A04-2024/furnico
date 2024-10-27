@@ -6,7 +6,7 @@ from article.models import Article, Comment
 from django.contrib.auth.decorators import user_passes_test
 
 def is_admin(user):
-    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.type == 'admin'
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.tipe == 'admin'
 
 def show_article(request):
     articles = Article.objects.all()
