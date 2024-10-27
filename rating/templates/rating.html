@@ -38,7 +38,7 @@
       <!-- Modal header -->
        <div class="flex flex-row">
       <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Add Rating for {{ product.product_name }}</h1>
-      <button type="button" class="text-black bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-4 ml-auto inline-flex items-center" id="closeModalBtn" onclick="hideModal()">
+      <button type="button" class="text-black hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-4 ml-auto inline-flex items-center" id="closeModalBtn" onclick="hideModal()"></button>
         </div>
         <form method="post" class="space-y-4" id="ratingEntryForm">
         {% csrf_token %}
