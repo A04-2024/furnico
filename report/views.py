@@ -7,12 +7,6 @@ from report.forms import ReportForm
 from report.models import Report
 from django.http import JsonResponse
 
-# Mendapatkan semua admin
-admins = UserProfile.objects.filter(tipe='admin')
-
-# Mendapatkan semua user non-admin
-users = UserProfile.objects.filter(tipe='user')
-
 # @login_required
 def create_report_ajax(request, product_id):
     furniture = get_object_or_404(Product, id=product_id)
@@ -64,7 +58,7 @@ def admin_list_report_furniture(request, product_id):
 # @login_required
 def admin_list_report(request):
     user_profile = get_object_or_404(UserProfile, user=request.user)
-    if user_profile.tipe != 'admin':
+    if user_profile.role != 'admin':
         messages.error(request, "Anda tidak memiliki izin untuk mengakses halaman ini.")
         return redirect('show_products:show_main')  # Atau halaman lain untuk non-admin
 
