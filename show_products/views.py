@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, reverse
 from show_products.forms import *
 from show_products.models import *
+from report.forms import ReportForm
 
 # returns data in xml and json
 from django.http import HttpResponse, HttpResponseRedirect
@@ -176,7 +177,11 @@ def delete_category(request, id):
 def show_product(request, id):
     product = Product.objects.get(pk = id)
     product.in_wishlist = product.is_in_wishlist(request.user)
-    context = {'product': product}
+    form = ReportForm()
+    context = {
+        'product': product,
+        'form': form,
+    }
     return render(request, "product_page.html", context)
 
 def search_products(request):

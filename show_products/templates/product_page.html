@@ -59,9 +59,29 @@
               <button product-entry-id="{{ product.id }}" class="add-wishlist-btn"><svg class="h-9 lg:h-10 p-2 text-gray-500" aria-hidden="true" focusable="false" data-prefix="far" data-icon="heart" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-heart fa-w-16 fa-9x"><path fill="currentColor" d="M458.4 64.3C400.6 15.7 311.3 23 256 79.3 200.7 23 111.4 15.6 53.6 64.3-21.6 127.6-10.6 230.8 43 285.5l175.4 178.7c10 10.2 23.4 15.9 37.6 15.9 14.3 0 27.6-5.6 37.6-15.8L469 285.6c53.5-54.7 64.7-157.9-10.6-221.3zm-23.6 187.5L259.4 430.5c-2.4 2.4-4.4 2.4-6.8 0L77.2 251.8c-36.5-37.2-43.9-107.6 7.3-150.7 38.9-32.7 98.9-27.8 136.5 10.5l35 35.7 35-35.7c37.8-38.5 97.8-43.2 136.5-10.6 51.1 43.1 43.5 113.9 7.3 150.8z"></path></svg></button>
           {% endif %}
         </div>
-        <button class="bg-red-600 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-full">
-          Laporkan produk ini
-        </button>
+        <div>
+          {% if request.user.userprofile.role == 'admin' %}
+            <!-- Konten khusus untuk admin -->
+            <a href="{% url 'report:admin_list_report' %}">
+              <button class="bg-blue-600 hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded-full lihat-laporan-btn">
+                Lihat Laporan
+              </button>
+            </a>
+          {% elif request.user.userprofile.role == 'user' %}
+            <!-- Konten untuk user biasa -->
+            <button id="laporkan-produk-{{ product.id }}" data-product-id="{{ product.id }}" data-report-url="{% url 'report:create_report' id=product.id %}" class="bg-red-600 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-full laporkan-produk-btn">
+                Laporkan produk ini
+            </button>
+
+          {% else %}
+            <!-- Konten untuk login dulu -->
+            <a href="{% url 'editp:login' %}">
+              <button class="bg-red-600 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-full">
+                Laporkan produk ini
+              </button>
+            </a>
+          {% endif %}
+        </div>
       </div>
       <div>
             <h1 class="text-4xl font-extrabold pb-2">Ulasan Produk</h1>
@@ -179,7 +199,113 @@ document.getElementById('confirm-add-wishlist').addEventListener('click', functi
   }
 });
 
+// Fungsi untuk memperbarui jumlah laporan di halaman admin
+function updateAdminReportCount(productId) {
+    fetch(`/report/admin_jumlah_report_ajax/${productId}/`)
+        .then(response => response.text())
+        .then(html => {
+            const reportCountDiv = document.getElementById(`report-count-${productId}`);
+            reportCountDiv.innerHTML = html;
+        })
+        .catch(error => console.error('Error fetching report count:', error));
+}
+// User Report AJAX
+document.addEventListener('DOMContentLoaded', function () {
+    // Tampilkan form laporan ketika tombol "Laporkan produk ini" diklik
+    const reportButtons = document.querySelectorAll('.laporkan-produk-btn');
+    reportButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            document.getElementById('report-popup-container').style.display = 'block';
+            // Inisialisasi elemen-elemen dalam form laporan
+            const reportUrl = button.getAttribute('data-report-url');
+            const additionalInfo = document.getElementById('additional-info');
+            const submitButton = document.getElementById('submit-button');
+            const cancelButton = document.getElementById('cancel-button');
+            const exitButton = document.getElementById('exit-button');
+            const thankYouMessage = document.getElementById('thank-you-message');
+            const reasonRadios = document.querySelectorAll('input[name="reason"]');
 
+            // Tambahkan event listener untuk menampilkan "Info Tambahan" ketika salah satu alasan dipilih
+            if (reasonRadios.length > 0 && additionalInfo && submitButton) {
+                reasonRadios.forEach(radio => {
+                  radio.addEventListener('change', function() {
+                      console.log("Reason selected:", this.value);
+                      additionalInfo.classList.remove('hidden');
+                      submitButton.disabled = false;
+                  });
+                });
+            } else {
+                console.error('Elemen reason, additional-info, atau submit-button tidak ditemukan');
+            }
 
+            // Tampilkan field "Info Tambahan" setelah alasan dipilih
+            document.querySelectorAll('input[name="reason"]').forEach(radio => {
+                radio.addEventListener('change', function () {
+                    additionalInfo.style.display = 'block';
+                    submitButton.disabled = false;
+                });
+            });
+
+            // Menutup form laporan saat tombol "Batal" atau "Keluar" diklik
+            cancelButton.addEventListener('click', function () {
+                document.getElementById('report-popup-container').style.display = 'none';
+            });
+            exitButton.addEventListener('click', function () {
+                document.getElementById('report-popup-container').style.display = 'none';
+            });
+
+            // Mengirim form laporan melalui AJAX
+            reportForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const formData = new FormData(reportForm);
+                const productId = reportForm.getAttribute('data-product-id');  // Pastikan ini adalah string
+
+                fetch(`/report/create_report/${productId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),  // Mengambil CSRF token
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Menampilkan pesan terima kasih
+                        reportForm.style.display = 'none';
+                        thankYouMessage.style.display = 'block';
+
+                        // Update jumlah laporan di halaman admin jika diperlukan
+                        updateAdminReportCount(productId);
+                    } else {
+                        console.error('Laporan gagal dikirim.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Terjadi masalah saat mengirim laporan:', error);
+                });
+            });
+
+            // Fungsi untuk mendapatkan CSRF token
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        });
+    });
+});
 </script>
+<div id="report-popup-container" style="display: none;">
+    {% include 'create_report.html' with product_id=product.id form=form %}
+</div>
 {% endblock content %}
