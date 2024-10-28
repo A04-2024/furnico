@@ -1,72 +1,23 @@
-<!-- report/templates/report/create_report.html -->
-<div id="report-popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-    background-color: white; padding: 20px; border: 1px solid #ccc; z-index: 1000;">
-    <form id="report-form" method="post">
-        {% csrf_token %}
-        <h3>Pilih Alasan Laporan:</h3>
-        {{ form.reason }}
-        <div id="additional-info" style="display: none;">
-            <h4>Info Tambahan:</h4>
-            {{ form.additional_info }}
+<div id="report-popup" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+        <form id="report-form" method="post" data-product-id="{{ product.id }}" class="space-y-4">
+            {% csrf_token %}
+            <h3 class="text-xl font-semibold text-gray-800">Pilih Alasan Laporan:</h3>
+            <div class="space-y-2">
+                {{ form.reason }}
+            </div>
+            <div id="additional-info" class="hidden">
+                <h4 class="text-lg font-medium text-gray-800">Info Tambahan:</h4>
+                {{ form.additional_info }}
+            </div>
+            <div class="flex justify-end space-x-2">
+                <button type="button" id="cancel-button" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600">Batal</button>
+                <button type="submit" id="submit-button" class="px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50">Kirim</button>
+            </div>
+        </form>
+        <div id="thank-you-message" class="hidden text-center">
+            <p class="text-lg font-semibold text-green-700">Terima Kasih Atas Laporan Anda!</p>
+            <button type="button" id="exit-button" class="mt-4 px-4 py-2 bg-green-600 text-white rounded-md">Keluar</button>
         </div>
-        <button type="button" id="cancel-button" aria-label="Cancel Report">Cancel</button>
-        <button type="submit" id="submit-button" disabled>Submit</button>
-    </form>
-    <div id="thank-you-message" style="display: none;">
-        <p>Terima Kasih Atas Laporan Anda</p>
-        <button type="button" id="exit-button">Keluar</button>
     </div>
 </div>
-
-<script>
-// JavaScript untuk mengontrol form
-document.addEventListener('DOMContentLoaded', function() {
-    const reasonRadios = document.querySelectorAll('input[name="reason"]');
-    const additionalInfo = document.getElementById('additional-info');
-    const submitButton = document.getElementById('submit-button');
-    const cancelButton = document.getElementById('cancel-button');
-    const exitButton = document.getElementById('exit-button');
-    const reportForm = document.getElementById('report-form');
-    const thankYouMessage = document.getElementById('thank-you-message');
-
-    reasonRadios.forEach(radio => {
-        radio.addEventListener('change', function() {
-            additionalInfo.style.display = 'block';
-            submitButton.disabled = false;
-        });
-    });
-
-    cancelButton.addEventListener('click', function() {
-        document.getElementById('report-popup').style.display = 'none';
-    });
-
-    reportForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-        const formData = new FormData(reportForm);
-        fetch("{% url 'report:create_report' %}", {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': '{{ csrf_token }}',
-            },
-            body: formData
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            reportForm.style.display = 'none';
-            thankYouMessage.style.display = 'block';
-        })
-        .catch(error => {
-            console.error('There was a problem with the fetch operation:', error);
-        });
-    });
-
-    exitButton.addEventListener('click', function() {
-        document.getElementById('report-popup').style.display = 'none';
-    });
-});
-</script>
