@@ -73,11 +73,12 @@ def delete_article(request, id):
     # Kembali ke halaman awal
     return HttpResponseRedirect(reverse('article:show_article'))
 
+
 def delete_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
-
     if comment.user == request.user:
-        article_id = comment.article.id  
+        article_id = comment.article.id 
+        comment.delete()  
         return redirect('article:article_detail', id=article_id)
     else:
         return redirect('article:article_detail', id=comment.article.id)
