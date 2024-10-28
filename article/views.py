@@ -1,9 +1,10 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from article.forms import ArticleForm, CommentForm
 from article.models import Article, Comment
 from django.contrib.auth.decorators import user_passes_test, login_required
+from django.views.decorators.http import require_POST
 
 def is_admin(user):
     return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'admin'
@@ -73,11 +74,31 @@ def delete_article(request, id):
     # Kembali ke halaman awal
     return HttpResponseRedirect(reverse('article:show_article'))
 
+
 def delete_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
-
     if comment.user == request.user:
-        article_id = comment.article.id  
+        article_id = comment.article.id 
+        comment.delete()  
         return redirect('article:article_detail', id=article_id)
     else:
         return redirect('article:article_detail', id=comment.article.id)
+    
+
+@require_POST
+def add_comment(request, article_id):
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest' and request.user.is_authenticated:
+        body = request.POST.get('body')
+        article = get_object_or_404(Article, id=article_id)
+
+        comment = Comment.objects.create(user=request.user, article=article, body=body)
+
+        # Prepare the data to return
+        data = {
+            'user': comment.user.username,
+            'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M'),
+            'body': comment.body,
+            'comment_id': comment.id,
+        }
+        return JsonResponse(data)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
