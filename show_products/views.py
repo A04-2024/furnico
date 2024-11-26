@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, reverse
 from show_products.forms import *
 from show_products.models import *
+from report.forms import ReportForm
 
 # returns data in xml and json
 from django.http import HttpResponse, HttpResponseRedirect
@@ -62,10 +63,39 @@ def show_xml(request):
     return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
 
 def show_json(request):
-    # data = Product.objects.all()
-    data = Product.objects.all() # ganti jadi .filter(user=request.user)
-    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+    user = request.user
+    products = Product.objects.all()
 
+    # Create a custom list of dictionaries with the data and the extra field
+    product_list = []
+    for product in products:
+        product_dict = {
+            "model": "show_products.product",
+            "pk": str(product.pk),  # Convert UUID to string
+            "fields": {
+                "product_image": product.product_image,
+                "product_name": product.product_name,
+                "product_subtitle": product.product_subtitle,
+                "product_price": product.product_price,
+                "sold_this_week": product.sold_this_week,
+                "people_bought": product.people_bought,
+                "product_description": product.product_description,
+                "product_advantages": product.product_advantages,
+                "product_material": product.product_material,
+                "product_size_length": product.product_size_length,
+                "product_size_height": product.product_size_height,
+                "product_size_long": product.product_size_long,
+                "product_category": str(product.product_category.id) if product.product_category else None,
+                "product_rating": product.product_rating,
+                "store_name": product.store_name,
+                "store_address": product.store_address,
+                "in_wishlist": product.is_in_wishlist(user) if user.is_authenticated else False,
+            }
+        }
+        product_list.append(product_dict)
+
+    # Use JsonResponse to return the custom list
+    return JsonResponse(product_list, safe=False)
 
 def show_json_cat(request):
     # data = Product.objects.all()
@@ -74,8 +104,38 @@ def show_json_cat(request):
 
 def show_json_filtered(request, id):
     category = Categories.objects.get(pk=id)
-    data = Product.objects.filter(product_category=category)
-    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+    products = Product.objects.filter(product_category=category)
+    user = request.user
+
+    product_list = []
+    for product in products:
+        product_dict = {
+            "model": "show_products.product",
+            "pk": str(product.pk),  # Convert UUID to string
+            "fields": {
+                "product_image": product.product_image,
+                "product_name": product.product_name,
+                "product_subtitle": product.product_subtitle,
+                "product_price": product.product_price,
+                "sold_this_week": product.sold_this_week,
+                "people_bought": product.people_bought,
+                "product_description": product.product_description,
+                "product_advantages": product.product_advantages,
+                "product_material": product.product_material,
+                "product_size_length": product.product_size_length,
+                "product_size_height": product.product_size_height,
+                "product_size_long": product.product_size_long,
+                "product_category": str(product.product_category.id) if product.product_category else None,
+                "product_rating": product.product_rating,
+                "store_name": product.store_name,
+                "store_address": product.store_address,
+                "in_wishlist": product.is_in_wishlist(user) if user.is_authenticated else False,
+            }
+        }
+        product_list.append(product_dict)
+
+    # Use JsonResponse to return the custom list
+    return JsonResponse(product_list, safe=False)
 
 def show_xml_by_id(request, id):
     # data = Product.objects.filter(pk=id)
@@ -84,8 +144,37 @@ def show_xml_by_id(request, id):
 
 def show_json_by_id(request, id):
     # data = Product.objects.filter(pk=id)
-    data = Product.objects.filter(pk=id) 
-    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+    product = Product.objects.get(pk=id) 
+    user = request.user
+
+    product_list = []
+    product_dict = {
+        "model": "show_products.product",
+        "pk": str(product.pk),  # Convert UUID to string
+        "fields": {
+            "product_image": product.product_image,
+            "product_name": product.product_name,
+            "product_subtitle": product.product_subtitle,
+            "product_price": product.product_price,
+            "sold_this_week": product.sold_this_week,
+            "people_bought": product.people_bought,
+            "product_description": product.product_description,
+            "product_advantages": product.product_advantages,
+            "product_material": product.product_material,
+            "product_size_length": product.product_size_length,
+            "product_size_height": product.product_size_height,
+            "product_size_long": product.product_size_long,
+            "product_category": str(product.product_category.id) if product.product_category else None,
+            "product_rating": product.product_rating,
+            "store_name": product.store_name,
+            "store_address": product.store_address,
+            "in_wishlist": product.is_in_wishlist(user) if user.is_authenticated else False,
+        }
+    }
+    product_list.append(product_dict)
+
+    # Use JsonResponse to return the custom list
+    return JsonResponse(product_list, safe=False)
 
 def edit_product(request, id):
     # Get product entry berdasarkan id
@@ -148,7 +237,12 @@ def delete_category(request, id):
 
 def show_product(request, id):
     product = Product.objects.get(pk = id)
-    context = {'product': product}
+    product.in_wishlist = product.is_in_wishlist(request.user)
+    form = ReportForm()
+    context = {
+        'product': product,
+        'form': form,
+    }
     return render(request, "product_page.html", context)
 
 def search_products(request):

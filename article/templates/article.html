@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'navbar.html' %}
+<div  class="container mx-auto" style="padding-top: 130px; padding-bottom: 2rem;">
+  <h1 class="text-3xl font-bold text-blue-600 mb-8 text-center">Articles</h1>
+  
+  <!-- If no articles are available -->
+  {% if not articles %}
+    <p class="text-gray-500 text-center">Belum ada article saat ini.</p>
+  {% else %}
+  
+  <!-- Responsive grid for articles -->
+  <div class="articles-list grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+    {% for article in articles %}
+    <div class="article-card bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200">
+
+      {% if article.image %}
+        <img src="{{ article.image.url }}" alt="Article Image" class="w-full h-48 object-cover mb-4 rounded-lg">
+      {% endif %}
+      
+      <h2 class="text-xl font-semibold mb-2 text-blue-500 hover:text-blue-700 transition-colors duration-200">
+        <a href="{% url 'article:article_detail' article.id %}" class="hover:underline">{{ article.title }}</a>
+      </h2>
+      <p class="text-gray-400 mb-2">
+        <em>By: {{ article.author.username }}</em> <!-- Displaying the author's name -->
+      </p>
+      <p class="text-gray-400 text-sm mb-4">
+        <em>Created at: {{ article.created_at }}</em>
+      </p>
+      
+      <!-- Strip HTML tags and truncate content preview -->
+      <div class="article-content">
+        <p class="text-gray-600 mb-4">{{ article.content|striptags|truncatewords:20 }}</p>
+        <a href="{% url 'article:article_detail' article.id %}" class="text-blue-500 hover:underline font-medium">Read More</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Add New Article Button -->
+  {% if request.user.is_authenticated and request.user.userprofile.role == 'admin' %}
+  <div class="mt-8 flex justify-center">
+    <a href="{% url 'article:create_article' %}">
+      <button class="bg-yellow-400 text-white py-2 px-6 rounded-lg shadow-md hover:bg-yellow-500 transition-colors duration-200">
+        Add New Article
+      </button>
+    </a>
+  </div>
+  {% endif %}
+</div>
+{% endblock content %}

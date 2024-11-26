@@ -15,7 +15,7 @@
     </div>
     
     <div class="px-8">
-        <h1 class="text-4xl font-extrabold pb-2">Halo Username! Jelajahi kategori unggulan kami</h1>
+        <h1 class="text-4xl font-extrabold pb-2">Halo {{ request.user.username }}! Jelajahi kategori unggulan kami</h1>
         <h3 class="text-xl">Temukan beragam produk yang sesuai dengan gaya dan kebutuhan Anda.</h3>
     </div>
 
@@ -42,13 +42,15 @@
         </button>
     </div>
     </div>
-    
+
 
     <div class="p-8 pb-0">
         <h1 class="text-4xl font-extrabold pb-2 p">Produk Populer</h1>
         <h3 class="text-xl pb-4">Temukan penawaran menarik untuk melihat yang sedang hits di Furnico.</h3>
+        {% if request.user.is_authenticated and request.user.userprofile.role == 'admin' %}
         <button data-modal-target="crudModal" data-modal-toggle="crudModal" class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold" onclick="showModal();">Tambah Produk Baru</button>
         <button data-modal-target="category_modal" data-modal-toggle="category_modal" class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold" onclick="showModalCat();">Tambah Kategori Baru</button>
+        {% endif %}
     </div>
 
     <div id="product-list"></div>
@@ -62,7 +64,59 @@
         <h3 class="text-xl">Butuh inspirasi? Cek ide-ide ruangan kami yang telah dikurasi di artikel Furnico!</h3>
     </div>
     <div>
-        <p>tempat dan waktu dipersilahkan kepada joshua</p>
+    {% if not articles %}
+    <div class="px-8">
+        <a href="/article" class="text-xl font-medium text-blue-600 hover:text-blue-800 underline decoration-dotted transition duration-300 ease-in-out">
+            Go to Articles
+        </a>
+    </div>    
+    {% else %}
+    <!-- Responsive grid for articles -->
+    <div class="articles-list grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+    {% for article in articles %}
+    <div class="article-card bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200">
+
+        {% if article.image %}
+        <img src="{{ article.image.url }}" alt="Article Image" class="w-full h-48 object-cover mb-4 rounded-lg">
+        {% endif %}
+        
+        <h2 class="text-xl font-semibold mb-2 text-blue-500 hover:text-blue-700 transition-colors duration-200">
+        <a href="{% url 'article:article_detail' article.id %}" class="hover:underline">{{ article.title }}</a>
+        </h2>
+        <p class="text-gray-400 mb-2">
+        <em>By: {{ article.author.username }}</em> <!-- Displaying the author's name -->
+        </p>
+        <p class="text-gray-400 text-sm mb-4">
+        <em>Created at: {{ article.created_at }}</em>
+        </p>
+        
+        <!-- Strip HTML tags and truncate content preview -->
+        <div class="article-content">
+        <p class="text-gray-600 mb-4">{{ article.content|striptags|truncatewords:20 }}</p>
+        <a href="{% url 'article:article_detail' article.id %}" class="text-blue-500 hover:underline font-medium">Read More</a>
+        </div>
+    </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+    </div>
+</div>
+
+<!-- wishlist modal -->
+<div id="add-wishlist-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-lg w-96 p-6 relative">
+        <h2 class="text-2xl font-bold mb-4">Add to Wishlist</h2>
+        <p>Select a wishlist to add this product:</p>
+
+
+        <select id="wishlist-collection" class="mt-4 w-full p-2 border rounded">
+
+        </select>
+
+        <input type="hidden" id="product-entry-id" />
+
+        <button id="confirm-add-wishlist" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add to Wishlist</button>
+        <button id="cancel-add-wishlist" class="mt-2 text-gray-600">Cancel</button>
     </div>
 </div>
 
@@ -306,6 +360,7 @@
                                     <h3 class="text-black-900 font-extrabold text-2xl tracking-tight">${product.product_name}</h3>
                                     <h3 class="text-black-900 font-semibold text-xl tracking-tight text-wrap text-clip overflow-hidden">${product.product_subtitle}</h3>
                                 </a>
+                                <div class="flex justify-between">
                                 <div class="flex items-center mt-2.5 mb-2">
                                     <svg class="w-5 h-5 text-yellow-300" fill="currentColor" viewBox="0 0 20 20"
                                         xmlns="http://www.w3.org/2000/svg">
@@ -338,9 +393,20 @@
                                         </path>
                                     </svg>
                                     <span class="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ml-3">5.0</span>
-                                    <!-- Logo hati -->
-                                    <svg class="justify-end h-9 lg:h-10 p-2 text-gray-500" aria-hidden="true" focusable="false" data-prefix="far" data-icon="heart" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-heart fa-w-16 fa-9x">
-              <path fill="currentColor" d="M458.4 64.3C400.6 15.7 311.3 23 256 79.3 200.7 23 111.4 15.6 53.6 64.3-21.6 127.6-10.6 230.8 43 285.5l175.4 178.7c10 10.2 23.4 15.9 37.6 15.9 14.3 0 27.6-5.6 37.6-15.8L469 285.6c53.5-54.7 64.7-157.9-10.6-221.3zm-23.6 187.5L259.4 430.5c-2.4 2.4-4.4 2.4-6.8 0L77.2 251.8c-36.5-37.2-43.9-107.6 7.3-150.7 38.9-32.7 98.9-27.8 136.5 10.5l35 35.7 35-35.7c37.8-38.5 97.8-43.2 136.5-10.6 51.1 43.1 43.5 113.9 7.3 150.8z"></path>
+                                                                        </div>
+                                    <div>
+                                        ${product.in_wishlist ? `
+                                            <button onclick="removeFromWishlist('${product.id}')" class="wishlist-btn filled">
+                                                <svg class="h-9 lg:h-10 p-2 text-gray-500" viewBox="0 0 22 22" aria-hidden="true" focusable="false" data-prefix="far" data-icon="heart" role="img" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill="red" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                                                </svg>
+                                            </button>` : `
+                                            <button product-entry-id="${product.id}" class="add-wishlist-btn">
+                                                <svg class="h-9 lg:h-10 p-2 text-gray-500" aria-hidden="true" focusable="false" data-prefix="far" data-icon="heart" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                                    <path fill="currentColor" d="M458.4 64.3C400.6 15.7 311.3 23 256 79.3 200.7 23 111.4 15.6 53.6 64.3-21.6 127.6-10.6 230.8 43 285.5l175.4 178.7c10 10.2 23.4 15.9 37.6 15.9 14.3 0 27.6-5.6 37.6-15.8L469 285.6c53.5-54.7 64.7-157.9-10.6-221.3zm-23.6 187.5L259.4 430.5c-2.4 2.4-4.4 2.4-6.8 0L77.2 251.8c-36.5-37.2-43.9-107.6 7.3-150.7 38.9-32.7 98.9-27.8 136.5 10.5l35 35.7 35-35.7c37.8-38.5 97.8-43.2 136.5-10.6 51.1 43.1 43.5 113.9 7.3 150.8z"></path>
+                                                </svg>
+                                            </button>`}
+                                    </div>
                                 </div>
                                 <div class="flex items-center justify-between pb-4">
                                     <span class="text-xl font-bold text-black-900">Rp${product.product_price}</span>
@@ -348,6 +414,7 @@
                                 </div>
 
                                 <!-- TAMBAHIN PENGECEKAN USER ADMIN ATAU BUKAN DISINI -->
+                                {% if request.user.is_authenticated and request.user.userprofile.role == 'admin' %}
                                 <div class="flex items-center justify-between">
                                         <button data-modal-target="delProductModal" data-modal-toggle="delProductModal" class="mb-4 px-3 py-2 bg-red-500 rounded-full hover:bg-red-700 text-white font-bold transition-colors duration-300" onclick="showModalProduct('${product.id}')">
                                             Hapus Produk
@@ -360,6 +427,7 @@
                                     </a>
                                     
                                 </div>
+                                {% endif %}
                             </div>
                     </div>
 
@@ -422,6 +490,7 @@
                                     <h3 class="text-black-900 font-extrabold text-2xl tracking-tight">${item.fields.product_name}</h3>
                                     <h3 class="text-black-900 font-semibold text-xl tracking-tight text-wrap text-clip overflow-hidden">${item.fields.product_subtitle}</h3>
                                 </a>
+                                <div class="flex justify-between">
                                 <div class="flex items-center mt-2.5 mb-2">
                                     <svg class="w-5 h-5 text-yellow-300" fill="currentColor" viewBox="0 0 20 20"
                                         xmlns="http://www.w3.org/2000/svg">
@@ -454,9 +523,20 @@
                                         </path>
                                     </svg>
                                     <span class="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ml-3">5.0</span>
-                                    <!-- Logo hati -->
-                                    <svg class="justify-end h-9 lg:h-10 p-2 text-gray-500" aria-hidden="true" focusable="false" data-prefix="far" data-icon="heart" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-heart fa-w-16 fa-9x">
-              <path fill="currentColor" d="M458.4 64.3C400.6 15.7 311.3 23 256 79.3 200.7 23 111.4 15.6 53.6 64.3-21.6 127.6-10.6 230.8 43 285.5l175.4 178.7c10 10.2 23.4 15.9 37.6 15.9 14.3 0 27.6-5.6 37.6-15.8L469 285.6c53.5-54.7 64.7-157.9-10.6-221.3zm-23.6 187.5L259.4 430.5c-2.4 2.4-4.4 2.4-6.8 0L77.2 251.8c-36.5-37.2-43.9-107.6 7.3-150.7 38.9-32.7 98.9-27.8 136.5 10.5l35 35.7 35-35.7c37.8-38.5 97.8-43.2 136.5-10.6 51.1 43.1 43.5 113.9 7.3 150.8z"></path>
+                                    </div>
+                                    <div>
+                                        ${item.fields.in_wishlist ? `
+                                            <button onclick="removeFromWishlist('${item.pk}')" class="wishlist-btn filled">
+                                                <svg class="h-9 lg:h-10 p-2 text-gray-500" viewBox="0 0 22 22" aria-hidden="true" focusable="false" data-prefix="far" data-icon="heart" role="img" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill="red" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                                                </svg>
+                                            </button>` : `
+                                            <button product-entry-id="${item.pk}" class="add-wishlist-btn">
+                                                <svg class="h-9 lg:h-10 p-2 text-gray-500" aria-hidden="true" focusable="false" data-prefix="far" data-icon="heart" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                                    <path fill="currentColor" d="M458.4 64.3C400.6 15.7 311.3 23 256 79.3 200.7 23 111.4 15.6 53.6 64.3-21.6 127.6-10.6 230.8 43 285.5l175.4 178.7c10 10.2 23.4 15.9 37.6 15.9 14.3 0 27.6-5.6 37.6-15.8L469 285.6c53.5-54.7 64.7-157.9-10.6-221.3zm-23.6 187.5L259.4 430.5c-2.4 2.4-4.4 2.4-6.8 0L77.2 251.8c-36.5-37.2-43.9-107.6 7.3-150.7 38.9-32.7 98.9-27.8 136.5 10.5l35 35.7 35-35.7c37.8-38.5 97.8-43.2 136.5-10.6 51.1 43.1 43.5 113.9 7.3 150.8z"></path>
+                                                </svg>
+                                            </button>`}
+                                    </div>
                                 </div>
                                 <div class="flex items-center justify-between pb-4">
                                     <span class="text-xl font-bold text-black-900">Rp${item.fields.product_price}</span>
@@ -464,6 +544,7 @@
                                 </div>
 
                                 <!-- TAMBAHIN PENGECEKAN USER ADMIN ATAU BUKAN DISINI -->
+                                {% if request.user.is_authenticated and request.user.userprofile.role == 'admin' %}
                                 <div class="flex items-center justify-between">
                                         <button data-modal-target="delProductModal" data-modal-toggle="delProductModal" class="mb-4 px-3 py-2 bg-red-500 rounded-full hover:bg-red-700 text-white font-bold transition-colors duration-300" onclick="showModalProduct('${item.pk}')">
                                             Hapus Produk
@@ -476,6 +557,7 @@
                                     </a>
                                     
                                 </div>
+                                {% endif %}
                             </div>
                     </div>
 
@@ -602,6 +684,7 @@ async function getCategories(){
         <div class="min-w-[300px] max-w-[300px] relative rounded-lg overflow-hidden">
             <img src="${item.fields.image_url}" class="h-full w-full object-cover" alt="${item.fields.category_name}">
             <div class="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center align-bottom">
+            {% if request.user.is_authenticated and request.user.userprofile.role == 'admin' %}
                 <div class="p-2">
                         <button data-modal-target="delCategoryModal" data-modal-toggle="delCategoryModal" class="px-6 py-2 bg-red-500 rounded-full hover:bg-red-700 text-white font-bold" onclick="showModalCategory('${item.pk}')">Hapus</button>
                 </div>
@@ -610,6 +693,7 @@ async function getCategories(){
                         <button class="px-6 py-2 bg-blue-500 rounded-full hover:bg-blue-700 text-white font-bold">Edit</button>
                     </a>
                 </div>
+            {% endif %}
                 <div class="p-2">
                     <a href="/all_product/${item.pk}" class="hover:underline">
                         <button class="mb-4 px-6 py-2 bg-white bg-opacity-80 rounded-full hover:bg-opacity-100 font-bold">${item.fields.category_name}</button>
@@ -793,5 +877,101 @@ refreshCategories();
       document.getElementById("cancelDeleteCategory").addEventListener("click", hideModalCategory);
       document.getElementById("confirmDeleteCategory").addEventListener("click", deleteCategory);
     
+</script>
+
+<script>
+    // Event delegation for dynamically created elements
+    document.addEventListener("click", function(event) {
+        // Add to Wishlist
+        if (event.target.closest(".add-wishlist-btn")) {
+            const productId = event.target.closest(".add-wishlist-btn").getAttribute("product-entry-id");
+            showWishlistModal(productId);
+        }
+
+        // Remove from Wishlist
+        if (event.target.closest(".wishlist-btn")) {
+            const productId = event.target.closest(".wishlist-btn").getAttribute("product-entry-id");
+            removeFromWishlist(productId);
+        }
+    });
+
+    function showWishlistModal(productId) {
+        document.getElementById("product-entry-id").value = productId;
+        document.getElementById("add-wishlist-modal").classList.remove("hidden");
+
+        // Fetch the list of wishlists for the user
+        fetch(`/wishlist/wishlist-json/`, {
+            method: "GET",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "Content-Type": "application/json",
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                const wishlistDropdown = document.getElementById("wishlist-collection");
+                wishlistDropdown.innerHTML = ""; // Clear previous options
+
+                // Populate wishlist collection in the dropdown
+                if (data.collections.length > 0) {
+                    data.collections.forEach((wishlist) => {
+                        const option = document.createElement("option");
+                        option.value = wishlist.collection_id;
+                        option.textContent = wishlist.collection_name;
+                        wishlistDropdown.appendChild(option);
+                    });
+                } else {
+                    wishlistDropdown.innerHTML = '<option disabled>No wishlists available</option>';
+                }
+            })
+            .catch((error) => console.error("Error fetching wishlist collection:", error));
+    }
+
+    // Close the modal on cancel
+    document.getElementById("cancel-add-wishlist").addEventListener("click", function () {
+        document.getElementById("add-wishlist-modal").classList.add("hidden");
+    });
+
+    // Confirm and add to wishlist without page refresh
+    document.getElementById("confirm-add-wishlist").addEventListener("click", function () {
+        const selectedWishlist = document.getElementById("wishlist-collection").value;
+        const productId = document.getElementById("product-entry-id").value;
+
+        if (selectedWishlist) {
+            fetch(`/wishlist/add-to-wishlist/${productId}/`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ collection_id: selectedWishlist }),
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        location.reload(); // Reload the page to reflect changes
+                        document.getElementById("add-wishlist-modal").classList.add("hidden"); // Hide the modal
+                    } else {
+                        alert("Failed to add to wishlist. Please try again.");
+                    }
+                })
+                .catch((error) => console.error("Error adding to wishlist:", error));
+        } else {
+            alert("Please select a wishlist.");
+        }
+    });
+
+    function removeFromWishlist(productId) {
+        fetch(`/wishlist/remove-wishlist/${productId}/`, {
+            method: "DELETE",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "Content-Type": "application/json",
+            },
+        }).then((response) => {
+            if (response.ok) {
+                location.reload(); // Refresh the page to update the state
+            }
+        });
+    }
 </script>
 {% endblock content %}
