@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Laporan Saya</h2>
+<ul>
+    {% for report in reports %}
+        <li>
+            {{ report.furniture.name }} - {{ report.get_reason_display }}
+            <a href="{% url 'report:edit_report' report.id %}">Edit</a>
+            <a href="{% url 'report:delete_report' report.id %}">Hapus</a>
+        </li>
+    {% empty %}
+        <li>Anda belum membuat laporan.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
