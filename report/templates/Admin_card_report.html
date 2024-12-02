@@ -37,6 +37,13 @@
     <div style="margin-top: 10px;">
         <p style="font-size: 14px; color: #888;"><span style="font-weight: bold;">Tanggal:</span> {{ report.date_reported }}</p>
     </div>
+
+    <!-- Tombol Hapus -->
+    <div style="margin-top: 10px;">
+        <button type="button" class="delete-report-btn" data-report-id="{{ report.id }}" style="background-color: #e3342f; color: white; padding: 10px; border: none; border-radius: 5px;">
+            Hapus Laporan
+        </button>
+    </div>
 </div>
 
 <!-- Animasi hover menggunakan CSS -->
