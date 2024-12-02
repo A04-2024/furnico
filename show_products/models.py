@@ -26,6 +26,8 @@ class Product(models.Model):
     product_size_height = models.PositiveIntegerField()
     product_size_long = models.PositiveIntegerField()
     product_category = models.ForeignKey(Categories, on_delete=models.CASCADE)
+    store_name = models.CharField(max_length=255)
+    store_address = models.CharField(max_length=1000)
     product_rating = models.PositiveSmallIntegerField()
 
     def is_in_wishlist(self, user):

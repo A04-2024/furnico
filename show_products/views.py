@@ -87,6 +87,8 @@ def show_json(request):
                 "product_size_long": product.product_size_long,
                 "product_category": str(product.product_category.id) if product.product_category else None,
                 "product_rating": product.product_rating,
+                "store_name": product.store_name,
+                "store_address": product.store_address,
                 "in_wishlist": product.is_in_wishlist(user) if user.is_authenticated else False,
             }
         }
@@ -102,8 +104,38 @@ def show_json_cat(request):
 
 def show_json_filtered(request, id):
     category = Categories.objects.get(pk=id)
-    data = Product.objects.filter(product_category=category)
-    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+    products = Product.objects.filter(product_category=category)
+    user = request.user
+
+    product_list = []
+    for product in products:
+        product_dict = {
+            "model": "show_products.product",
+            "pk": str(product.pk),  # Convert UUID to string
+            "fields": {
+                "product_image": product.product_image,
+                "product_name": product.product_name,
+                "product_subtitle": product.product_subtitle,
+                "product_price": product.product_price,
+                "sold_this_week": product.sold_this_week,
+                "people_bought": product.people_bought,
+                "product_description": product.product_description,
+                "product_advantages": product.product_advantages,
+                "product_material": product.product_material,
+                "product_size_length": product.product_size_length,
+                "product_size_height": product.product_size_height,
+                "product_size_long": product.product_size_long,
+                "product_category": str(product.product_category.id) if product.product_category else None,
+                "product_rating": product.product_rating,
+                "store_name": product.store_name,
+                "store_address": product.store_address,
+                "in_wishlist": product.is_in_wishlist(user) if user.is_authenticated else False,
+            }
+        }
+        product_list.append(product_dict)
+
+    # Use JsonResponse to return the custom list
+    return JsonResponse(product_list, safe=False)
 
 def show_xml_by_id(request, id):
     # data = Product.objects.filter(pk=id)
@@ -112,8 +144,37 @@ def show_xml_by_id(request, id):
 
 def show_json_by_id(request, id):
     # data = Product.objects.filter(pk=id)
-    data = Product.objects.filter(pk=id) 
-    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+    product = Product.objects.get(pk=id) 
+    user = request.user
+
+    product_list = []
+    product_dict = {
+        "model": "show_products.product",
+        "pk": str(product.pk),  # Convert UUID to string
+        "fields": {
+            "product_image": product.product_image,
+            "product_name": product.product_name,
+            "product_subtitle": product.product_subtitle,
+            "product_price": product.product_price,
+            "sold_this_week": product.sold_this_week,
+            "people_bought": product.people_bought,
+            "product_description": product.product_description,
+            "product_advantages": product.product_advantages,
+            "product_material": product.product_material,
+            "product_size_length": product.product_size_length,
+            "product_size_height": product.product_size_height,
+            "product_size_long": product.product_size_long,
+            "product_category": str(product.product_category.id) if product.product_category else None,
+            "product_rating": product.product_rating,
+            "store_name": product.store_name,
+            "store_address": product.store_address,
+            "in_wishlist": product.is_in_wishlist(user) if user.is_authenticated else False,
+        }
+    }
+    product_list.append(product_dict)
+
+    # Use JsonResponse to return the custom list
+    return JsonResponse(product_list, safe=False)
 
 def edit_product(request, id):
     # Get product entry berdasarkan id
