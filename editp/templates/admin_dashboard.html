@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+<title>Admin Dashboard</title>
+{% endblock meta %}
+
+{% block content %}
+
+<style>
+    body, html {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+  
+    .admin-dashboard-box {
+      width: 95%; /* Ubah lebar menjadi 95% layar */
+      max-width: 1400px; /* Maksimal lebar kotak */
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      background-color: #ffffff;
+      text-align: left;
+      margin: 20px 0; /* Tambahkan margin untuk estetika */
+    }
+  
+    .admin-dashboard-box h2 {
+      font-weight: bold;
+      margin-bottom: 20px;
+      font-size: 2em;
+      text-align: center; /* Pusatkan judul */
+    }
+  
+    table {
+      width: 100%; /* Tabel menggunakan seluruh lebar kotak */
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+  
+    table th, table td {
+      text-align: left;
+      padding: 15px; /* Tambahkan lebih banyak padding untuk tampilan rapi */
+      border-bottom: 1px solid #ddd;
+    }
+  
+    table th {
+      background-color: #f7f7f7;
+      font-weight: bold;
+      font-size: 1.1em; /* Perbesar font header */
+    }
+  
+    table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+  
+    table img {
+      width: 60px; /* Sesuaikan ukuran gambar */
+      height: 60px;
+      border-radius: 50%;
+    }
+  
+    .btn {
+      padding: 8px 20px;
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: bold;
+      text-decoration: none;
+      transition: transform 0.2s ease;
+      margin: 5px;
+      display: inline-block;
+      text-align: center;
+      font-size: 0.9em; /* Sesuaikan ukuran font tombol */
+    }
+  
+    .btn:hover {
+      transform: scale(1.05);
+    }
+  </style>  
+
+<div class="admin-dashboard-box">
+  <h2>Admin Dashboard</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nama Depan</th>
+        <th>Nama Belakang</th>
+        <th>Nomor Telepon</th>
+        <th>Email</th>
+        <th>Foto Profil</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.first_name }}</td>
+        <td>{{ user.last_name }}</td>
+        <td>{{ user.userprofile.phone_number }}</td>
+        <td>{{ user.email }}</td>
+        <td>
+          {% if user.userprofile.profile_picture %}
+          <img src="{{ user.userprofile.profile_picture.url }}" alt="Foto Profil" style="width: 50px; height: 50px; border-radius: 50%;">
+          {% else %}
+          <span>Tidak Ada</span>
+          {% endif %}
+        </td>
+        <td>
+          <a href="{% url 'editp:delete_user' user.id %}" class="btn"
+             onclick="return confirm('Apakah Anda yakin ingin menghapus pengguna ini?');">
+             Hapus
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock content %}

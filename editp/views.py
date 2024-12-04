@@ -1,15 +1,13 @@
 from django.shortcuts import render, redirect
-
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 from .forms import UserForm, UserProfileForm, CustomPasswordChangeForm
-
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-
 from .models import UserProfile
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.models import User
 
 # Create your views here.
 def is_admin(user):
@@ -94,3 +92,26 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     return redirect('editp:login')
+
+@login_required
+def delete_user(request, user_id):
+    try:
+        user_to_delete = User.objects.get(id=user_id)
+        if user_to_delete == request.user:
+            messages.error(request, 'Anda tidak dapat menghapus diri sendiri.')
+        else:
+            user_to_delete.delete()
+            messages.success(request, f'Pengguna dengan nama {user_to_delete.username} berhasil dihapus.')
+    except User.DoesNotExist:
+        messages.error(request, 'Pengguna tidak ditemukan.')
+
+    return redirect('editp:admin_dashboard') 
+
+@login_required
+def admin_dashboard(request):
+    if not is_admin(request.user):
+        return redirect('show_products:show_main')
+    
+    users = User.objects.filter(is_superuser=False)
+    context = {'users': users}
+    return render(request, 'admin_dashboard.html', context)
