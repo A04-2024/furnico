@@ -306,7 +306,6 @@ def create_category_ajax(request):
 
     return HttpResponse(b"CREATED", status=201)
 
-# Example in Django (views.py)
 def search_products(request):
     query = request.GET.get('q', '')
     offset = int(request.GET.get('offset', 0))  # Default to 0
