@@ -14,6 +14,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
+import json
+
 # Create your views here.
 def show_products(request):
     context = {
@@ -285,7 +287,7 @@ def create_product_entry_ajax(request):
         product_size_length=product_size_length,
         product_size_height=product_size_height,
         product_size_long=product_size_long,
-        product_category=Categories.objects.get(id=product_category)
+        product_category=Categories.objects.get(id=product_category),
     )
     new_product.save()
 
@@ -315,3 +317,40 @@ def search_products(request):
     products = Product.objects.filter(product_name__icontains=query)[offset:offset + limit]
     data = {'products': list(products.values())}
     return JsonResponse(data)
+
+
+# ==============================================
+# FLUTTERRR 
+# ==============================================
+@csrf_exempt
+def create_product_flutter(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        print(request.body)
+        category = Categories.objects.get(id=data["product_category"])
+        print(category.category_name)
+        new_product = Product.objects.create(
+                product_image=data["product_image"],
+                product_name=data["product_name"],
+                product_subtitle=data["product_subtitle"],
+                product_price=int(data["product_price"]),
+                sold_this_week=int(data["sold_this_week"]),
+                people_bought=int(data["people_bought"]),
+                product_description=data["product_description"],
+                product_advantages=data["product_advantages"],
+                product_material=data["product_material"],
+                product_size_length=int(data["product_size_length"]),
+                product_size_height=int(data["product_size_height"]),
+                product_size_long=int(data["product_size_long"]),
+                product_category=category,
+                store_name=data["store_name"],
+                store_address=data["store_address"],
+            )
+
+        print(new_product)
+        new_product.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)

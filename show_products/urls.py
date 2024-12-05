@@ -23,4 +23,7 @@ urlpatterns = [
     path('json_cat/', show_json_cat, name='show_json_cat'),
     path('xml/<str:id>/', show_xml_by_id, name='show_xml_by_id'),
     path('json/<str:id>/', show_json_by_id, name='show_json_by_id'),
+
+    path('create_product_flutter/', create_product_flutter, name='create_product_flutter'),
+
 ]
