@@ -28,5 +28,6 @@ urlpatterns = [
     path('create_category_flutter/', create_category_flutter, name='create_category_flutter'),
     path('delete_category_flutter/', delete_category_flutter, name='delete_category_flutter'),
     path('delete_product_flutter/', delete_product_flutter, name='delete_product_flutter'),
+    path('edit_product_flutter/', edit_product_flutter, name='edit_product_flutter'),
 
 ]

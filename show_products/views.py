@@ -389,3 +389,34 @@ def delete_product_flutter(request):
         return JsonResponse({"status": "success"}, status=200)
     else:
         return JsonResponse({"status": "error"}, status=401)
+    
+@csrf_exempt
+def edit_product_flutter(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        product = Product.objects.get(id=data["product_id"])
+        category = Categories.objects.get(id=data["product_category"])
+
+        product.product_image=data["product_image"]
+        product.product_name=data["product_name"]
+        product.product_subtitle=data["product_subtitle"]
+        product.product_price=int(data["product_price"])
+        product.sold_this_week=int(data["sold_this_week"])
+        product.people_bought=int(data["people_bought"])
+        product.product_description=data["product_description"]
+        product.product_advantages=data["product_advantages"]
+        product.product_material=data["product_material"]
+        product.product_size_length=int(data["product_size_length"])
+        product.product_size_height=int(data["product_size_height"])
+        product.product_size_long=int(data["product_size_long"])
+        product.product_category=category
+        product.store_name=data["store_name"]
+        product.store_address=data["store_address"]
+
+        product.save()
+        print(product)
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
