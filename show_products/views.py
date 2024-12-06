@@ -104,6 +104,11 @@ def show_json_cat(request):
     data = Categories.objects.all() # ganti jadi .filter(user=request.user)
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
+def show_json_cat_get(request, id):
+    data = Categories.objects.filter(pk=id)  
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
+
 def show_json_filtered(request, id):
     category = Categories.objects.get(pk=id)
     products = Product.objects.filter(product_category=category)
@@ -416,6 +421,21 @@ def edit_product_flutter(request):
 
         product.save()
         print(product)
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+@csrf_exempt
+def edit_category_flutter(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        category = Categories.objects.get(id=data["category_id"])
+
+        category.image_url=data["category_image"]
+        category.category_name=data["category_name"]
+
+        category.save()
 
         return JsonResponse({"status": "success"}, status=200)
     else:

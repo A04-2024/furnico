@@ -21,6 +21,7 @@ urlpatterns = [
     path('xml/', show_xml, name='show_xml'),
     path('json/', show_json, name='show_json'),
     path('json_cat/', show_json_cat, name='show_json_cat'),
+    path('json_cat/<str:id>/', show_json_cat_get, name='show_json_cat_get'),
     path('xml/<str:id>/', show_xml_by_id, name='show_xml_by_id'),
     path('json/<str:id>/', show_json_by_id, name='show_json_by_id'),
 
@@ -29,5 +30,6 @@ urlpatterns = [
     path('delete_category_flutter/', delete_category_flutter, name='delete_category_flutter'),
     path('delete_product_flutter/', delete_product_flutter, name='delete_product_flutter'),
     path('edit_product_flutter/', edit_product_flutter, name='edit_product_flutter'),
+    path('edit_category_flutter/', edit_category_flutter, name='edit_category_flutter'),
 
 ]
