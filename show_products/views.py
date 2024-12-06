@@ -179,23 +179,18 @@ def show_json_by_id(request, id):
     return JsonResponse(product_list, safe=False)
 
 def edit_product(request, id):
-    # Get product entry berdasarkan id
     product = Product.objects.get(pk = id)
     category = product.product_category
     categories = Categories.objects.all()
 
-    # Set product entry sebagai instance dari form
     form = ProductEntryForm(request.POST or None, instance=product)
 
     if form.is_valid() and request.method == "POST":
-        # Simpan form dan kembali ke halaman awal
-        product_entry = form.save()  # Simpan produk baru
-
-        # Akses kategori terkait dan tambahkan 1 ke jumlah_product
+        product_entry = form.save()  
         new_category = product_entry.product_category
         if (category != new_category):
             category.unique_products -= 1
-        category.save()  # Simpan perubahan kategori
+        category.save()
         return HttpResponseRedirect(reverse('show_products:show_main'))
 
     context = {'form': form,
@@ -350,6 +345,46 @@ def create_product_flutter(request):
 
         print(new_product)
         new_product.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+
+@csrf_exempt
+def create_category_flutter(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        new_category = Categories.objects.create(
+            image_url=data["category_image"],
+            category_name=data["category_name"],
+        )
+
+        new_category.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+    
+@csrf_exempt
+def delete_category_flutter(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        category = Categories.objects.get(id=data["category_id"])
+        category.delete()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+
+@csrf_exempt
+def delete_product_flutter(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        product = Product.objects.get(id=data["product_id"])
+        product.delete()
 
         return JsonResponse({"status": "success"}, status=200)
     else:
