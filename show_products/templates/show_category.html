@@ -44,8 +44,10 @@
     <div class="p-8 pb-0">
         <h1 class="text-4xl font-extrabold pb-2 p">Produk Populer</h1>
         <h3 class="text-xl pb-4">Temukan penawaran menarik untuk melihat yang sedang hits di Furnico.</h3>
+        {% if request.user.is_authenticated and request.user.userprofile.role == 'admin' %}
         <button data-modal-target="crudModal" data-modal-toggle="crudModal" class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold" onclick="showModal();">Tambah Produk Baru</button>
         <button data-modal-target="category_modal" data-modal-toggle="category_modal" class="mb-4 px-6 py-2 bg-black bg-opacity-80 rounded-full hover:bg-opacity-100 text-zinc-50 font-bold" onclick="showModalCat();">Tambah Kategori Baru</button>
+        {% endif %}
     </div>
 
     <div id="product-list"></div>
@@ -331,6 +333,7 @@
                                 </div>
 
                                 <!-- TAMBAHIN PENGECEKAN USER ADMIN ATAU BUKAN DISINI -->
+                                {% if request.user.is_authenticated and request.user.userprofile.role == 'admin' %}
                                 <div class="flex items-center justify-between">
                                     <button data-modal-target="delProductModal" data-modal-toggle="delProductModal" class="mb-4 px-3 py-2 bg-red-500 rounded-full hover:bg-red-700 text-white font-bold transition-colors duration-300" onclick="showModalProduct('${product.id}')">
                                             Hapus Produk
@@ -343,6 +346,7 @@
                                     </a>
                                     
                                 </div>
+                                {% endif %}
                             </div>
                     </div>
 
@@ -446,6 +450,7 @@
                                 </div>
 
                                 <!-- TAMBAHIN PENGECEKAN USER ADMIN ATAU BUKAN DISINI -->
+                                {% if request.user.is_authenticated and request.user.userprofile.role == 'admin' %}
                                 <div class="flex items-center justify-between">
                                     <button data-modal-target="delProductModal" data-modal-toggle="delProductModal" class="mb-4 px-3 py-2 bg-red-500 rounded-full hover:bg-red-700 text-white font-bold transition-colors duration-300" onclick="showModalProduct('${item.pk}')">
                                             Hapus Produk
@@ -458,6 +463,7 @@
                                     </a>
                                     
                                 </div>
+                                {% endif %}
                             </div>
                     </div>
 
@@ -581,6 +587,7 @@
             <div class="min-w-[300px] max-w-[300px] relative rounded-lg overflow-hidden">
                 <img src="${item.fields.image_url}" class="h-full w-full object-cover" alt="${item.fields.category_name}">
                 <div class="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center align-bottom">
+                    {% if request.user.is_authenticated and request.user.userprofile.role == 'admin' %}
                     <div class="p-2">
                         <button data-modal-target="delCategoryModal" data-modal-toggle="delCategoryModal" class="px-6 py-2 bg-red-500 rounded-full hover:bg-red-700 text-white font-bold" onclick="showModalCategory('${item.pk}')">Hapus</button>
                     </div>
@@ -589,6 +596,7 @@
                             <button class="px-6 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-700 font-bold">Edit</button>
                         </a>
                     </div>
+                    {% endif %}
                     <div class="p-2">
                         <a href="/all_product/${item.pk}" class="hover:underline">
                             <button class="mb-4 px-6 py-2 bg-white bg-opacity-80 rounded-full hover:bg-opacity-100 font-bold">${item.fields.category_name}</button>
