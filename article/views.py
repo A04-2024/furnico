@@ -102,3 +102,10 @@ def add_comment(request, article_id):
         }
         return JsonResponse(data)
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+# @user_passes_test(is_admin)
+def show_json(request):
+    data = list(Article.objects.values(
+        'id', 'title', 'created_at', 'content', 'image', 'author__username'
+    ))
+    return JsonResponse(data, safe=False)
