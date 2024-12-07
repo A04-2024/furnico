@@ -115,3 +115,19 @@ def show_json(request):
 def show_json_comment(request):
     data =  Comment.objects.all()
     return HttpResponse(serializers.serialize("json", data), content_type ="application/json")
+
+@csrf_exempt
+def create_article_flutter(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        new_article = Article.objects.create(
+            title=data["title"],
+            content=data["content"],
+            image=data.get("image"),  # Pastikan untuk menangani upload gambar dengan benar
+            author=request.user
+        )
+        new_article.save()
+
+        return JsonResponse({"status": "success", "article_id": str(new_article.id)}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
