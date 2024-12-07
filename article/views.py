@@ -1,10 +1,12 @@
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from article.forms import ArticleForm, CommentForm
 from article.models import Article, Comment
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
+from django.core import serializers
 
 def is_admin(user):
     return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'admin'
@@ -109,3 +111,7 @@ def show_json(request):
         'id', 'title', 'created_at', 'content', 'image', 'author__username'
     ))
     return JsonResponse(data, safe=False)
+
+def show_json_comment(request):
+    data =  Comment.objects.all()
+    return HttpResponse(serializers.serialize("json", data), content_type ="application/json")
