@@ -13,7 +13,7 @@ urlpatterns = [
     path('delete-comment/<int:comment_id>/', delete_comment, name='delete_comment'),
     path('add-comment/<uuid:article_id>/', add_comment, name='add_comment'),
     path('json-article/', show_json, name='show_json'),
-    path('json-article-comment/', show_json_comment, name='show_json_comment'),
+    path('json-article-comment/<uuid:article_id>/', show_json_comment, name='show_json_comment'),
     path('create-article-flutter/', create_article_flutter, name='create_article_flutter'),
-    path('create-comment-flutter/', create_comment_flutter, name='create-comment-flutter'),
+    path('create-comment-flutter/<uuid:article_id>', create_comment_flutter, name='create-comment-flutter'),
 ]
