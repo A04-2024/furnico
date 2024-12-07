@@ -1,3 +1,4 @@
+import json
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
@@ -129,5 +130,20 @@ def create_article_flutter(request):
         new_article.save()
 
         return JsonResponse({"status": "success", "article_id": str(new_article.id)}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+    
+@csrf_exempt
+def create_comment_flutter(request, article_id):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        article = get_object_or_404(Article, id=article_id)  # Mengambil artikel berdasarkan ID
+        new_comment = Comment.objects.create(
+            article=article,
+            user=request.user,
+            body=data["body"]
+        )
+        new_comment.save()
+        return JsonResponse({"status": "success", "comment_id": new_comment.id}, status=200)
     else:
         return JsonResponse({"status": "error"}, status=401)
