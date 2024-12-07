@@ -14,6 +14,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
+import json
+
 # Create your views here.
 def show_products(request):
     context = {
@@ -102,6 +104,11 @@ def show_json_cat(request):
     data = Categories.objects.all() # ganti jadi .filter(user=request.user)
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
+def show_json_cat_get(request, id):
+    data = Categories.objects.filter(pk=id)  
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
+
 def show_json_filtered(request, id):
     category = Categories.objects.get(pk=id)
     products = Product.objects.filter(product_category=category)
@@ -177,23 +184,18 @@ def show_json_by_id(request, id):
     return JsonResponse(product_list, safe=False)
 
 def edit_product(request, id):
-    # Get product entry berdasarkan id
     product = Product.objects.get(pk = id)
     category = product.product_category
     categories = Categories.objects.all()
 
-    # Set product entry sebagai instance dari form
     form = ProductEntryForm(request.POST or None, instance=product)
 
     if form.is_valid() and request.method == "POST":
-        # Simpan form dan kembali ke halaman awal
-        product_entry = form.save()  # Simpan produk baru
-
-        # Akses kategori terkait dan tambahkan 1 ke jumlah_product
+        product_entry = form.save()  
         new_category = product_entry.product_category
         if (category != new_category):
             category.unique_products -= 1
-        category.save()  # Simpan perubahan kategori
+        category.save()
         return HttpResponseRedirect(reverse('show_products:show_main'))
 
     context = {'form': form,
@@ -285,7 +287,7 @@ def create_product_entry_ajax(request):
         product_size_length=product_size_length,
         product_size_height=product_size_height,
         product_size_long=product_size_long,
-        product_category=Categories.objects.get(id=product_category)
+        product_category=Categories.objects.get(id=product_category),
     )
     new_product.save()
 
@@ -306,7 +308,6 @@ def create_category_ajax(request):
 
     return HttpResponse(b"CREATED", status=201)
 
-# Example in Django (views.py)
 def search_products(request):
     query = request.GET.get('q', '')
     offset = int(request.GET.get('offset', 0))  # Default to 0
@@ -316,3 +317,126 @@ def search_products(request):
     products = Product.objects.filter(product_name__icontains=query)[offset:offset + limit]
     data = {'products': list(products.values())}
     return JsonResponse(data)
+
+
+# ==============================================
+# FLUTTERRR 
+# ==============================================
+@csrf_exempt
+def create_product_flutter(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        print(request.body)
+        category = Categories.objects.get(id=data["product_category"])
+        print(category.category_name)
+        new_product = Product.objects.create(
+                product_image=data["product_image"],
+                product_name=data["product_name"],
+                product_subtitle=data["product_subtitle"],
+                product_price=int(data["product_price"]),
+                sold_this_week=int(data["sold_this_week"]),
+                people_bought=int(data["people_bought"]),
+                product_description=data["product_description"],
+                product_advantages=data["product_advantages"],
+                product_material=data["product_material"],
+                product_size_length=int(data["product_size_length"]),
+                product_size_height=int(data["product_size_height"]),
+                product_size_long=int(data["product_size_long"]),
+                product_category=category,
+                store_name=data["store_name"],
+                store_address=data["store_address"],
+            )
+
+        print(new_product)
+        new_product.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+
+@csrf_exempt
+def create_category_flutter(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        new_category = Categories.objects.create(
+            image_url=data["category_image"],
+            category_name=data["category_name"],
+        )
+
+        new_category.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+    
+@csrf_exempt
+def delete_category_flutter(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        category = Categories.objects.get(id=data["category_id"])
+        category.delete()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+
+@csrf_exempt
+def delete_product_flutter(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        product = Product.objects.get(id=data["product_id"])
+        product.delete()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+    
+@csrf_exempt
+def edit_product_flutter(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        product = Product.objects.get(id=data["product_id"])
+        category = Categories.objects.get(id=data["product_category"])
+
+        product.product_image=data["product_image"]
+        product.product_name=data["product_name"]
+        product.product_subtitle=data["product_subtitle"]
+        product.product_price=int(data["product_price"])
+        product.sold_this_week=int(data["sold_this_week"])
+        product.people_bought=int(data["people_bought"])
+        product.product_description=data["product_description"]
+        product.product_advantages=data["product_advantages"]
+        product.product_material=data["product_material"]
+        product.product_size_length=int(data["product_size_length"])
+        product.product_size_height=int(data["product_size_height"])
+        product.product_size_long=int(data["product_size_long"])
+        product.product_category=category
+        product.store_name=data["store_name"]
+        product.store_address=data["store_address"]
+
+        product.save()
+        print(product)
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+@csrf_exempt
+def edit_category_flutter(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        category = Categories.objects.get(id=data["category_id"])
+
+        category.image_url=data["category_image"]
+        category.category_name=data["category_name"]
+
+        category.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
