@@ -113,9 +113,12 @@ def show_json(request):
     ))
     return JsonResponse(data, safe=False)
 
-def show_json_comment(request):
-    data =  Comment.objects.all()
-    return HttpResponse(serializers.serialize("json", data), content_type ="application/json")
+def show_json_comment(request, article_id):
+    data = list(Comment.objects.filter(article_id=article_id).values(
+        'body', 'created_at', 'user__username'
+    ))
+    return JsonResponse(data, safe=False)
+
 
 @csrf_exempt
 def create_article_flutter(request):
