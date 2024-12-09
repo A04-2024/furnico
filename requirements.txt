@@ -6,3 +6,4 @@ requests
 urllib3
 Pillow
 djangorestframework
+django-cors-headers
