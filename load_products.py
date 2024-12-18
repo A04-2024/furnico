@@ -39,6 +39,8 @@ def run():
             product_size_length = row[9]
             product_size_height = row[10]
             product_size_long = row[11]
+            store_name = row[12]
+            store_address = row[13]
 
             Product.objects.create(
                 product_image=product_image,
@@ -54,7 +56,9 @@ def run():
                 product_size_height=product_size_height,
                 product_size_long=product_size_long,
                 product_category=categories[i % 5],
-                product_rating=0
+                product_rating=0,
+                store_name=store_name,
+                store_address=store_address,
             )
             i += 1
 
