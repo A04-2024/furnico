@@ -35,7 +35,6 @@ def wishlist_view(request):
     collections = Collection.objects.filter(user=request.user)
     return render(request, 'wishlist.html', {'collections': collections})
 
-@csrf_exempt
 def wishlist_json_view(request):
     if not request.user.is_authenticated:
         return JsonResponse({'success': False, 'message': 'User not authenticated or logged in'})
@@ -57,7 +56,7 @@ def wishlist_json_view(request):
         }
         wishlist_data.append(collection_data)
 
-    return JsonResponse({'collections': wishlist_data})
+    return JsonResponse({'status':'success','collections': wishlist_data})
 
 @csrf_exempt
 def create_collection(request):
