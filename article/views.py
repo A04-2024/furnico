@@ -1,6 +1,6 @@
 from datetime import timezone
 import json
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from article.forms import ArticleForm, CommentForm
@@ -8,7 +8,7 @@ from article.models import Article, Comment
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
-from django.core import serializers
+from django.contrib.auth.models import User
 
 def is_admin(user):
     return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'admin'
@@ -115,9 +115,24 @@ def show_json(request):
     return JsonResponse(data, safe=False)
 
 def show_json_comment(request, article_id):
-    data = list(Comment.objects.filter(article_id=article_id).values(
-        'body', 'created_at', 'user__username'
-    ))
+    # Get the currently logged-in user
+    current_user = request.user
+
+    # Fetch comments for the specified article
+    data = list(
+        Comment.objects.filter(article_id=article_id).values(
+            'id',
+            'body', 
+            'created_at', 
+            'user__username'
+        )
+    )
+
+    # Add the 'is_author' field to each comment
+    for comment in data:
+        comment_user = comment['user__username']
+        comment['is_author'] = comment_user == current_user.username
+
     return JsonResponse(data, safe=False)
 
 
@@ -152,3 +167,39 @@ def create_comment_flutter(request, article_id):
         return JsonResponse({"status": "success", "comment_id": new_comment.id}, status=200)
     else:
         return JsonResponse({"status": "error"}, status=401)
+
+@csrf_exempt
+def check_admin_status(request, username):
+    try:
+        # Cari pengguna berdasarkan username
+        user = User.objects.get(username=username)
+
+        # Cek apakah pengguna adalah admin
+        is_admin = (
+            user.is_authenticated and 
+            hasattr(user, 'userprofile') and 
+            user.userprofile.role == 'admin'
+        )
+        # Kembalikan status dalam JSON
+        return JsonResponse({'is_admin': is_admin}, status=200)
+
+    except User.DoesNotExist:
+        # Jika pengguna tidak ditemukan, kembalikan error
+        return JsonResponse({'error': 'User not found'}, status=404)
+    
+# @csrf_exempt
+# def delete_comment_flutter(request, comment_id):
+#     try:
+#         # Get the comment by ID
+#         comment = get_object_or_404(Comment, id=comment_id)
+
+#         # Check if the logged-in user is the author of the comment or an admin
+#         if request.user == comment.user or request.user.is_superuser:
+#             # If authorized, delete the comment
+#             comment.delete()
+#             return JsonResponse({'status': 'success', 'message': 'Comment deleted successfully.'}, status=200)
+#         else:
+#             # If not authorized, return an error
+#             return JsonResponse({'status': 'error', 'message': 'You are not authorized to delete this comment.'}, status=403)
+#     except Comment.DoesNotExist:
+#         return JsonResponse({'status': 'error', 'message': 'Comment not found.'}, status=404)
