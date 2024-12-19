@@ -115,26 +115,10 @@ def show_json(request):
     return JsonResponse(data, safe=False)
 
 def show_json_comment(request, article_id):
-    # Get the currently logged-in user
-    current_user = request.user
-
-    # Fetch comments for the specified article
-    data = list(
-        Comment.objects.filter(article_id=article_id).values(
-            'id',
-            'body', 
-            'created_at', 
-            'user__username'
-        )
-    )
-
-    # Add the 'is_author' field to each comment
-    for comment in data:
-        comment_user = comment['user__username']
-        comment['is_author'] = comment_user == current_user.username
-
+    data = list(Comment.objects.filter(article_id=article_id).values(
+        'body', 'created_at', 'user__username', 'id'
+    ))
     return JsonResponse(data, safe=False)
-
 
 @csrf_exempt
 def create_article_flutter(request):
@@ -187,19 +171,24 @@ def check_admin_status(request, username):
         # Jika pengguna tidak ditemukan, kembalikan error
         return JsonResponse({'error': 'User not found'}, status=404)
     
-# @csrf_exempt
-# def delete_comment_flutter(request, comment_id):
-#     try:
-#         # Get the comment by ID
-#         comment = get_object_or_404(Comment, id=comment_id)
-
-#         # Check if the logged-in user is the author of the comment or an admin
-#         if request.user == comment.user or request.user.is_superuser:
-#             # If authorized, delete the comment
-#             comment.delete()
-#             return JsonResponse({'status': 'success', 'message': 'Comment deleted successfully.'}, status=200)
-#         else:
-#             # If not authorized, return an error
-#             return JsonResponse({'status': 'error', 'message': 'You are not authorized to delete this comment.'}, status=403)
-#     except Comment.DoesNotExist:
-#         return JsonResponse({'status': 'error', 'message': 'Comment not found.'}, status=404)
+@csrf_exempt
+def delete_comment_flutter(request, comment_id):
+    if request.method == 'POST':
+        try:
+            # Retrieve the article by ID
+            comment = Comment.objects.get(id=comment_id)
+            if comment.user != request.user:
+                return JsonResponse({'error': 'You are not allowed to delete this article'}, status=403)
+            # Perform the delete operation
+            comment.delete()
+            # Return success response
+            return JsonResponse({'success': True, 'message': 'Article deleted successfully'})
+        except Comment.DoesNotExist:
+            # If the article does not exist
+            return JsonResponse({'success': False, 'message': 'Article not found'}, status=404)
+        except Exception as e:
+            # Handle unexpected errors
+            return JsonResponse({'success': False, 'message': str(e)}, status=500)
+    else:
+        # If the request is not POST
+        return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=405)
