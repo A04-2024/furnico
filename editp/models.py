@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from wishlist.models import Collection  # Import the Collection model
 
 # Create your models here.
 class UserProfile(models.Model):
@@ -15,16 +16,17 @@ class UserProfile(models.Model):
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     profile_picture = models.CharField(max_length=10000, blank=True, null=True)
     role = models.CharField(max_length=10, choices=USER_TYPES, default='user')
-    
+
     def __str__(self):
         return self.user.username
-    
+
 
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         UserProfile.objects.create(user=instance, role='user')
+        Collection.objects.create(user=instance, name="Semua Wishlist")
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
