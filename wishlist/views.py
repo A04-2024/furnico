@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from .models import WishlistItem, Collection
@@ -8,8 +8,11 @@ from django.contrib.auth.models import User
 import json
 from django.views.decorators.csrf import csrf_exempt
 
-@login_required
+@csrf_exempt
 def add_to_wishlist(request, product_id):
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'message': 'User not authenticated or logged in'})
+
     product = get_object_or_404(Product, id=product_id)
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -24,12 +27,18 @@ def add_to_wishlist(request, product_id):
     collections = Collection.objects.filter(user=request.user)
     return render(request, 'add_to_wishlist.html', {'product': product, 'collections': collections})
 
-@login_required
+@csrf_exempt
 def wishlist_view(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'message': 'User not authenticated or logged in'})
+
     collections = Collection.objects.filter(user=request.user)
     return render(request, 'wishlist.html', {'collections': collections})
 
 def wishlist_json_view(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'message': 'User not authenticated or logged in'})
+
     collections = Collection.objects.filter(user=request.user).prefetch_related('wishlistitem_set__product')
 
     wishlist_data = []
@@ -47,11 +56,12 @@ def wishlist_json_view(request):
         }
         wishlist_data.append(collection_data)
 
-    return JsonResponse({'collections': wishlist_data})
+    return JsonResponse({'status':'success','collections': wishlist_data})
 
-@login_required
 @csrf_exempt
 def create_collection(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'message': 'User not authenticated or logged in'})
 
     if request.method == 'POST':
         try:
@@ -79,8 +89,11 @@ def create_collection(request):
 
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
-@login_required
+@csrf_exempt
 def update_collection_name(request, collection_id):
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'message': 'User not authenticated or logged in'})
+
     collection = get_object_or_404(Collection, id=collection_id, user=request.user)
 
     if request.method == 'POST':
@@ -105,8 +118,11 @@ def update_collection_name(request, collection_id):
 
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
-@login_required
+@csrf_exempt
 def delete_collection(request, collection_id):
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'message': 'User not authenticated or logged in'})
+
     collection = get_object_or_404(Collection, id=collection_id, user=request.user)
 
     if collection.name == "Semua Wishlist":
@@ -120,8 +136,11 @@ def delete_collection(request, collection_id):
 
     return JsonResponse({'success': True})
 
-@login_required
+@csrf_exempt
 def remove_wishlist(request, product_id):
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'message': 'User not authenticated or logged in'})
+
     wishlist_item = get_object_or_404(WishlistItem, product__id=product_id, collection__user=request.user)
     wishlist_item.delete()
     return JsonResponse({'success': True})
