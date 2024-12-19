@@ -1,3 +1,4 @@
+from datetime import timezone
 import json
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
@@ -144,7 +145,8 @@ def create_comment_flutter(request, article_id):
         new_comment = Comment.objects.create(
             article=article,
             user=request.user,
-            body=data["body"]
+            body=data["content"],
+            created_at = timezone.utc,
         )
         new_comment.save()
         return JsonResponse({"status": "success", "comment_id": new_comment.id}, status=200)
