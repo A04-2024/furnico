@@ -1,12 +1,16 @@
-from django.http import HttpResponseRedirect
+import json
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from article.forms import ArticleForm, CommentForm
 from article.models import Article, Comment
 from django.contrib.auth.decorators import user_passes_test, login_required
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
+from django.core import serializers
 
 def is_admin(user):
-    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.tipe == 'admin'
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'admin'
 
 def show_article(request):
     articles = Article.objects.all()
@@ -73,11 +77,76 @@ def delete_article(request, id):
     # Kembali ke halaman awal
     return HttpResponseRedirect(reverse('article:show_article'))
 
+
 def delete_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
-
     if comment.user == request.user:
-        article_id = comment.article.id  
+        article_id = comment.article.id 
+        comment.delete()  
         return redirect('article:article_detail', id=article_id)
     else:
         return redirect('article:article_detail', id=comment.article.id)
+    
+
+@require_POST
+def add_comment(request, article_id):
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest' and request.user.is_authenticated:
+        body = request.POST.get('body')
+        article = get_object_or_404(Article, id=article_id)
+
+        comment = Comment.objects.create(user=request.user, article=article, body=body)
+
+        # Prepare the data to return
+        data = {
+            'user': comment.user.username,
+            'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M'),
+            'body': comment.body,
+            'comment_id': comment.id,
+        }
+        return JsonResponse(data)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+# @user_passes_test(is_admin)
+def show_json(request):
+    data = list(Article.objects.values(
+        'id', 'title', 'created_at', 'content', 'image', 'author__username'
+    ))
+    return JsonResponse(data, safe=False)
+
+def show_json_comment(request, article_id):
+    data = list(Comment.objects.filter(article_id=article_id).values(
+        'body', 'created_at', 'user__username'
+    ))
+    return JsonResponse(data, safe=False)
+
+
+@csrf_exempt
+def create_article_flutter(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        new_article = Article.objects.create(
+            title=data["title"],
+            content=data["content"],
+            image=data.get("image"),  # Pastikan untuk menangani upload gambar dengan benar
+            author=request.user
+        )
+        new_article.save()
+
+        return JsonResponse({"status": "success", "article_id": str(new_article.id)}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+    
+@csrf_exempt
+def create_comment_flutter(request, article_id):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        article = get_object_or_404(Article, id=article_id)  # Mengambil artikel berdasarkan ID
+        new_comment = Comment.objects.create(
+            article=article,
+            user=request.user,
+            body=data["body"]
+        )
+        new_comment.save()
+        return JsonResponse({"status": "success", "comment_id": new_comment.id}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)

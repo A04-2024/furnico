@@ -18,68 +18,119 @@
               </div>
             </div>
   
-      
-          <div>
-            <h1 class="text-4xl font-extrabold pb-2">Rincian Produk</h1>
-            <h3 class="text-xl pb-8">{{ product.product_description }}</h3>
-          </div>
-          <div>
-            <h1 class="text-4xl font-extrabold pb-2">Ukuran Produk</h1>
-            <h3 class="text-xl">Panjang produk: {{ product.product_size_long }} cm</h3>
-            <h3 class="text-xl">Lebar produk: {{ product.product_size_length }} cm</h3>
-            <h3 class="text-xl">Tinggi produk: {{ product.product_size_height }} cm</h3>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="basis-1/2">
-    <div class="flex flex-col p-8">
-      <div>
-            <h1 class="text-4xl font-extrabold pb-2">{{ product.product_name }}</h1>
-            <h3 class="text-xl">{{ product.product_subtitle }}</h3>
-            <p class="text-2xl font-extrabold pb-8">Rp {{ product.product_price }}</p>
-
-            {% if product.sold_this_week != 0 %}
-            <div class="bg-yellow-300 w-full p-3 md:w-1/2">
-              <h3 class="text-l">{{ product.sold_this_week }} barang telah terjual di minggu ini!</h3>
+            <div>
+              <h1 class="text-4xl font-extrabold pb-2">Rincian Produk</h1>
+              <h3 class="text-xl pb-8">{{ product.product_description }}</h3>
             </div>
-            {% endif %}
-            <h3 class="text-l p-2 pb-8">{{ product.people_bought }} orang telah membeli produk ini</h3>
-      </div>
-      <div>
-            <h3 class="text-xl pb-3">Produk terbuat dari {{ product.product_material }} berkualitas</h3>
-            <h3 class="text-xl pb-8">{{ product.product_advantages }}.</h3>
-      </div>
-      <div class="pb-8">
-        <div>
-          {% if product.in_wishlist %}
-              <button  onclick="removeFromWishlist('{{ product.id }}')" class="wishlist-btn filled"><svg class="h-9 lg:h-10 p-2 text-gray-500" viewBox="0 0 22 22" aria-hidden="true" focusable="false" data-prefix="far" data-icon="heart" role="img" xmlns="http://www.w3.org/2000/svg" class="svg-inline--fa fa-heart fa-w-16 fa-9x"><path fill="red" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg></button>
-          {% else %}
-              <button product-entry-id="{{ product.id }}" class="add-wishlist-btn"><svg class="h-9 lg:h-10 p-2 text-gray-500" aria-hidden="true" focusable="false" data-prefix="far" data-icon="heart" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-heart fa-w-16 fa-9x"><path fill="currentColor" d="M458.4 64.3C400.6 15.7 311.3 23 256 79.3 200.7 23 111.4 15.6 53.6 64.3-21.6 127.6-10.6 230.8 43 285.5l175.4 178.7c10 10.2 23.4 15.9 37.6 15.9 14.3 0 27.6-5.6 37.6-15.8L469 285.6c53.5-54.7 64.7-157.9-10.6-221.3zm-23.6 187.5L259.4 430.5c-2.4 2.4-4.4 2.4-6.8 0L77.2 251.8c-36.5-37.2-43.9-107.6 7.3-150.7 38.9-32.7 98.9-27.8 136.5 10.5l35 35.7 35-35.7c37.8-38.5 97.8-43.2 136.5-10.6 51.1 43.1 43.5 113.9 7.3 150.8z"></path></svg></button>
-          {% endif %}
+            <div>
+              <h1 class="text-4xl font-extrabold pb-2">Ukuran Produk</h1>
+              <h3 class="text-xl">Panjang produk: {{ product.product_size_long }} cm</h3>
+              <h3 class="text-xl">Lebar produk: {{ product.product_size_length }} cm</h3>
+              <h3 class="text-xl">Tinggi produk: {{ product.product_size_height }} cm</h3>
+            </div>
+          </div>
         </div>
-        <button class="bg-red-600 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-full">
-          Laporkan produk ini
-        </button>
-      </div>
-      <div>
-            <h1 class="text-4xl font-extrabold pb-2">Ulasan Produk</h1>
-      </div>
-      <div>
-        {% include 'rating.html' %}
       </div>
     </div>
-    
-  </div>
+    <div class="basis-1/2">
+      <div class="flex flex-col p-8">
+        <div>
+              <h1 class="text-4xl font-extrabold pb-2">{{ product.product_name }}</h1>
+              <h3 class="text-xl">{{ product.product_subtitle }}</h3>
+              <p class="text-2xl font-extrabold pb-8">Rp {{ product.product_price }}</p>
+
+              {% if product.sold_this_week != 0 %}
+              <div class="bg-yellow-300 w-full p-3 md:w-1/2">
+                <h3 class="text-l">{{ product.sold_this_week }} barang telah terjual di minggu ini!</h3>
+              </div>
+              {% endif %}
+              <h3 class="text-l p-2 pb-8">{{ product.people_bought }} orang telah membeli produk ini</h3>
+        </div>
+        <div>
+              <h3 class="text-xl pb-3">Produk terbuat dari {{ product.product_material }} berkualitas</h3>
+              <h3 class="text-xl pb-8">{{ product.product_advantages }}.</h3>
+        </div>
+        <div class="pb-8">
+          <div>
+            {% if product.in_wishlist %}
+                <button  onclick="removeFromWishlist('{{ product.id }}')" class="wishlist-btn filled">
+                  <svg class="h-9 lg:h-10 p-2 text-gray-500" viewBox="0 0 22 22" aria-hidden="true" focusable="false" data-prefix="far" data-icon="heart" role="img" xmlns="http://www.w3.org/2000/svg" class="svg-inline--fa fa-heart fa-w-16 fa-9x">
+                    <path fill="red" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                  </svg>
+                </button>
+            {% else %}
+                <button product-entry-id="{{ product.id }}" class="add-wishlist-btn">
+                  <svg class="h-9 lg:h-10 p-2 text-gray-500" aria-hidden="true" focusable="false" data-prefix="far" data-icon="heart" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-heart fa-w-16 fa-9x">
+                    <path fill="currentColor" d="M458.4 64.3C400.6 15.7 311.3 23 256 79.3 200.7 23 111.4 15.6 53.6 64.3-21.6 127.6-10.6 230.8 43 285.5l175.4 178.7c10 10.2 23.4 15.9 37.6 15.9 14.3 0 27.6-5.6 37.6-15.8L469 285.6c53.5-54.7 64.7-157.9-10.6-221.3zm-23.6 187.5L259.4 430.5c-2.4 2.4-4.4 2.4-6.8 0L77.2 251.8c-36.5-37.2-43.9-107.6 7.3-150.7 38.9-32.7 98.9-27.8 136.5 10.5l35 35.7 35-35.7c37.8-38.5 97.8-43.2 136.5-10.6 51.1 43.1 43.5 113.9 7.3 150.8z"></path>
+                  </svg>
+                </button>
+            {% endif %}
+          </div>
+          <div class="mt-4">
+            {% if request.user.userprofile.role == 'admin' %}
+                <!-- Konten khusus untuk admin -->
+                <a href="{% url 'report:admin_list_report' %}">
+                    <button class="bg-blue-600 hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded-full lihat-laporan-btn">
+                        Lihat Laporan
+                    </button>
+                </a>
+            {% elif request.user.userprofile.role == 'user' %}
+                <!-- Konten untuk user biasa -->
+                <button id="laporkan-produk-{{ product.id }}" data-product-id="{{ product.id }}" data-report-url="{% url 'report:create_report' id=product.id %}" class="bg-red-600 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-full laporkan-produk-btn">
+                    Laporkan produk ini
+                </button>
+            {% else %}
+                <!-- Konten untuk login dulu -->
+                <a href="{% url 'editp:login' %}">
+                    <button class="bg-red-600 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-full">
+                        Laporkan produk ini
+                    </button>
+                </a>
+            {% endif %}
+        </div>
+        </div>
+        <div>
+              <h1 class="text-4xl font-extrabold pb-2">Ulasan Produk</h1>
+        </div>
+        <div>
+          {% include 'rating.html' %}
+        </div>
+      </div>
+    </div>
 </div>
 
+<!-- Report Popup Modal -->
+<div id="report-popup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+        <form id="report-form" method="post" data-product-id="{{ product.id }}" class="space-y-4">
+            {% csrf_token %}
+            <h3 class="text-xl font-semibold text-gray-800">Pilih Alasan Laporan:</h3>
+            <div class="space-y-2">
+                {{ form.reason }}
+            </div>
+            <div id="additional-info" class="hidden">
+                <h4 class="text-lg font-medium text-gray-800">Info Tambahan:</h4>
+                {{ form.additional_info }}
+            </div>
+            <div class="flex justify-end space-x-2">
+                <button type="button" id="cancel-button" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600">Batal</button>
+                <button type="button" id="delete-button" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-800 hidden">Hapus Laporan</button>
+                <button type="submit" id="submit-button" class="px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50" disabled>Kirim</button>
+            </div>
+        </form>
+        <div id="thank-you-message" class="hidden text-center">
+            <p class="text-lg font-semibold text-green-700">Terima Kasih Atas Laporan Anda!</p>
+            <button type="button" id="exit-button" class="mt-4 px-4 py-2 bg-green-600 text-white rounded-md">Keluar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add Wishlist Modal (Existing) -->
 <div id="add-wishlist-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
   <div class="bg-white rounded-lg shadow-lg w-96 p-6 relative">
     <h2 class="text-2xl font-bold mb-4">Add to Wishlist</h2>
     <p>Select a wishlist to add this product:</p>
 
-  
     <select id="wishlist-collection" class="mt-4 w-full p-2 border rounded">
 
     </select>
@@ -92,94 +143,365 @@
 </div>
 
 <script>
-function removeFromWishlist(productId) {
-  fetch(`/wishlist/remove-wishlist/${productId}/`, {
-      method: 'DELETE',
-      headers: {
-          'X-CSRFToken': '{{ csrf_token }}',
-          'Content-Type': 'application/json'
-      }
-  }).then(response => {
-      if (response.ok) {
-          location.reload();
-      }
-  });
-}
-// Show the add-wishlist modal and fetch list collection
-document.querySelectorAll('.add-wishlist-btn').forEach(button => {
-  button.addEventListener('click', function() {
-      const productId = this.getAttribute('product-entry-id');
-      document.getElementById('product-entry-id').value = productId;
+    // Function to get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
 
-      // Show the modal
-      document.getElementById('add-wishlist-modal').classList.remove('hidden');
-
-      // Fetch the list of wishlists for the user
-      fetch(`/wishlist/wishlist-json/`, {
-          method: 'GET',
+    // Wishlist Functionality (Existing)
+    function removeFromWishlist(productId) {
+      fetch(`/wishlist/remove-wishlist/${productId}/`, {
+          method: 'DELETE',
           headers: {
-              'X-CSRFToken': '{{ csrf_token }}',
+              'X-CSRFToken': getCookie('csrftoken'),
               'Content-Type': 'application/json'
           }
-      })
-      .then(response => response.json())
-      .then(data => {
-          const wishlistDropdown = document.getElementById('wishlist-collection');
-          wishlistDropdown.innerHTML = ''; // Clear previous options
-
-          // Populate wishlist collection in the dropdown
-          if (data.collections.length > 0) {
-              data.collections.forEach(wishlist => {
-                  const option = document.createElement('option');
-                  option.value = wishlist.collection_id;
-                  option.textContent = wishlist.collection_name;
-                  wishlistDropdown.appendChild(option);
-              });
-          } else {
-              wishlistDropdown.innerHTML = '<option disabled>No wishlists available</option>';
-          }
-      })
-      .catch(error => console.error('Error fetching wishlist collection:', error));
-  });
-});
-
-// Close the modal on cancel
-document.getElementById('cancel-add-wishlist').addEventListener('click', function() {
-  document.getElementById('add-wishlist-modal').classList.add('hidden');
-});
-
-// Confirm and add to wishlist without page refresh
-document.getElementById('confirm-add-wishlist').addEventListener('click', function() {
-  const selectedWishlist = document.getElementById('wishlist-collection').value;
-  const productId = document.getElementById('product-entry-id').value;
-
-  if (selectedWishlist) {
-      fetch(`/wishlist/add-to-wishlist/${productId}/`, {
-          method: 'POST',
-          headers: {
-              'X-CSRFToken': '{{ csrf_token }}',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ collection_id: selectedWishlist })
-      })
-      .then(response => {
+      }).then(response => {
           if (response.ok) {
-              // Reload the page to reflect changes
               location.reload();
-
-              // Hide the modal
-              document.getElementById('add-wishlist-modal').classList.add('hidden');
-          } else {
-              alert("Failed to add to wishlist. Please try again.");
           }
-      })
-      .catch(error => console.error('Error adding to wishlist:', error));
-  } else {
-      alert("Please select a wishlist.");
-  }
-});
+      });
+    }
+    // Show the add-wishlist modal and fetch list collection
+    document.querySelectorAll('.add-wishlist-btn').forEach(button => {
+      button.addEventListener('click', function() {
+          const productId = this.getAttribute('product-entry-id');
+          document.getElementById('product-entry-id').value = productId;
 
+          // Show the modal
+          document.getElementById('add-wishlist-modal').classList.remove('hidden');
 
+          // Fetch the list of wishlists for the user
+          fetch(`/wishlist/wishlist-json/`, {
+              method: 'GET',
+              headers: {
+                  'X-CSRFToken': getCookie('csrftoken'),
+                  'Content-Type': 'application/json'
+              }
+          })
+          .then(response => response.json())
+          .then(data => {
+              const wishlistDropdown = document.getElementById('wishlist-collection');
+              wishlistDropdown.innerHTML = ''; // Clear previous options
 
+              // Populate wishlist collection in the dropdown
+              if (data.collections.length > 0) {
+                  data.collections.forEach(wishlist => {
+                      const option = document.createElement('option');
+                      option.value = wishlist.collection_id;
+                      option.textContent = wishlist.collection_name;
+                      wishlistDropdown.appendChild(option);
+                  });
+              } else {
+                  wishlistDropdown.innerHTML = '<option disabled>No wishlists available</option>';
+              }
+          })
+          .catch(error => console.error('Error fetching wishlist collection:', error));
+      });
+    });
+
+    // Close the wishlist modal on cancel
+    document.getElementById('cancel-add-wishlist').addEventListener('click', function() {
+      document.getElementById('add-wishlist-modal').classList.add('hidden');
+    });
+
+    // Confirm and add to wishlist without page refresh
+    document.getElementById('confirm-add-wishlist').addEventListener('click', function() {
+      const selectedWishlist = document.getElementById('wishlist-collection').value;
+      const productId = document.getElementById('product-entry-id').value;
+
+      if (selectedWishlist) {
+          fetch(`/wishlist/add-to-wishlist/${productId}/`, {
+              method: 'POST',
+              headers: {
+                  'X-CSRFToken': getCookie('csrftoken'),
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ collection_id: selectedWishlist })
+          })
+          .then(response => {
+              if (response.ok) {
+                  // Reload the page to reflect changes
+                  location.reload();
+
+                  // Hide the modal
+                  document.getElementById('add-wishlist-modal').classList.add('hidden');
+              } else {
+                  alert("Failed to add to wishlist. Please try again.");
+              }
+          })
+          .catch(error => console.error('Error adding to wishlist:', error));
+      } else {
+          alert("Please select a wishlist.");
+      }
+    });
+
+    // Report Functionality
+    document.addEventListener('DOMContentLoaded', function () {
+        // Function to close the report popup
+        function closeReportPopup() {
+            document.getElementById('report-popup').classList.add('hidden');
+            // Reset form and thank you message
+            const reportForm = document.getElementById('report-form');
+            const thankYouMessage = document.getElementById('thank-you-message');
+            reportForm.style.display = 'block';
+            thankYouMessage.style.display = 'none';
+            reportForm.reset();
+            document.getElementById('additional-info').classList.add('hidden');
+            document.getElementById('submit-button').disabled = true;
+            document.getElementById('delete-button').classList.add('hidden');
+        }
+
+        // Function to open the report popup for creating a new report
+        function openReportPopup(reportUrl) {
+            document.getElementById('report-popup').classList.remove('hidden');
+            const reportForm = document.getElementById('report-form');
+            const additionalInfo = document.getElementById('additional-info');
+            const submitButton = document.getElementById('submit-button');
+            const cancelButton = document.getElementById('cancel-button');
+            const exitButton = document.getElementById('exit-button');
+            const deleteButton = document.getElementById('delete-button');
+            const thankYouMessage = document.getElementById('thank-you-message');
+            const reasonRadios = document.querySelectorAll('input[name="reason"]');
+
+            // Hide delete button for new reports
+            deleteButton.classList.add('hidden');
+
+            // Disable submit button initially
+            submitButton.disabled = true;
+
+            // Add event listeners for reason radios
+            reasonRadios.forEach(radio => {
+                radio.addEventListener('change', function () {
+                    additionalInfo.classList.remove('hidden');
+                    submitButton.disabled = false;
+                }, { once: true });
+            });
+
+            // Handle form submission
+            reportForm.onsubmit = function (event) {
+                event.preventDefault();
+
+                const formData = new FormData(reportForm);
+                const productId = reportForm.getAttribute('data-product-id');
+
+                fetch(reportUrl, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: formData,
+                    credentials: 'same-origin',
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Change the button to "Edit Laporan"
+                        const reportButton = document.querySelector(`#laporkan-produk-${productId}`);
+                        if (reportButton) {
+                            reportButton.innerText = 'Edit Laporan';
+                            reportButton.classList.remove('laporkan-produk-btn');
+                            reportButton.classList.add('edit-laporan-btn');
+                            reportButton.setAttribute('data-report-id', data.report_id);
+                            // Attach edit handler
+                            reportButton.removeEventListener('click', laporkanProdukHandler);
+                            reportButton.addEventListener('click', editReportHandler);
+                        }
+
+                        // Show thank you message
+                        reportForm.style.display = 'none';
+                        thankYouMessage.style.display = 'block';
+                    } else {
+                        console.error('Laporan gagal dikirim.');
+                        alert('Laporan gagal dikirim. Silakan coba lagi.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Terjadi masalah saat mengirim laporan:', error);
+                    alert('Terjadi kesalahan. Silakan coba lagi.');
+                });
+            };
+        }
+
+        // Function to open the report popup for editing an existing report
+        function editReportHandler(event) {
+            const button = event.currentTarget;
+            const productId = button.getAttribute('data-product-id');
+            const reportId = button.getAttribute('data-report-id');
+            const editReportUrl = "{% url 'report:edit_report_ajax' %}"; // Update with your actual URL
+
+            // Open the popup
+            document.getElementById('report-popup').classList.remove('hidden');
+            const reportForm = document.getElementById('report-form');
+            const additionalInfo = document.getElementById('additional-info');
+            const submitButton = document.getElementById('submit-button');
+            const cancelButton = document.getElementById('cancel-button');
+            const exitButton = document.getElementById('exit-button');
+            const deleteButton = document.getElementById('delete-button');
+            const thankYouMessage = document.getElementById('thank-you-message');
+            const reasonRadios = document.querySelectorAll('input[name="reason"]');
+
+            // Show delete button for editing reports
+            deleteButton.classList.remove('hidden');
+
+            // Disable submit button initially
+            submitButton.disabled = true;
+
+            // Fetch existing report data
+            fetch(`/report/get_report_data/${reportId}/`, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                credentials: 'same-origin',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Populate form fields
+                    const reason = data.reason;
+                    const additionalInfoText = data.additional_info;
+
+                    reasonRadios.forEach(radio => {
+                        if (radio.value === reason) {
+                            radio.checked = true;
+                            // Trigger change to show additional info
+                            radio.dispatchEvent(new Event('change'));
+                        }
+                    });
+
+                    document.querySelector('textarea[name="additional_info"]').value = additionalInfoText;
+                    submitButton.disabled = false;
+                } else {
+                    console.error('Gagal mengambil data laporan.');
+                    alert('Gagal mengambil data laporan. Silakan coba lagi.');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching report data:', error);
+                alert('Terjadi kesalahan. Silakan coba lagi.');
+            });
+
+            // Add event listeners for reason radios
+            reasonRadios.forEach(radio => {
+                radio.addEventListener('change', function () {
+                    additionalInfo.classList.remove('hidden');
+                    submitButton.disabled = false;
+                }, { once: true });
+            });
+
+            // Handle form submission for editing
+            reportForm.onsubmit = function (event) {
+                event.preventDefault();
+
+                const formData = new FormData(reportForm);
+                formData.append('report_id', reportId);
+
+                fetch(editReportUrl, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: formData,
+                    credentials: 'same-origin',
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show thank you message
+                        reportForm.style.display = 'none';
+                        thankYouMessage.style.display = 'block';
+                    } else {
+                        console.error('Gagal memperbarui laporan.');
+                        alert('Gagal memperbarui laporan. Silakan coba lagi.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error editing report:', error);
+                    alert('Terjadi kesalahan. Silakan coba lagi.');
+                });
+            };
+
+            // Handle delete report
+            document.getElementById('delete-button').onclick = function () {
+                if (confirm('Apakah Anda yakin ingin menghapus laporan ini?')) {
+                    fetch(`/report/delete_report_ajax/${reportId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken'),
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                        credentials: 'same-origin',
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Change the button back to "Laporkan produk ini"
+                            button.innerText = 'Laporkan produk ini';
+                            button.classList.remove('edit-laporan-btn');
+                            button.classList.add('laporkan-produk-btn');
+                            button.removeAttribute('data-report-id');
+                            // Attach report handler
+                            button.removeEventListener('click', editReportHandler);
+                            button.addEventListener('click', laporkanProdukHandler);
+
+                            // Close the popup
+                            closeReportPopup();
+                        } else {
+                            console.error('Gagal menghapus laporan.');
+                            alert('Gagal menghapus laporan. Silakan coba lagi.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error deleting report:', error);
+                        alert('Terjadi kesalahan. Silakan coba lagi.');
+                    });
+                }
+            };
+        }
+
+        // Handler for "Laporkan produk ini" button
+        function laporkanProdukHandler(event) {
+            const button = event.currentTarget;
+            const productId = button.getAttribute('data-product-id');
+            const reportUrl = button.getAttribute('data-report-url');
+            openReportPopup(reportUrl);
+        }
+
+        // Attach event listeners to "Laporkan produk ini" buttons
+        const reportButtons = document.querySelectorAll('.laporkan-produk-btn');
+        reportButtons.forEach(button => {
+            button.addEventListener('click', laporkanProdukHandler);
+        });
+
+        // Handler for "Edit Laporan" buttons
+        const editButtons = document.querySelectorAll('.edit-laporan-btn');
+        editButtons.forEach(button => {
+            button.addEventListener('click', editReportHandler);
+        });
+
+        // Handle closing the report popup
+        document.getElementById('cancel-button').addEventListener('click', closeReportPopup);
+        document.getElementById('exit-button').addEventListener('click', closeReportPopup);
+    });
 </script>
+
+{% if request.user.userprofile.role == 'admin' %}
+    <div id="admin-report-count-{{ product.id }}" class="mt-4">
+        Jumlah Laporan: <span id="report-count-{{ product.id }}">{{ product.report_set.count }}</span>
+    </div>
+{% endif %}
 {% endblock content %}

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container mx-auto py-8">
+{% include 'navbar.html' %}
+<div  class="container mx-auto" style="padding-top: 130px; padding-bottom: 2rem;">
   <h1 class="text-3xl font-bold text-blue-600 mb-8 text-center">Articles</h1>
   
   <!-- If no articles are available -->
@@ -38,7 +39,7 @@
   {% endif %}
 
   <!-- Add New Article Button -->
-  {% if request.user.is_authenticated and request.user.userprofile.tipe == 'admin' %}
+  {% if request.user.is_authenticated and request.user.userprofile.role == 'admin' %}
   <div class="mt-8 flex justify-center">
     <a href="{% url 'article:create_article' %}">
       <button class="bg-yellow-400 text-white py-2 px-6 rounded-lg shadow-md hover:bg-yellow-500 transition-colors duration-200">

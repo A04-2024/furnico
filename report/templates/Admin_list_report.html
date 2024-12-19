@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+<title>Daftar Laporan Produk</title>
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="flex flex-col items-center justify-center min-h-screen p-8">
+  <div class="w-full md:w-1/2">
+    <div class="flex flex-col items-center p-8 bg-white rounded-md shadow-lg">
+       
+      <!-- Bagian Judul Daftar Laporan -->
+      <div class="mb-8 text-center">
+        <h1 class="text-4xl font-extrabold" style="position: relative; z-index: 10;">Daftar Laporan</h1>
+      </div>
+
+      <div class="w-full" id="report-list">
+        {% for report in reports %}
+          <!-- Bagian Report User -->
+          <div class="bg-gray-100 p-4 rounded-md mb-4 shadow" id="report-card-{{ report.id }}">
+            {% include 'admin_card_report.html' %}
+            <!-- Separator Line -->
+            <hr style="border: none; border-top: 1px solid #e0e0e0; margin-bottom: 15px;">
+          </div>
+        {% empty %}
+          <div class="mb-8 text-center">
+            <p style="font-weight: bold; font-size: 22px; color: #ff0000;">Belum ada laporan...</p>
+          </div>
+        {% endfor %}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Button Kembali di Kanan Bawah -->
+<div style="position: fixed; bottom: 20px; right: 20px;">
+  <button onclick="goBack()" class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 shadow-lg">
+    Kembali
+  </button>
+</div>
+
+
+<script>
+  function goBack() {
+    if (document.referrer) {
+      window.history.back();
+    } else {
+      window.location.href = "{% url 'show_products:show_all_products' %}";
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+      // Function to get CSRF token from cookies
+      function getCookie(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+              const cookies = document.cookie.split(';');
+              for (let i = 0; i < cookies.length; i++) {
+                  const cookie = cookies[i].trim();
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+          return cookieValue;
+      }
+
+      // Function to handle report deletion
+      function handleDeleteReport(event) {
+          const button = event.currentTarget;
+          const reportId = button.getAttribute('data-report-id');
+
+          if (confirm('Apakah Anda yakin ingin menghapus laporan ini?')) {
+              fetch(`/report/delete_report_ajax/${reportId}/`, {
+                  method: 'POST',
+                  headers: {
+                      'X-CSRFToken': getCookie('csrftoken'),
+                      'X-Requested-With': 'XMLHttpRequest',
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({}), // If you need to send additional data
+                  credentials: 'same-origin',
+              })
+              .then(response => response.json())
+              .then(data => {
+                  if (data.success) {
+                      // Remove the report card from the DOM
+                      const reportCard = document.getElementById(`report-card-${reportId}`);
+                      if (reportCard) {
+                          reportCard.remove();
+                      }
+
+                      // Optionally, update the report count
+                      const reportCountSpan = document.getElementById(`report-count-${reportId}`);
+                      if (reportCountSpan) {
+                          reportCountSpan.innerText = parseInt(reportCountSpan.innerText) - 1;
+                      }
+
+                      // Optionally, display a success message
+                      alert('Laporan berhasil dihapus.');
+                  } else {
+                      console.error('Gagal menghapus laporan:', data.message);
+                      alert('Gagal menghapus laporan. Silakan coba lagi.');
+                  }
+              })
+              .catch(error => {
+                  console.error('Terjadi masalah saat menghapus laporan:', error);
+                  alert('Terjadi kesalahan. Silakan coba lagi.');
+              });
+          }
+      }
+
+      // Attach event listeners to all delete buttons
+      const deleteButtons = document.querySelectorAll('.delete-report-btn');
+      deleteButtons.forEach(button => {
+          button.addEventListener('click', handleDeleteReport);
+      });
+  });
+</script>
+
+{% if request.user.userprofile.role == 'admin' %}
+    <div id="admin-report-count-{{ product.id }}" class="mt-4">
+        Jumlah Laporan: <span id="report-count-{{ product.id }}">{{ product.report_set.count }}</span>
+    </div>
+{% endif %}
+{% endblock content %}
