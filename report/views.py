@@ -9,7 +9,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from uuid import UUID
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User # UserDummy
 
 
 @login_required
@@ -125,7 +125,9 @@ def get_filtered_reports_json(request):
     return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
 
 
-# Mobile
+# ==============================================
+# FLUTTERRR 
+# ==============================================
 @csrf_exempt
 def create_report_mobile(request):
     if request.method == 'POST':
@@ -153,8 +155,19 @@ def create_report_mobile(request):
 @csrf_exempt
 def get_reports_mobile(request):
     if request.method == 'GET':
-        data = Report.objects.all().values()
-        reports_list = list(data)
+        reports = Report.objects.select_related('furniture', 'user').all()
+        reports_list = []
+        for report in reports:
+            reports_list.append({
+                "id": report.id,
+                "user_id": report.user.id,
+                "username": report.user.username, 
+                "furniture_id": report.furniture.id,
+                "furniture_name": report.furniture.product_name,
+                "reason": report.reason,
+                "additional_info": report.additional_info,
+                "date_reported": report.date_reported.isoformat(),
+            })
         return JsonResponse(reports_list, safe=False)
     else:
         return JsonResponse({"status": "error", "message": "Method not allowed."}, status=405)

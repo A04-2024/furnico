@@ -12,7 +12,7 @@ urlpatterns = [
     path('edit_report_ajax/', edit_report_ajax, name='edit_report_ajax'),
     path('delete_report_ajax/<int:report_id>/', delete_report_ajax, name='delete_report_ajax'),
 
-    # Mobile
+    # Flutter
     path('create_report_mobile/', create_report_mobile, name='create_report_mobile'),
     path('edit_report_mobile/', edit_report_mobile, name='edit_report_mobile'),
     path('delete_report_mobile/', delete_report_mobile, name='delete_report_mobile'),

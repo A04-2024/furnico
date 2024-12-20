@@ -1,5 +1,7 @@
+from django.dispatch import receiver
+from django.db.models.signals import post_save, post_delete
 from django.shortcuts import render, get_object_or_404, redirect
-
+from django.db.models import Avg
 from rating.serializers import ProductRatingSerializer
 from .models import ProductRating
 from .forms import ProductRatingForm
@@ -87,4 +89,28 @@ def add_rating_ajax(request, id):
     )
     new_rating.save()
 
-    return HttpResponse(b"CREATED", status=201)
+    # update product rating average for the product card
+    product.product_rating = calculate_average_rating(product)
+
+
+    # Return the updated average rating in the response
+    return JsonResponse({
+        "status": "success",
+        "updated_average": product.product_rating,
+        "rating": new_rating.rating,
+        "description": new_rating.description
+    }, status=201)
+
+def calculate_average_rating(product):
+    ratings = product.ratings.all()
+    if ratings.exists():
+        return round(ratings.aggregate(Avg('rating'))['rating__avg'])
+    return 0
+
+@receiver(post_save, sender=ProductRating)
+@receiver(post_delete, sender=ProductRating)
+def update_product_rating(sender, instance, **kwargs):
+    product = instance.product
+    product.product_rating = calculate_average_rating(product)
+    product.save()
+
