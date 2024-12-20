@@ -27,6 +27,9 @@ urlpatterns = [
     path('wishlist/', include('wishlist.urls')),
     path('profile/', include('editp.urls')),
     path('article/', include('article.urls')),
+
+    # for flutter temp authentication
+    path('auth/', include('authentication.urls')),
 ]
 
 if settings.DEBUG:

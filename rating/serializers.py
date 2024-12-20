@@ -26,7 +26,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email']  # Adjust fields as per your requirements
+        fields = ['id', 'username', 'email']  
 
 class ProductRatingSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)  # Nested product details

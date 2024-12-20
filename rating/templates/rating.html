@@ -40,7 +40,7 @@
       <!-- Modal header -->
        <div class="flex flex-row">
       <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Add Rating for {{ product.product_name }}</h1>
-      <button type="button" class="text-black hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-4 ml-auto inline-flex items-center" id="closeModalBtn" onclick="hideModal()"></button>
+      <button type="button" class="text-black bg-red-700 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-4 ml-auto inline-flex items-center" id="closeModalBtn" onclick="hideModal()">X</button>
         </div>
         <form method="post" class="space-y-4" id="ratingEntryForm">
         {% csrf_token %}
@@ -85,48 +85,49 @@
 
 <script>
     function addRatingEntry() {
-    console.log(document.querySelector('#ratingEntryForm'))
-    fetch("{% url 'ratings:add_rating_ajax' product.id %}", {
-      method: "POST",
-      headers: {
-        "X-CSRFToken": "{{ csrf_token }}",
-      },
-      body: new FormData(document.querySelector('#ratingEntryForm')),
-    })
-    .then(response => refreshRatings());
+        const productId = "{{ product.id }}";
+        console.log(document.querySelector('#ratingEntryForm'))
+        fetch("{% url 'ratings:add_rating_ajax' product.id %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+            },
+            body: new FormData(document.querySelector('#ratingEntryForm')),
+        })
+        .then(response => refreshRatings(productId));
 
-    document.getElementById("ratingEntryForm").reset(); 
-    document.querySelector("[data-modal-toggle='crudModal']").click();
-
-    return false;
+        document.getElementById("ratingEntryForm").reset(); 
+        document.querySelector("[data-modal-toggle='crudModal']").click();
+        hideModal();
+        return false;
   }
 
     async function getRatings(){
-        return await fetch("{% url 'ratings:show_json' %}").then((res) => res.json())
+        const productId = "{{ product.id }}";
+        const url = `/product/${productId}/json/`;
+        return await fetch(url).then((res) => res.json());
     }
 
-    async function refreshRatings() {
-        document.getElementById("rating_cards").innerHTML = "";
-        document.getElementById("rating_cards").className = "";
-        const ratingEntries = await getRatings();
-        console.log(ratingEntries);
-        let htmlString = "";
-        let classNameString = "";
+    async function refreshRatings(productId) {
+        console.log("Refreshing ratings for product: ", productId); // debug
+        const ratingCards = document.getElementById("rating_cards");
+        const ratingEntries = await getRatings(productId);
 
+        console.log("Fetched Rating entries: ", ratingEntries); // debug
+        ratingCards.innerHTML = "";
+
+        let htmlString = "";
         if (ratingEntries.length === 0) {
-            classNameString = ""
             htmlString = `<p class="text-gray-500">No ratings yet. Be the first to rate this product!</p>`;
-        }
-        else {
-            classNameString = ""
+        } else {
             ratingEntries.forEach((item) => {
                 htmlString += `
                     <div class="bg-white shadow-md rounded-lg p-4 mb-4 border border-gray-200">
                         <div class="flex justify-between items-center">
                             <h3 class="font-semibold">${item.user.username}</h3>
-                            <span class="text-yellow-500 font-semibold">${ item.rating } ★</span>
+                            <span class="text-yellow-500 font-semibold">${item.rating} ★</span>
                         </div>
-                        <p class="text-gray-700 mt-2">${ item.description }</p>
+                        <p class="text-gray-700 mt-2">${item.description}</p>
                         <div class="mt-4 flex space-x-2">
                             ${item.is_owner ? `
                             <a href="/rating/product/${item.id}/edit" class="text-blue-500 hover:text-blue-700">
@@ -141,8 +142,7 @@
                 `;
             });
         }
-        document.getElementById("rating_cards").className  = classNameString;
-        document.getElementById("rating_cards").innerHTML = htmlString;
+        ratingCards.innerHTML = htmlString;
     }
     refreshRatings();
 
@@ -183,6 +183,7 @@
     document.addEventListener("DOMContentLoaded", function() {
         const stars = document.querySelectorAll("#star-rating .star");
         const ratingInput = document.getElementById("rating-value");
+        const productId = "{{ product.id }}";
 
         stars.forEach(star => {
             star.addEventListener("click", function() {
@@ -194,6 +195,7 @@
                 }
             });
         });
+        refreshRatings(productId);
     });
 
     
