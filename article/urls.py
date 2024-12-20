@@ -1,6 +1,5 @@
 from django.urls import path
-from article.views import show_article, create_article, article_detail, edit_article, delete_article, delete_comment, add_comment
-from article.views import show_json, show_json_comment, create_article_flutter, create_comment_flutter, check_admin_status, delete_comment_flutter
+from article.views import *
 
 app_name = 'article'
 
@@ -19,4 +18,5 @@ urlpatterns = [
     path('check-admin-status/<str:username>/', check_admin_status, name="admin_status"),
     path('delete-comment-flutter/<int:comment_id>/', delete_comment_flutter, name="delete_comment_flutter"),
     path('create-article-flutter/', create_article_flutter, name='create_article_flutter'),
+    path('delete-article-flutter/<uuid:article_id>/', delete_article_flutter, name='delete_article_flutter')
 ]

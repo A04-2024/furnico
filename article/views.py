@@ -216,3 +216,25 @@ def create_article_flutter(request):
         })
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
+
+@csrf_exempt
+def delete_article_flutter(request, article_id):
+    if request.method == 'POST':
+        try:
+            # Retrieve the article by ID
+            article = Article.objects.get(id=article_id)
+            if article.author != request.user:
+                return JsonResponse({'error': 'You are not allowed to delete this article'}, status=403)
+            # Perform the delete operation
+            article.delete()
+            # Return success response
+            return JsonResponse({'success': True, 'message': 'Article deleted successfully'})
+        except Comment.DoesNotExist:
+            # If the article does not exist
+            return JsonResponse({'success': False, 'message': 'Article not found'}, status=404)
+        except Exception as e:
+            # Handle unexpected errors
+            return JsonResponse({'success': False, 'message': str(e)}, status=500)
+    else:
+        # If the request is not POST
+        return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=405)
