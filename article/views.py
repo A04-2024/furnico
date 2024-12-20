@@ -120,21 +120,21 @@ def show_json_comment(request, article_id):
     ))
     return JsonResponse(data, safe=False)
 
-@csrf_exempt
-def create_article_flutter(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        new_article = Article.objects.create(
-            title=data["title"],
-            content=data["content"],
-            image=data.get("image"),  # Pastikan untuk menangani upload gambar dengan benar
-            author=request.user
-        )
-        new_article.save()
+# @csrf_exempt
+# def create_article_flutter(request):
+#     if request.method == 'POST':
+#         data = json.loads(request.body)
+#         new_article = Article.objects.create(
+#             title=data["title"],
+#             content=data["content"],
+#             image=data.get("image"),  # Pastikan untuk menangani upload gambar dengan benar
+#             author=request.user
+#         )
+#         new_article.save()
 
-        return JsonResponse({"status": "success", "article_id": str(new_article.id)}, status=200)
-    else:
-        return JsonResponse({"status": "error"}, status=401)
+#         return JsonResponse({"status": "success", "article_id": str(new_article.id)}, status=200)
+#     else:
+#         return JsonResponse({"status": "error"}, status=401)
     
 @csrf_exempt
 def create_comment_flutter(request, article_id):
@@ -145,7 +145,7 @@ def create_comment_flutter(request, article_id):
             article=article,
             user=request.user,
             body=data["content"],
-            created_at = timezone.utc,
+            # created_at = timezone.utc,
         )
         new_comment.save()
         return JsonResponse({"status": "success", "comment_id": new_comment.id}, status=200)
@@ -192,3 +192,27 @@ def delete_comment_flutter(request, comment_id):
     else:
         # If the request is not POST
         return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=405)
+    
+@csrf_exempt
+def create_article_flutter(request):
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        title = data.get('title', '').strip()
+        content = data.get('content', '').strip()
+
+        if not title or not content:
+            return JsonResponse({'status': 'error', 'message': 'Title and content are required.'}, status=400)
+
+        article = Article.objects.create(
+            title=title,
+            content=content,
+            author=request.user
+        )
+
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Article created successfully!',
+            'article_id': str(article.id),
+        })
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
