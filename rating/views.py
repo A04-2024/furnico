@@ -1,5 +1,7 @@
+import json
 from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
+from django.forms import ValidationError
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Avg
 from rating.serializers import ProductRatingSerializer
@@ -10,6 +12,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse, JsonResponse
 from django.core import serializers
+from django.middleware.csrf import get_token
+
 
 from rest_framework.renderers import JSONRenderer
 
@@ -81,6 +85,27 @@ def add_rating_ajax(request, id):
     product = get_object_or_404(Product, pk=id)
     user = request.user
 
+    # Validation for rating
+    try:
+        rating = int(rating)
+        if rating < 1 or rating > 5:
+            return JsonResponse({
+                "status": "error",
+                "message": "Rating must be between 1 and 5."
+            }, status=400)
+    except (ValueError, TypeError):
+        return JsonResponse({
+            "status": "error",
+            "message": "Invalid rating value. It must be an integer between 1 and 5."
+        }, status=400)
+
+    # Validation for description
+    if not description or len(description.strip()) == 0:
+        return JsonResponse({
+            "status": "error",
+            "message": "Description cannot be empty."
+        }, status=400)
+
     new_rating = ProductRating(
         rating=rating, 
         description=description, 
@@ -114,3 +139,45 @@ def update_product_rating(sender, instance, **kwargs):
     product.product_rating = calculate_average_rating(product)
     product.save()
 
+
+# FLUTTER
+@csrf_exempt
+def create_rating_flutter(request, id):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        # Get the product instance using the product_id from the URL
+        product = get_object_or_404(Product, pk=id)
+        user = request.user
+        # Create a new rating
+        new_rating = ProductRating.objects.create(
+            rating=data['rating'],
+            description=data['description'],
+            user=user,
+            product=product
+        )
+        new_rating.save()
+
+        # Create the JSON response in the desired format
+        ratings = ProductRating.objects.filter(product=product)
+
+        ratings_data = [
+            {
+                "id": str(product.id),
+                "user": {
+                    "username": rating.user.username  
+                },
+                "rating": rating.rating,
+                "description": rating.description,
+                "is_owner": rating.user == request.user
+            }
+            for rating in ratings
+        ]
+
+        return JsonResponse(ratings_data, safe=False, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+
+def csrf_token_view(request):
+    token = get_token(request)
+    return JsonResponse({'csrfToken': token})

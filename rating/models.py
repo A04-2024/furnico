@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.forms import ValidationError
 from show_products.models import Product
 import uuid
 
@@ -12,3 +13,8 @@ class ProductRating(models.Model):
 
     def __str__(self):
         return f'{self.product.product_name} - {self.rating} by {self.user.username}'
+    
+    def clean(self):
+        # Ensuring the rating is between 1 and 5
+        if self.rating < 1 or self.rating > 5:
+            raise ValidationError("Rating must be between 1 and 5.")
