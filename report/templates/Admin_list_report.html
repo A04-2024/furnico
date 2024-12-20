@@ -7,13 +7,13 @@
 {% block content %}
 {% include 'navbar.html' %}
 
-<div class="flex flex-col items-center justify-center min-h-screen p-8">
-  <div class="w-full md:w-1/2">
+<div class="flex flex-col items-center justify-center min-h-screen p-8 mt-16">
+  <div class="w-full md:w-3/4 lg:w-1/2">
     <div class="flex flex-col items-center p-8 bg-white rounded-md shadow-lg">
-       
+
       <!-- Bagian Judul Daftar Laporan -->
-      <div class="mb-8 text-center">
-        <h1 class="text-4xl font-extrabold" style="position: relative; z-index: 10;">Daftar Laporan</h1>
+      <div class="mb-4 text-center">
+        <h2 class="text-2xl font-bold">Daftar Laporan</h2>
       </div>
 
       <div class="w-full" id="report-list">
@@ -22,11 +22,11 @@
           <div class="bg-gray-100 p-4 rounded-md mb-4 shadow" id="report-card-{{ report.id }}">
             {% include 'admin_card_report.html' %}
             <!-- Separator Line -->
-            <hr style="border: none; border-top: 1px solid #e0e0e0; margin-bottom: 15px;">
+            <hr class="border-t border-gray-300 my-4">
           </div>
         {% empty %}
           <div class="mb-8 text-center">
-            <p style="font-weight: bold; font-size: 22px; color: #ff0000;">Belum ada laporan...</p>
+            <p class="font-bold text-2xl text-red-600">Belum ada laporan untuk furniture ini...</p>
           </div>
         {% endfor %}
       </div>
@@ -36,12 +36,11 @@
 </div>
 
 <!-- Button Kembali di Kanan Bawah -->
-<div style="position: fixed; bottom: 20px; right: 20px;">
+<div class="fixed bottom-5 right-5">
   <button onclick="goBack()" class="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 shadow-lg">
     Kembali
   </button>
 </div>
-
 
 <script>
   function goBack() {
@@ -53,7 +52,6 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-      // Function to get CSRF token from cookies
       function getCookie(name) {
           let cookieValue = null;
           if (document.cookie && document.cookie !== '') {
@@ -69,7 +67,6 @@
           return cookieValue;
       }
 
-      // Function to handle report deletion
       function handleDeleteReport(event) {
           const button = event.currentTarget;
           const reportId = button.getAttribute('data-report-id');
@@ -82,25 +79,22 @@
                       'X-Requested-With': 'XMLHttpRequest',
                       'Content-Type': 'application/json',
                   },
-                  body: JSON.stringify({}), // If you need to send additional data
+                  body: JSON.stringify({}), 
                   credentials: 'same-origin',
               })
               .then(response => response.json())
               .then(data => {
                   if (data.success) {
-                      // Remove the report card from the DOM
                       const reportCard = document.getElementById(`report-card-${reportId}`);
                       if (reportCard) {
                           reportCard.remove();
                       }
 
-                      // Optionally, update the report count
-                      const reportCountSpan = document.getElementById(`report-count-${reportId}`);
+                      const reportCountSpan = document.getElementById(`report-count-${furniture.id}`);
                       if (reportCountSpan) {
                           reportCountSpan.innerText = parseInt(reportCountSpan.innerText) - 1;
                       }
 
-                      // Optionally, display a success message
                       alert('Laporan berhasil dihapus.');
                   } else {
                       console.error('Gagal menghapus laporan:', data.message);
@@ -114,7 +108,6 @@
           }
       }
 
-      // Attach event listeners to all delete buttons
       const deleteButtons = document.querySelectorAll('.delete-report-btn');
       deleteButtons.forEach(button => {
           button.addEventListener('click', handleDeleteReport);
@@ -122,9 +115,4 @@
   });
 </script>
 
-{% if request.user.userprofile.role == 'admin' %}
-    <div id="admin-report-count-{{ product.id }}" class="mt-4">
-        Jumlah Laporan: <span id="report-count-{{ product.id }}">{{ product.report_set.count }}</span>
-    </div>
-{% endif %}
 {% endblock content %}

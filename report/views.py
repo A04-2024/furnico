@@ -8,7 +8,9 @@ from report.models import Report
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-from django.views.decorators.http import require_POST
+from uuid import UUID
+from django.contrib.auth.models import User
+
 
 @login_required
 def create_report_ajax(request, id):
@@ -24,8 +26,6 @@ def create_report_ajax(request, id):
             return JsonResponse({'success': False, 'errors': form.errors}, status=400)
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
-
-
 
 @login_required
 def admin_list_report_furniture(request, id):
@@ -87,20 +87,6 @@ def edit_report_ajax(request):
         return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
 
 @login_required
-def delete_report(request, id):
-    report = get_object_or_404(Report, id=id)
-    user_profile = get_object_or_404(UserProfile, user=request.user)
-    if request.user != report.user and user_profile.role != 'admin':
-        messages.error(request, "Anda tidak memiliki izin untuk menghapus laporan ini.")
-        return redirect('report:user_list_reports')
-
-    if request.method == 'POST':
-        report.delete()
-        messages.success(request, "Laporan berhasil dihapus.")
-        return redirect('report:user_list_reports')
-    return render(request, 'confirm_delete_report.html', {'report': report})
-
-@login_required
 def delete_report_ajax(request, report_id):
     if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         report = get_object_or_404(Report, id=report_id)
@@ -112,12 +98,6 @@ def delete_report_ajax(request, report_id):
             return JsonResponse({'success': False, 'message': 'Permission denied.'}, status=403)
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
-    
-@login_required
-def user_list_reports(request):
-    reports = Report.objects.filter(user=request.user)
-    return render(request, 'user_list_reports.html', {'reports': reports})
-
 
 @login_required
 def get_filtered_reports_json(request):
@@ -145,86 +125,73 @@ def get_filtered_reports_json(request):
     return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
 
 
-
-@csrf_exempt  
-@login_required
-@require_POST
-def create_report_ajax_mobile(request, id):
-    try:
+# Mobile
+@csrf_exempt
+def create_report_mobile(request):
+    if request.method == 'POST':
         data = json.loads(request.body)
+        user_id = data.get('user')
+        furniture_id = data.get('furniture')
         reason = data.get('reason')
         additional_info = data.get('additional_info', '')
         
-        if not reason:
-            return JsonResponse({'success': False, 'message': 'Reason is required.'}, status=400)
-        
-        # Validasi reason
-        valid_reasons = [choice[0] for choice in Report.REASON_CHOICES]
-        if reason not in valid_reasons:
-            return JsonResponse({'success': False, 'message': 'Invalid reason.'}, status=400)
-        
-        furniture = get_object_or_404(Product, id=id)
-        
-        report = Report.objects.create(
-            user=request.user,
-            furniture=furniture,
-            reason=reason,
-            additional_info=additional_info
-        )
-        
-        return JsonResponse({'success': True, 'report_id': report.id}, status=201)
-    
-    except json.JSONDecodeError:
-        return JsonResponse({'success': False, 'message': 'Invalid JSON.'}, status=400)
-    except Exception as e:
-        return JsonResponse({'success': False, 'message': str(e)}, status=500)
-
-@csrf_exempt  
-@login_required
-def update_report_ajax(request, report_id):
-    if request.method == 'PUT':
+        try:
+            user = User.objects.get(id=user_id)
+            report = Report.objects.create(
+                user=user,
+                furniture_id=furniture_id,
+                reason=reason,
+                additional_info=additional_info
+            )
+            return JsonResponse({"status": "success", "report_id": report.id}, status=200)
+        except User.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "User tidak ditemukan."}, status=400)
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+@csrf_exempt
+def get_reports_mobile(request):
+    if request.method == 'GET':
+        data = Report.objects.all().values()
+        reports_list = list(data)
+        return JsonResponse(reports_list, safe=False)
+    else:
+        return JsonResponse({"status": "error", "message": "Method not allowed."}, status=405)
+@csrf_exempt
+def delete_report_mobile(request):
+    if request.method == 'POST':
         try:
             data = json.loads(request.body)
+            report_id = data.get('report_id')
+            report = Report.objects.get(id=report_id)
+            report.delete()
+            return JsonResponse({"status": "success"}, status=200)
+        except Report.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Report not found."}, status=404)
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=400)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+
+@csrf_exempt
+def edit_report_mobile(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            report_id = data.get('report_id')
             reason = data.get('reason')
             additional_info = data.get('additional_info', '')
 
-            if not reason:
-                return JsonResponse({'success': False, 'message': 'Reason is required.'}, status=400)
-
-            # Validasi reason
-            valid_reasons = [choice[0] for choice in Report.REASON_CHOICES]
-            if reason not in valid_reasons:
-                return JsonResponse({'success': False, 'message': 'Invalid reason.'}, status=400)
-
-            report = get_object_or_404(Report, id=report_id)
-
-            # Cek apakah pengguna memiliki izin untuk mengedit laporan
-            if request.user != report.user and not request.user.is_staff:
-                return JsonResponse({'success': False, 'message': 'Tidak diizinkan.'}, status=403)
-
+            report = Report.objects.get(id=report_id)
             report.reason = reason
             report.additional_info = additional_info
             report.save()
 
-            return JsonResponse({'success': True, 'message': 'Laporan berhasil diperbarui.'}, status=200)
-
-        except json.JSONDecodeError:
-            return JsonResponse({'success': False, 'message': 'Invalid JSON.'}, status=400)
+            return JsonResponse({"status": "success"}, status=200)
+        except Report.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Report not found."}, status=404)
         except Exception as e:
-            return JsonResponse({'success': False, 'message': str(e)}, status=500)
+            return JsonResponse({"status": "error", "message": str(e)}, status=400)
     else:
-        return JsonResponse({'success': False, 'message': 'Metode tidak diizinkan.'}, status=405)
-    
-@login_required
-def get_reports_ajax(request):
-    if request.method == 'GET':
-        if request.user.is_staff:
-            reports = Report.objects.all()
-        else:
-            reports = Report.objects.filter(user=request.user)
-        
-        reports_data = [report.to_json() for report in reports]
-
-        return JsonResponse({'result': 'success', 'reports': reports_data}, status=200)
-    else:
-        return JsonResponse({'result': 'failure', 'message': 'Metode tidak diizinkan.'}, status=405)
+        return JsonResponse({"status": "error"}, status=401)
