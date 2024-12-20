@@ -238,3 +238,33 @@ def delete_article_flutter(request, article_id):
     else:
         # If the request is not POST
         return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=405)
+    
+@csrf_exempt
+def edit_article_flutter(request, article_id):
+    if not request.user.is_authenticated:
+        return JsonResponse({'status': 'error', 'message': 'You must be logged in to edit an article'}, status=403)
+
+    # Check if the user has permissions (e.g., is an admin)
+    if not is_admin(request.user):
+        return JsonResponse({'status': 'error', 'message': 'You do not have permission to edit this article'}, status=403)
+
+    # Get the article to edit
+    article = get_object_or_404(Article, id=article_id)
+
+    if request.method == 'POST':
+        try:
+            # Parse JSON data from the request body
+            data = json.loads(request.body)
+
+            # Update article fields
+            article.title = data.get('title', article.title)
+            article.content = data.get('content', article.content)
+
+            # Save changes
+            article.save()
+
+            return JsonResponse({'status': 'success', 'message': 'Article updated successfully'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
