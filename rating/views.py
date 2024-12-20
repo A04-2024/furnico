@@ -114,11 +114,8 @@ def add_rating_ajax(request, id):
     )
     new_rating.save()
 
-    # update product rating average for the product card
     product.product_rating = calculate_average_rating(product)
 
-
-    # Return the updated average rating in the response
     return JsonResponse({
         "status": "success",
         "updated_average": product.product_rating,
@@ -146,10 +143,8 @@ def create_rating_flutter(request, id):
     if request.method == 'POST':
         data = json.loads(request.body)
 
-        # Get the product instance using the product_id from the URL
         product = get_object_or_404(Product, pk=id)
         user = request.user
-        # Create a new rating
         new_rating = ProductRating.objects.create(
             rating=data['rating'],
             description=data['description'],
@@ -158,7 +153,6 @@ def create_rating_flutter(request, id):
         )
         new_rating.save()
 
-        # Create the JSON response in the desired format
         ratings = ProductRating.objects.filter(product=product)
 
         ratings_data = [
